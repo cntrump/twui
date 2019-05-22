@@ -18,7 +18,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-typedef void (^TUICAAnimationCompletionBlock)();
+typedef void (^TUICAAnimationCompletionBlock)(void);
 
 //Note this is slightly flawed as we set ourself as the delegate, really we should create a chained proxy, if we need that I will add it.
 

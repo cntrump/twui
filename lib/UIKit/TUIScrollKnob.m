@@ -222,11 +222,11 @@ static NSTimeInterval const TUIScrollIndicatorStateRefreshSpeed = 0.01f;
 - (void)_updateKnobAlphaWithSpeed:(CGFloat)duration {
 	[TUIView animateWithDuration:duration animations:^{
 		if(self.knobHidden)
-			knob.alpha = TUIScrollIndicatorHiddenAlpha;
-		else if(_scrollKnobFlags.hover)
-			knob.alpha = TUIScrollIndicatorHoverAlpha;
+			self->knob.alpha = TUIScrollIndicatorHiddenAlpha;
+		else if(self->_scrollKnobFlags.hover)
+			self->knob.alpha = TUIScrollIndicatorHoverAlpha;
 		else
-			knob.alpha = TUIScrollIndicatorIdleAlpha;
+			self->knob.alpha = TUIScrollIndicatorIdleAlpha;
 	}];
 }
 

@@ -237,7 +237,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	
 	[self setWantsLayer:YES];
 	CALayer *layer = [self layer];
-	[layer setDelegate:self];
+	[layer setDelegate:(id<CALayerDelegate>)self];
 	CGSize s = [self frame].size;
 	v.frame = CGRectMake(0, 0, s.width, s.height);
 	[self.layer insertSublayer:_rootView.layer atIndex:0];
@@ -280,7 +280,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 		// make sure TUINSView will be deallocated
 		self.appKitHostView.layer.layoutManager = nil;
 	} else {
-		self.appKitHostView.layer.layoutManager = self;
+		self.appKitHostView.layer.layoutManager = (id<CALayoutManager>)self;
 	}
 }
 
@@ -663,7 +663,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 	// set up masking on the AppKit host view, and make ourselves the layout
 	// manager, so that we'll know when new sublayers are added
-	self.appKitHostView.layer.layoutManager = self;
+	self.appKitHostView.layer.layoutManager = (id<CALayoutManager>)self;
 
 	#if ENABLE_NSVIEW_CLIPPING
 	self.appKitHostView.layer.mask = self.maskLayer;

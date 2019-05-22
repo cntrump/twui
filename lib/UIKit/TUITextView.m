@@ -332,7 +332,7 @@ static CAAnimation *ThrobAnimation()
 	
 	if(showCursor) {
 		[TUIView setAnimationsEnabled:NO block:^{
-			cursor.frame = cursorFrame;
+			self->cursor.frame = cursorFrame;
 		}];
 	}
 	
@@ -428,15 +428,15 @@ static CAAnimation *ThrobAnimation()
 		// This needs to happen on the main thread so that the user doesn't enter more text while we're changing the attributed string.
 		dispatch_async(dispatch_get_main_queue(), ^{
 			// we only care about the most recent results, ignore anything older
-			if(sequenceNumber != lastCheckToken) return;
+			if(sequenceNumber != self->lastCheckToken) return;
 			
 			if([self.lastCheckResults isEqualToArray:results]) return;
 			
-			[[renderer backingStore] beginEditing];
+			[[self->renderer backingStore] beginEditing];
 			
 			NSRange wholeStringRange = NSMakeRange(0, [self.text length]);
-			[[renderer backingStore] removeAttribute:(id)kCTUnderlineColorAttributeName range:wholeStringRange];
-			[[renderer backingStore] removeAttribute:(id)kCTUnderlineStyleAttributeName range:wholeStringRange];
+			[[self->renderer backingStore] removeAttribute:(id)kCTUnderlineColorAttributeName range:wholeStringRange];
+			[[self->renderer backingStore] removeAttribute:(id)kCTUnderlineStyleAttributeName range:wholeStringRange];
 			
 			NSMutableArray *autocorrectedResultsThisRound = [NSMutableArray array];
 			for(NSTextCheckingResult *result in results) {
@@ -446,12 +446,12 @@ static CAAnimation *ThrobAnimation()
 					if(isActiveWord) continue;
 					
 					// Don't correct if it looks like they might be typing a contraction.
-					unichar lastCharacter = [[[renderer backingStore] string] characterAtIndex:self.selectedRange.location - 1];
+					unichar lastCharacter = [[[self->renderer backingStore] string] characterAtIndex:self.selectedRange.location - 1];
 					if(lastCharacter == '\'') continue;
 				}
 				
 				if(result.resultType == NSTextCheckingTypeCorrection || result.resultType == NSTextCheckingTypeReplacement) {
-					NSString *backingString = [[renderer backingStore] string];
+					NSString *backingString = [[self->renderer backingStore] string];
 					if(NSMaxRange(result.range) <= backingString.length) {
 						NSString *oldString = [backingString substringWithRange:result.range];
 						TUITextViewAutocorrectedPair *correctionPair = [[TUITextViewAutocorrectedPair alloc] init];
@@ -461,11 +461,11 @@ static CAAnimation *ThrobAnimation()
 						// Don't redo corrections that the user undid.
 						if([self.autocorrectedResults objectForKey:correctionPair] != nil) continue;
 						
-						[[renderer backingStore] removeAttribute:(id)kCTUnderlineColorAttributeName range:result.range];
-						[[renderer backingStore] removeAttribute:(id)kCTUnderlineStyleAttributeName range:result.range];
+						[[self->renderer backingStore] removeAttribute:(id)kCTUnderlineColorAttributeName range:result.range];
+						[[self->renderer backingStore] removeAttribute:(id)kCTUnderlineStyleAttributeName range:result.range];
 						
 						[self.autocorrectedResults setObject:oldString forKey:correctionPair];
-						[[renderer backingStore] replaceCharactersInRange:result.range withString:result.replacementString];
+						[[self->renderer backingStore] replaceCharactersInRange:result.range withString:result.replacementString];
 						[autocorrectedResultsThisRound addObject:result];
 						
 						// the replacement could have changed the length of the string, so adjust the selection to account for that
@@ -475,13 +475,13 @@ static CAAnimation *ThrobAnimation()
 						NSLog(@"Autocorrection result that's out of range: %@", result);
 					}
 				} else if(result.resultType == NSTextCheckingTypeSpelling) {
-					[[renderer backingStore] addAttribute:NSUnderlineColorAttributeName value:[NSColor redColor] range:result.range];
-					[[renderer backingStore] addAttribute:(id)kCTUnderlineStyleAttributeName value:[NSNumber numberWithInteger:kCTUnderlineStyleThick | kCTUnderlinePatternDot] range:result.range];
+					[[self->renderer backingStore] addAttribute:NSUnderlineColorAttributeName value:[NSColor redColor] range:result.range];
+					[[self->renderer backingStore] addAttribute:(id)kCTUnderlineStyleAttributeName value:[NSNumber numberWithInteger:kCTUnderlineStyleThick | kCTUnderlinePatternDot] range:result.range];
 				}
 			}
 			
-			[[renderer backingStore] endEditing];
-			[renderer reset]; // make sure we reset so that the renderer uses our new attributes
+			[[self->renderer backingStore] endEditing];
+			[self->renderer reset]; // make sure we reset so that the renderer uses our new attributes
 			
 			[self setNeedsDisplay];
 			

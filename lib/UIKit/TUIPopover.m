@@ -176,7 +176,7 @@ NSTimeInterval const TUIPopoverDefaultFadeoutDuration = 0.3;
     
     //This is as ugly as sin… but it gets the job done. I couldn't think of a nice way to code this but still get the desired behaviour
     __block CGRectEdge popoverEdge = preferredEdge;
-    CGRect (^popoverRect)() = ^ 
+    CGRect (^popoverRect)(void) = ^
     {
         CGRectEdge (^nextEdgeForEdge)(CGRectEdge) = ^ (CGRectEdge currentEdge) 
         {

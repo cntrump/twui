@@ -100,7 +100,7 @@
 
 - (void)enumerateTUIViewNSViewContainersInLayer:(CALayer *)layer block:(void(^)(TUIViewNSViewContainer *))block {
 	if ([layer.delegate isKindOfClass:[TUIViewNSViewContainer class]]) {
-		block(layer.delegate);
+		block((TUIViewNSViewContainer *)layer.delegate);
 	} else {
 		for (CALayer *sublayer in [layer sublayers]) {
 			[self enumerateTUIViewNSViewContainersInLayer:sublayer block:block];

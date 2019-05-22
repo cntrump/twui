@@ -159,7 +159,7 @@ static pthread_key_t TUICurrentContextScaleFactorTLSKey;
 {
 	if(!_layer) {
 		_layer = [[[[self class] layerClass] alloc] init];
-		_layer.delegate = self;
+		_layer.delegate = (id<CALayerDelegate>)self;
 		_layer.opaque = YES;
 		_layer.needsDisplayOnBoundsChange = YES;
 	}
@@ -349,14 +349,14 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 	}
 
 	void (^drawBlock)(void) = ^{
-		if (_viewFlags.delegateWillDisplayLayer) {
-			[_viewDelegate viewWillDisplayLayer:self];
+        if (self->_viewFlags.delegateWillDisplayLayer) {
+            [self->_viewDelegate viewWillDisplayLayer:self];
 		}
 
 		CGRect rectToDraw = self.bounds;
-		if (!CGRectEqualToRect(_context.dirtyRect, CGRectZero)) {
-			rectToDraw = _context.dirtyRect;
-			_context.dirtyRect = CGRectZero;
+        if (!CGRectEqualToRect(self->_context.dirtyRect, CGRectZero)) {
+            rectToDraw = self->_context.dirtyRect;
+            self->_context.dirtyRect = CGRectZero;
 		}
 
 		CGContextRef context = [self _CGContext];
@@ -366,13 +366,13 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 		TUISetCurrentContextScaleFactor(scale);
 		CGContextScaleCTM(context, scale, scale);
 
-		if (_viewFlags.clearsContextBeforeDrawing) {
+        if (self->_viewFlags.clearsContextBeforeDrawing) {
 			CGContextClearRect(context, rectToDraw);
 		}
 
 		CGContextSetAllowsAntialiasing(context, true);
 		CGContextSetShouldAntialias(context, true);
-		CGContextSetShouldSmoothFonts(context, !_viewFlags.disableSubpixelTextRendering);
+        CGContextSetShouldSmoothFonts(context, !self->_viewFlags.disableSubpixelTextRendering);
 
 		if (self.drawRect) {
 			// drawRect is implemented via a block
