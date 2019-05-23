@@ -34,20 +34,6 @@
 			remoteGlobalIDString = CB5B264C13BE6DA200579B1E;
 			remoteInfo = TwUI;
 		};
-		D01D9CEC146F54B300147234 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D01D9CE0146F54B300147234 /* TwUI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = CB5E321813BE7098004B7899;
-			remoteInfo = "Dynamic Library";
-		};
-		D01D9CEE146F54B300147234 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D01D9CE0146F54B300147234 /* TwUI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5EE983B713BE7809005F430D;
-			remoteInfo = "Static Library";
-		};
 		D01D9CF0146F54B300147234 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D01D9CE0146F54B300147234 /* TwUI.xcodeproj */;
@@ -190,8 +176,6 @@
 			isa = PBXGroup;
 			children = (
 				D01D9CEB146F54B300147234 /* TwUI.framework */,
-				D01D9CED146F54B300147234 /* libtwui.dylib */,
-				D01D9CEF146F54B300147234 /* libtwui.a */,
 				D01D9CF1146F54B300147234 /* Tests.xctest */,
 			);
 			name = Products;
@@ -261,20 +245,6 @@
 			fileType = wrapper.framework;
 			path = TwUI.framework;
 			remoteRef = D01D9CEA146F54B300147234 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		D01D9CED146F54B300147234 /* libtwui.dylib */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = libtwui.dylib;
-			remoteRef = D01D9CEC146F54B300147234 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		D01D9CEF146F54B300147234 /* libtwui.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libtwui.a;
-			remoteRef = D01D9CEE146F54B300147234 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		D01D9CF1146F54B300147234 /* Tests.xctest */ = {
@@ -453,6 +423,10 @@
 				GCC_PREFIX_HEADER = "Example/Example-Prefix.pch";
 				HEADER_SEARCH_PATHS = "../lib/**";
 				INFOPLIST_FILE = "$(SRCROOT)/Example/Example-Info.plist";
+				OTHER_LDFLAGS = (
+					"-objc",
+					"-all_load",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Example;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -474,6 +448,10 @@
 				GCC_PREFIX_HEADER = "Example/Example-Prefix.pch";
 				HEADER_SEARCH_PATHS = "../lib/**";
 				INFOPLIST_FILE = "$(SRCROOT)/Example/Example-Info.plist";
+				OTHER_LDFLAGS = (
+					"-objc",
+					"-all_load",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Example;
 				PROVISIONING_PROFILE_SPECIFIER = "";
