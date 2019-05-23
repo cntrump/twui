@@ -1,6 +1,6 @@
 [submodule "TwUITests/expecta"]
 	path = TwUITests/expecta
-	url = git://github.com/github/expecta.git
+	url = https://github.com/cntrump/expecta.git
 [submodule "TwUITests/specta"]
 	path = TwUITests/specta
-	url = git://github.com/specta/specta.git
+	url = https://github.com/cntrump/specta.git
