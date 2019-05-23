@@ -142,7 +142,7 @@ static pthread_key_t TUICurrentContextScaleFactorTLSKey;
 	}
 }
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
 	if((self = [super init]))
 	{

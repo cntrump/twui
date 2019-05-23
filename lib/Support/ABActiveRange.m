@@ -20,15 +20,15 @@
 
 @synthesize rangeValue;
 
-+ (id)valueWithRange:(NSRange)r
++ (instancetype)valueWithRange:(NSRange)r
 {
-	ABFlavoredRange *f = [[ABFlavoredRange alloc] init];
+	ABFlavoredRange *f = [[self alloc] init];
 	f.rangeValue = r;
 	return f;
 }
 
 
-- (id)copyWithZone:(NSZone *)zone
+- (instancetype)copyWithZone:(NSZone *)zone
 {
 	return self; // these are immutable after creation
 }

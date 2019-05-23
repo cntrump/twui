@@ -107,7 +107,7 @@ typedef enum {
 	
 }
 
-- (id)initWithFrame:(CGRect)frame style:(TUITableViewStyle)style;                // must specify style at creation. -initWithFrame: calls this with UITableViewStylePlain
+- (instancetype)initWithFrame:(CGRect)frame style:(TUITableViewStyle)style;                // must specify style at creation. -initWithFrame: calls this with UITableViewStylePlain
 
 @property (nonatomic,unsafe_unretained) id <TUITableViewDataSource>  dataSource;
 @property (nonatomic,unsafe_unretained) id <TUITableViewDelegate>    delegate;

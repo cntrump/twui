@@ -48,8 +48,8 @@ typedef enum {
     } _buttonFlags;
 }
 
-+ (id)buttonWithType:(TUIButtonType)buttonType;
-+ (id)button; // custom
++ (instancetype)buttonWithType:(TUIButtonType)buttonType;
++ (instancetype)button; // custom
 
 @property(nonatomic,assign)        TUIEdgeInsets    titleEdgeInsets;
 @property(nonatomic,assign)        TUIEdgeInsets    imageEdgeInsets;

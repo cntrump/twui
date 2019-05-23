@@ -36,7 +36,7 @@
 @synthesize alignment=_alignment;
 @synthesize lineBreakMode = _lineBreakMode;
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
 	if((self = [super initWithFrame:frame])) {
 		renderer = [[TUITextRenderer alloc] init];

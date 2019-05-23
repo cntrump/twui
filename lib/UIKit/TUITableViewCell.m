@@ -25,7 +25,7 @@
 	_reuseIdentifier = [r copy];
 }
 
-- (id)initWithStyle:(TUITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(TUITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
 	if((self = [super initWithFrame:CGRectZero]))
 	{

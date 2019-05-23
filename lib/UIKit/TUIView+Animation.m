@@ -54,7 +54,7 @@ static CGFloat TUIViewAnimationSlowMotionMultiplier (void) {
 	TUIViewAnimationStack = [NSMutableArray array];
 }
 
-- (id)init {
+- (instancetype)init {
 	self = [super init];
 	if (self == nil) return nil;
 

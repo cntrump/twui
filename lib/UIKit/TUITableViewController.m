@@ -26,11 +26,11 @@
 
 @dynamic view;
 
-- (id)init {
+- (instancetype)init {
 	return [self initWithStyle:TUITableViewStylePlain];
 }
 
-- (id)initWithStyle:(TUITableViewStyle)style {
+- (instancetype)initWithStyle:(TUITableViewStyle)style {
 	if((self = [super init])) {
 		_style = style;
 	}

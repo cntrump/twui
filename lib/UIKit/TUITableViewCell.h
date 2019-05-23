@@ -35,7 +35,7 @@ typedef enum {
 	
 }
 
-- (id)initWithStyle:(TUITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier;
+- (instancetype)initWithStyle:(TUITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier;
 
 @property(nonatomic,readonly,copy) NSString       *reuseIdentifier;
 

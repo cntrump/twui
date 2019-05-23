@@ -81,7 +81,7 @@ NSTimeInterval const TUIPopoverDefaultFadeoutDuration = 0.3;
 
 @synthesize originalViewSize = _originalViewSize;
 
-- (id)initWithContentViewController:(TUIViewController *)viewController
+- (instancetype)initWithContentViewController:(TUIViewController *)viewController
 {	
 	self = [super init];
 	if (self == nil)
@@ -471,7 +471,7 @@ CGFloat const TUIPopoverBackgroundViewArrowWidth = 35.0;
 
 }
 
-- (id)initWithFrame:(CGRect)frame popoverEdge:(CGRectEdge)popoverEdge originScreenRect:(CGRect)originScreenRect //originScreenRect is in the screen coordinate space 
+- (instancetype)initWithFrame:(CGRect)frame popoverEdge:(CGRectEdge)popoverEdge originScreenRect:(CGRect)originScreenRect //originScreenRect is in the screen coordinate space 
 {	
 	self = [super initWithFrame:frame];
 	if (self == nil)
@@ -548,7 +548,7 @@ CGFloat const TUIPopoverBackgroundViewArrowWidth = 35.0;
 @synthesize nsView = _nsView;
 @synthesize arrowEdge = _arrowEdge;;
 
-- (id)initWithFrame:(NSRect)frameRect {
+- (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     if(self == nil) return nil;
     

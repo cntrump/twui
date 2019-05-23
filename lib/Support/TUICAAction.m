@@ -83,7 +83,7 @@
 
 #pragma mark Lifecycle
 
-- (id)initWithAction:(id<CAAction>)innerAction {
+- (instancetype)initWithAction:(id<CAAction>)innerAction {
 	self = [super init];
 	if (!self)
 		return nil;
@@ -92,7 +92,7 @@
 	return self;
 }
 
-+ (id)actionWithAction:(id<CAAction>)innerAction {
++ (instancetype)actionWithAction:(id<CAAction>)innerAction {
 	return [[self alloc] initWithAction:innerAction];
 }
 

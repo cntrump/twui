@@ -18,7 +18,7 @@
 
 @interface TUIImageView : TUIView
 
-- (id)initWithImage:(NSImage *)image;
+- (instancetype)initWithImage:(NSImage *)image;
 
 @property(nonatomic, strong) NSImage *image;
 

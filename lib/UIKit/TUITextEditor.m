@@ -25,7 +25,7 @@
 @synthesize markedAttributes;
 @dynamic selectedRange; // getter in TUITextRenderer
 
-- (id)init
+- (instancetype)init
 {
 	if((self = [super init]))
 	{

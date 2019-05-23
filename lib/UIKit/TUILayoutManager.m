@@ -24,11 +24,11 @@
 @synthesize layoutName = _layoutName;
 @synthesize layoutConstraints = _layoutConstraints;
 
-+ (id)container {
++ (instancetype)container {
 	return [[self alloc] init];
 }
 
-- (id)init {
+- (instancetype)init {
 	if((self = [super init])) {
 		_layoutConstraints = [[NSMutableArray alloc] init];
 	}
@@ -54,7 +54,7 @@
 @synthesize viewsToProcess = _viewsToProcess;
 @synthesize processedViews = _processedViews;
 
-+ (id)sharedLayoutManager {
++ (instancetype)sharedLayoutManager {
 	static TUILayoutManager *_sharedLayoutManager = nil;
 	static dispatch_once_t onceToken;
 	
@@ -65,7 +65,7 @@
 	return _sharedLayoutManager;
 }
 
-- (id)init {
+- (instancetype)init {
 	if((self = [super init])) {
 		[[NSNotificationCenter defaultCenter] addObserver:self
 	                                             selector:@selector(frameChanged:)

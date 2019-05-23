@@ -45,7 +45,7 @@
 	return [self.originalString hash] ^ self.correctionResult.range.location ^ self.correctionResult.range.length;
 }
 
-- (id)copyWithZone:(NSZone *)zone {
+- (instancetype)copyWithZone:(NSZone *)zone {
 	TUITextViewAutocorrectedPair *copiedPair = [[[self class] alloc] init];
 	copiedPair.correctionResult = self.correctionResult;
 	copiedPair.originalString = self.originalString;
@@ -115,7 +115,7 @@
 	return [TUITextViewEditor class];
 }
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
 	if((self = [super initWithFrame:frame])) {
 		self.backgroundColor = [NSColor clearColor];

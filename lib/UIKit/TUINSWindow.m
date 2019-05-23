@@ -137,7 +137,7 @@ NSInteger makeFirstResponderCount = 0;
 	return NO;
 }
 
-- (id)initWithContentRect:(CGRect)rect
+- (instancetype)initWithContentRect:(CGRect)rect
 {
 	if((self = [super initWithContentRect:rect styleMask:[[self class] windowMask] backing:NSBackingStoreBuffered defer:NO]))
 	{

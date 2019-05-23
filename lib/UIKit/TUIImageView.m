@@ -25,7 +25,7 @@
 	[self setNeedsDisplay];
 }
 
-- (id)initWithImage:(NSImage *)image
+- (instancetype)initWithImage:(NSImage *)image
 {
 	CGRect frame = CGRectZero;
 	if (image) frame = CGRectMake(0, 0, image.size.width, image.size.height);

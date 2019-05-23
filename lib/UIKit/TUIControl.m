@@ -21,7 +21,7 @@
 
 @implementation TUIControl
 
-- (id)initWithFrame:(CGRect)rect
+- (instancetype)initWithFrame:(CGRect)rect
 {
 	self = [super initWithFrame:rect];
 	if(self == nil) {

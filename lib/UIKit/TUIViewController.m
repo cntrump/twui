@@ -19,13 +19,13 @@
 
 @implementation TUIViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
 	return [self init];
 }
 
 
-- (id)copyWithZone:(NSZone *)zone
+- (instancetype)copyWithZone:(NSZone *)zone
 {
 	TUIViewController *v = [[[self class] alloc] init];
 	// subclasses should override, call super, and copy over necessary properties

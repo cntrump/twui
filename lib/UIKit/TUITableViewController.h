@@ -54,6 +54,6 @@
 // manage (plain or grouped). Returns an initialized TUITableViewController.
 // If you use the standard init method to initialize a controller, a
 // table view in the plain style is created.
-- (id)initWithStyle:(TUITableViewStyle)style;
+- (instancetype)initWithStyle:(TUITableViewStyle)style;
 
 @end

@@ -33,7 +33,7 @@
 
 @synthesize popUpMenu;
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
 	if((self = [super initWithFrame:frame]))
 	{
@@ -50,12 +50,12 @@
 }
 
 
-+ (id)button
++ (instancetype)button
 {
 	return [self buttonWithType:TUIButtonTypeCustom];
 }
 
-+ (id)buttonWithType:(TUIButtonType)buttonType
++ (instancetype)buttonWithType:(TUIButtonType)buttonType
 {
 	TUIButton *b = [[self alloc] initWithFrame:CGRectZero];
 	return b;

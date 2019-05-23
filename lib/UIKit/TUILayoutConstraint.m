@@ -14,7 +14,7 @@
 @property (nonatomic, assign) CGFloat offset;
 @property (nonatomic, copy) NSValueTransformer *valueTransformer;
 
-- (id)initWithAttribute:(TUILayoutConstraintAttribute)attr
+- (instancetype)initWithAttribute:(TUILayoutConstraintAttribute)attr
              relativeTo:(NSString *)srcLayer
               attribute:(TUILayoutConstraintAttribute)srcAttr
                   scale:(CGFloat)scale
@@ -30,8 +30,8 @@
 
 @property (nonatomic, copy) TUILayoutTransformer transformer;
 
-+ (id)transformerWithBlock:(TUILayoutTransformer)block;
-- (id)initWithBlock:(TUILayoutTransformer)block;
++ (instancetype)transformerWithBlock:(TUILayoutTransformer)block;
+- (instancetype)initWithBlock:(TUILayoutTransformer)block;
 
 @end
 
@@ -44,20 +44,20 @@
 @synthesize offset = _offset;
 @synthesize valueTransformer = _valueTransformer;
 
-+ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)srcLayer
                     attribute:(TUILayoutConstraintAttribute)srcAttr {
 	return [self constraintWithAttribute:attr relativeTo:srcLayer attribute:srcAttr scale:1.0f offset:0.0f];
 }
 
-+ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)srcLayer
                     attribute:(TUILayoutConstraintAttribute)srcAttr
                        offset:(CGFloat)offset {
 	return [self constraintWithAttribute:attr relativeTo:srcLayer attribute:srcAttr scale:1.0f offset:offset];
 }
 
-+ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)source
                     attribute:(TUILayoutConstraintAttribute)srcAttr
                         scale:(CGFloat)scale
@@ -65,7 +65,7 @@
 	return [[TUILayoutConstraint alloc] initWithAttribute:attr relativeTo:source attribute:srcAttr scale:scale offset:offset];
 }
 
-+ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                     relativeTo:(NSString *)srcLayer
                     attribute:(TUILayoutConstraintAttribute)srcAttr
              blockTransformer:(TUILayoutTransformer)transformer {
@@ -73,14 +73,14 @@
 	return [self constraintWithAttribute:attr relativeTo:srcLayer attribute:srcAttr valueTransformer:t];
 }
 
-+ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)srcLayer
                     attribute:(TUILayoutConstraintAttribute)srcAttr
              valueTransformer:(NSValueTransformer *)transformer {
 	return [[self alloc] initWithAttribute:attr relativeTo:srcLayer attribute:srcAttr valueTransformer:transformer];
 }
 
-- (id)initWithAttribute:(TUILayoutConstraintAttribute)attr
+- (instancetype)initWithAttribute:(TUILayoutConstraintAttribute)attr
              relativeTo:(NSString *)srcLayer
               attribute:(TUILayoutConstraintAttribute)srcAttr
                   scale:(CGFloat)scale
@@ -103,7 +103,7 @@
 	return self;
 }
 
-- (id)initWithAttribute:(TUILayoutConstraintAttribute)attr
+- (instancetype)initWithAttribute:(TUILayoutConstraintAttribute)attr
              relativeTo:(NSString *)srcLayer
               attribute:(TUILayoutConstraintAttribute)srcAttr
        valueTransformer:(NSValueTransformer *)transformer {
@@ -159,11 +159,11 @@
 
 @synthesize transformer = _transformer;
 
-+ (id)transformerWithBlock:(TUILayoutTransformer)block {
++ (instancetype)transformerWithBlock:(TUILayoutTransformer)block {
 	return [[self alloc] initWithBlock:block];
 }
 
-- (id)initWithBlock:(TUILayoutTransformer)block {
+- (instancetype)initWithBlock:(TUILayoutTransformer)block {
 	if((self = [super init])) {
 		_transformer = [block copy];
 	}

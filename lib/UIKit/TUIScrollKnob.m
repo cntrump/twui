@@ -46,7 +46,7 @@ static NSTimeInterval const TUIScrollIndicatorStateRefreshSpeed = 0.01f;
 @synthesize scrollView;
 @synthesize knob;
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
 	if((self = [super initWithFrame:frame]))
 	{

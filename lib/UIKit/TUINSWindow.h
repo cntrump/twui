@@ -62,7 +62,7 @@
 	NSMutableArray *altUINSViews; // kill
 }
 
-- (id)initWithContentRect:(CGRect)rect;
+- (instancetype)initWithContentRect:(CGRect)rect;
 
 - (void)drawBackground:(CGRect)rect;
 

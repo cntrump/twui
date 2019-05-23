@@ -50,7 +50,7 @@ typedef struct {
 @synthesize sectionOffset;
 @synthesize sectionIndex;
 
-- (id)initWithNumberOfRows:(NSUInteger)n sectionIndex:(NSInteger)s tableView:(TUITableView *)t
+- (instancetype)initWithNumberOfRows:(NSUInteger)n sectionIndex:(NSInteger)s tableView:(TUITableView *)t
 {
 	if((self = [super init])){
 		_tableView = t;
@@ -152,7 +152,7 @@ typedef struct {
 @synthesize pullDownView=_pullDownView;
 @synthesize headerView=_headerView;
 
-- (id)initWithFrame:(CGRect)frame style:(TUITableViewStyle)style
+- (instancetype)initWithFrame:(CGRect)frame style:(TUITableViewStyle)style
 {
 	if((self = [super initWithFrame:frame])) {
 		_style = style;
@@ -164,7 +164,7 @@ typedef struct {
 	return self;
 }
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
 	return [self initWithFrame:frame style:TUITableViewStylePlain];
 }

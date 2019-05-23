@@ -28,7 +28,7 @@ typedef enum {
 	TUIView *spinner;
 }
 
-- (id)initWithActivityIndicatorStyle:(TUIActivityIndicatorViewStyle)style;
+- (instancetype)initWithActivityIndicatorStyle:(TUIActivityIndicatorViewStyle)style;
 
 @property(nonatomic,readonly) TUIActivityIndicatorViewStyle activityIndicatorViewStyle;
 

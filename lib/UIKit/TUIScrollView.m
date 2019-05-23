@@ -81,7 +81,7 @@ static BOOL isAtleastLion = NO;
 	return [CAScrollLayer class];
 }
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
 	if((self = [super initWithFrame:frame]))
 	{

@@ -62,12 +62,12 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 
 #pragma mark TUIView
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {	
 	return [self initWithFrame:frame style:TUIProgressBarStyleBlue];
 }
 
-- (id)initWithFrame:(CGRect)frame style:(TUIProgressBarStyle)style {
+- (instancetype)initWithFrame:(CGRect)frame style:(TUIProgressBarStyle)style {
 	self = [super initWithFrame:frame];
 	if(self == nil) return nil;
 	

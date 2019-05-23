@@ -18,7 +18,7 @@
 
 @implementation TUIActivityIndicatorView
 
-- (id)initWithActivityIndicatorStyle:(TUIActivityIndicatorViewStyle)style
+- (instancetype)initWithActivityIndicatorStyle:(TUIActivityIndicatorViewStyle)style
 {
 	if((self = [super initWithFrame:CGRectMake(0, 0, 20, 20)]))
 	{

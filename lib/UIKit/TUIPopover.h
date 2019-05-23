@@ -47,7 +47,7 @@ typedef void (^TUIPopoverDelegateBlock)(TUIPopover *popover);
 @property (nonatomic, copy) TUIPopoverDelegateBlock willShowBlock;
 @property (nonatomic, copy) TUIPopoverDelegateBlock didShowBlock;
 
-- (id)initWithContentViewController:(TUIViewController *)viewController;
+- (instancetype)initWithContentViewController:(TUIViewController *)viewController;
 
 - (void)showRelativeToRect:(CGRect)positioningRect ofView:(TUIView *)positioningView preferredEdge:(CGRectEdge)preferredEdge;
 
@@ -63,7 +63,7 @@ typedef void (^TUIPopoverDelegateBlock)(TUIPopover *popover);
 + (CGRect)contentViewFrameForBackgroundFrame:(CGRect)frame popoverEdge:(CGRectEdge)popoverEdge;
 + (TUIPopoverBackgroundView *)backgroundViewForContentSize:(CGSize)contentSize popoverEdge:(CGRectEdge)popoverEdge originScreenRect:(CGRect)originScreenRect;
 
-- (id)initWithFrame:(CGRect)frame popoverEdge:(CGRectEdge)popoverEdge originScreenRect:(CGRect)originScreenRect;
+- (instancetype)initWithFrame:(CGRect)frame popoverEdge:(CGRectEdge)popoverEdge originScreenRect:(CGRect)originScreenRect;
 - (CGPathRef)newPopoverPathForEdge:(CGRectEdge)popoverEdge inFrame:(CGRect)frame; //override in subclasses to change the shape of the popover, but still use the default drawing.
 
 //Used in the default implementation

@@ -113,7 +113,7 @@
 
 #pragma mark Lifecycle
 
-- (id)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (!self)
 		return nil;
@@ -128,7 +128,7 @@
 	return self;
 }
 
-- (id)initWithNSView:(NSView *)view; {
+- (instancetype)initWithNSView:(NSView *)view; {
     LOG_IF_NOT_MAINTHREAD(self);
 
 	self = [self initWithFrame:view.frame];

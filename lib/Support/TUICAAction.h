@@ -21,12 +21,12 @@
  *
  * This is the designated initializer.
  */
-- (id)initWithAction:(id<CAAction>)innerAction;
+- (instancetype)initWithAction:(id<CAAction>)innerAction;
 
 /*
  * Returns an action initialized with <initWithAction:>.
  */
-+ (id)actionWithAction:(id<CAAction>)innerAction;
++ (instancetype)actionWithAction:(id<CAAction>)innerAction;
 
 /*
  * Whether objects of this class add features to actions for the given key.

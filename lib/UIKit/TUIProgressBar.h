@@ -33,6 +33,6 @@ typedef NSUInteger TUIProgressBarStyle;
 @property (nonatomic, strong) TUIViewDrawRect drawTrack;
 @property (nonatomic, strong) TUIViewDrawRect drawFill;
 
-- (id)initWithFrame:(CGRect)frame style:(TUIProgressBarStyle)style;
+- (instancetype)initWithFrame:(CGRect)frame style:(TUIProgressBarStyle)style;
 
 @end

@@ -54,7 +54,7 @@
  *
  * The frame of the receiver will automatically be set to that of the given view.
  */
-- (id)initWithNSView:(NSView *)view;
+- (instancetype)initWithNSView:(NSView *)view;
 
 /**
  * The view displayed by the receiver.

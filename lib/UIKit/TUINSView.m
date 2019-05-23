@@ -123,7 +123,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 @synthesize rootView = _rootView;
 @synthesize maskLayer = _maskLayer;
 
-- (id)initWithCoder:(NSCoder *)coder
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
 	self = [super initWithCoder:coder];
 	if (self == nil)
@@ -133,7 +133,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	return self;
 }
 
-- (id)initWithFrame:(NSRect)frameRect
+- (instancetype)initWithFrame:(NSRect)frameRect
 {
 	self = [super initWithFrame:frameRect];
 	if (self == nil)

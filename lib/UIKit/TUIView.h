@@ -144,7 +144,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 /**
  Designated initializer
  */
-- (id)initWithFrame:(CGRect)frame;
+- (instancetype)initWithFrame:(CGRect)frame;
 
 /**
  Default is YES. if set to NO, user events (clicks, keys) are ignored and removed from the event queue.

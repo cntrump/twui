@@ -136,24 +136,24 @@ typedef CGFloat (^TUILayoutTransformer)(CGFloat);
 @property (readonly) TUILayoutConstraintAttribute sourceAttribute;
 @property (readonly) NSString *sourceName;
 
-+ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)source
                     attribute:(TUILayoutConstraintAttribute)srcAttr;
-+ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)source
                     attribute:(TUILayoutConstraintAttribute)srcAttr
                        offset:(CGFloat)offset;
-+ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)source
                     attribute:(TUILayoutConstraintAttribute)srcAttr
                         scale:(CGFloat)scale
                        offset:(CGFloat)offset;
 
-+ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)source
                     attribute:(TUILayoutConstraintAttribute)srcAttr
              blockTransformer:(TUILayoutTransformer)transformer;
-+ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)source
                     attribute:(TUILayoutConstraintAttribute)srcAttr
              valueTransformer:(NSValueTransformer *)transformer;
