@@ -81,16 +81,16 @@
 	}
 }
 
-- (void)draggedImage:(NSImage *)anImage beganAt:(NSPoint)aPoint
+- (void)draggingSession:(NSDraggingSession *)session willBeginAtPoint:(NSPoint)screenPoint
 {
 	[[self handleForPasteboardDragView] startPasteboardDragging];
 }
 
-- (void)draggedImage:(NSImage *)image movedTo:(NSPoint)screenPoint
+- (void)draggingSession:(NSDraggingSession *)session movedToPoint:(NSPoint)screenPoint
 {
 }
 
-- (void)draggedImage:(NSImage *)anImage endedAt:(NSPoint)aPoint operation:(NSDragOperation)operation
+- (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation
 {
 	[self.nsView mouseUp:nil]; // will clear _trackingView
 	[[self handleForPasteboardDragView] endPasteboardDragging:operation];
