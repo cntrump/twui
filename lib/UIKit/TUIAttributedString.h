@@ -58,11 +58,11 @@ typedef enum {
 @interface NSMutableAttributedString (TUIAdditions)
 
 // write-only properties, reading will return nil
-@property (nonatomic, retain) NSFont *font;
-@property (nonatomic, retain) NSColor *color;
-@property (nonatomic, retain) NSColor *backgroundColor;
+@property (nonatomic, strong) NSFont *font;
+@property (nonatomic, strong) NSColor *color;
+@property (nonatomic, strong) NSColor *backgroundColor;
 @property (nonatomic, assign) TUIBackgroundFillStyle backgroundFillStyle;
-@property (nonatomic, retain) NSShadow *shadow;
+@property (nonatomic, strong) NSShadow *shadow;
 @property (nonatomic, assign) TUITextAlignment alignment; // setting this will set lineBreakMode to word wrap, use setAlignment:lineBreakMode: for more control
 @property (nonatomic, assign) CGFloat kerning;
 @property (nonatomic, assign) CGFloat lineHeight;

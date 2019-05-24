@@ -26,7 +26,7 @@
 	NSString *originalString;
 }
 
-@property (nonatomic, retain) NSTextCheckingResult *correctionResult;
+@property (nonatomic, strong) NSTextCheckingResult *correctionResult;
 @property (nonatomic, copy) NSString *originalString;
 @end
 

@@ -199,7 +199,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
  
  Defaults to nil.
  */
-@property (nonatomic, retain) NSOperationQueue *drawQueue;
+@property (nonatomic, strong) NSOperationQueue *drawQueue;
 
 /**
  Make this view the first responder. Returns NO if it fails.

@@ -22,7 +22,7 @@ typedef void (^TUIMouseDraggedHandler)(NSEvent *dragEvent);
 
 @interface TUIView ()
 
-@property (nonatomic, retain) NSArray *textRenderers;
+@property (nonatomic, strong) NSArray *textRenderers;
 @property (nonatomic, copy) TUIMouseDraggedHandler dragHandler;
 
 - (TUITextRenderer *)textRendererAtPoint:(CGPoint)point;
