@@ -43,6 +43,4 @@
 
 @property(nonatomic,weak) TUIViewController *parentViewController; // If this view controller is inside a navigation controller or tab bar controller, or has been presented modally by another view controller, return it.
 
-- (TUIView *)setupStandardView; // don't use this
-
 @end

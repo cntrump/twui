@@ -36,6 +36,12 @@
 {
 	if(!_view) {
 		[self loadView];
+
+        // if subclass do not create a view, create a default one.
+        if (!_view) {
+            [self setupStandardView];
+        }
+
 		[self viewDidLoad];
 		[_view setNextResponder:self];
 	}
@@ -103,13 +109,10 @@
 	return _view.initialFirstResponder;
 }
 
-- (TUIView *)setupStandardView
+- (void)setupStandardView
 {
-	TUIView *v = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 500, 500)];
-	v.backgroundColor = [NSColor colorWithCalibratedWhite:0.96 alpha:1.0];
-	self.view = v;
-	
-	return v;
+    _view = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 500, 500)];
+    _view.backgroundColor = NSColor.whiteColor;
 }
 
 @end
