@@ -305,7 +305,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 	self.animationView = [[TUIView alloc] initWithFrame:animationViewFrame];
 	self.animationView.opaque = NO;
 	self.animationView.backgroundColor = [NSColor clearColor];
-	__unsafe_unretained TUIProgressBar *weakSelf = self;
+	__weak TUIProgressBar *weakSelf = self;
 	self.animationView.drawRect = ^ (TUIView *view, CGRect dirtyRect) {
 		TUIProgressBar *strongSelf = weakSelf;
 		CGRect patternBounds = CGRectMake(0.0, 0.0, GHUIProgressBarBarberPolePatternWidth, NSHeight(view.bounds));

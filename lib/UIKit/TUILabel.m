@@ -36,6 +36,14 @@
 @synthesize alignment=_alignment;
 @synthesize lineBreakMode = _lineBreakMode;
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p; baseClass: %@; frame:%@; layer= <%@: %p>; '%@'>",
+            NSStringFromClass(self.class), self, NSStringFromClass(self.superclass),
+            NSStringFromRect(self.frame),
+            NSStringFromClass(self.layer.class), self.layer,
+            renderer.attributedString ? renderer.attributedString.string : _text];
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
 	if((self = [super initWithFrame:frame])) {
@@ -99,6 +107,7 @@
 - (void)setAttributedString:(NSAttributedString *)a
 {
 	renderer.attributedString = a;
+    _text = nil;
 	[self _update];
 }
 

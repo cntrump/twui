@@ -66,7 +66,7 @@ typedef enum {
 @interface TUITableView : TUIScrollView
 {
 	TUITableViewStyle             _style;
-	__unsafe_unretained id <TUITableViewDataSource>	_dataSource; // weak
+	__weak id <TUITableViewDataSource>	_dataSource; // weak
 	NSArray                     * _sectionInfo;
 	
 	TUIView                     * _pullDownView;
@@ -109,8 +109,8 @@ typedef enum {
 
 - (instancetype)initWithFrame:(CGRect)frame style:(TUITableViewStyle)style;                // must specify style at creation. -initWithFrame: calls this with UITableViewStylePlain
 
-@property (nonatomic,unsafe_unretained) id <TUITableViewDataSource>  dataSource;
-@property (nonatomic,unsafe_unretained) id <TUITableViewDelegate>    delegate;
+@property (nonatomic,weak) id <TUITableViewDataSource>  dataSource;
+@property (nonatomic,weak) id <TUITableViewDelegate>    delegate;
 
 @property (readwrite, assign) BOOL                        animateSelectionChanges;
 @property (nonatomic, assign) BOOL maintainContentOffsetAfterReload;

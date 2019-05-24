@@ -18,13 +18,13 @@
 
 @interface TUIControlTargetAction : NSObject
 {
-	id __unsafe_unretained target; // nil goes up the responder chain
+	__weak id target; // nil goes up the responder chain
 	SEL action;
 	void (^block)(void);
 	TUIControlEvents controlEvents;
 }
 
-@property (nonatomic, unsafe_unretained) id target;
+@property (nonatomic, weak) id target;
 @property (nonatomic, assign) SEL action;
 @property (nonatomic, copy) void(^block)(void);
 @property (nonatomic, assign) TUIControlEvents controlEvents;

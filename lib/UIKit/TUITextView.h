@@ -24,7 +24,7 @@
 @protocol TUITextViewDelegate;
 
 @interface TUITextView : TUIControl {
-	id<TUITextViewDelegate> __unsafe_unretained delegate;
+	__weak id<TUITextViewDelegate> delegate;
 	TUIViewDrawRect drawFrame;
 	
 	NSString *placeholder;
@@ -61,7 +61,7 @@
 
 - (Class)textEditorClass;
 
-@property (nonatomic, unsafe_unretained) id<TUITextViewDelegate> delegate;
+@property (nonatomic, weak) id<TUITextViewDelegate> delegate;
 
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, copy) NSString *placeholder;

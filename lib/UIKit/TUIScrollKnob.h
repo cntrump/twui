@@ -20,7 +20,7 @@
 
 @interface TUIScrollKnob : TUIView
 {
-	TUIScrollView *__unsafe_unretained scrollView;
+	__weak TUIScrollView *scrollView;
 	TUIView *knob;
 	CGPoint _mouseDown;
 	CGRect _knobStartFrame;
@@ -34,7 +34,7 @@
 	} _scrollKnobFlags;
 }
 
-@property (nonatomic, unsafe_unretained) TUIScrollView *scrollView;
+@property (nonatomic, weak) TUIScrollView *scrollView;
 @property (nonatomic, assign) unsigned int scrollIndicatorStyle;
 @property (nonatomic, readonly) TUIView *knob;
 @property (nonatomic, readonly) BOOL flashing;

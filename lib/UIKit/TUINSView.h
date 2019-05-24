@@ -27,14 +27,14 @@
 {
 	TUIView *_hoverView;
 
-	__unsafe_unretained TUIView *_hyperFocusView; // hyperfocus view, weak
+	__weak TUIView *_hyperFocusView; // hyperfocus view, weak
 
 	TUIView *_hyperFadeView;
 	void(^_hyperCompletion)(BOOL);
 	
 	NSTrackingArea *_trackingArea;
 	
-	__unsafe_unretained TUITextRenderer *_tempTextRendererForTextInputClient; // weak, set temporarily while NSTextInputClient dicks around
+	__weak TUITextRenderer *_tempTextRendererForTextInputClient; // weak, set temporarily while NSTextInputClient dicks around
 	
 	BOOL deliveringEvent;
 	BOOL inLiveResize;

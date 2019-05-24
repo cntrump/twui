@@ -44,7 +44,7 @@ typedef enum {
 @interface TUITextRenderer : TUIResponder {
 	NSAttributedString *attributedString;
 	CGRect frame;
-	TUIView *__unsafe_unretained view; // unsafe_unretained
+	__weak TUIView *view;
 	
 	CTFramesetterRef _ct_framesetter;
 	CGPathRef _ct_path;
@@ -54,7 +54,7 @@ typedef enum {
 	CFIndex _selectionEnd;
 	TUITextSelectionAffinity _selectionAffinity;
 	
-	__unsafe_unretained id<TUITextRendererDelegate> delegate;
+	__weak id<TUITextRendererDelegate> delegate;
 	id<ABActiveTextRange> hitRange;
 	
 	CGSize shadowOffset;
@@ -78,9 +78,9 @@ typedef enum {
 	} _flags;
 }
 
-@property (nonatomic, strong) NSAttributedString *attributedString;
+@property (nonatomic, copy) NSAttributedString *attributedString;
 @property (nonatomic, assign) CGRect frame;
-@property (nonatomic, unsafe_unretained) TUIView *view; // unsafe_unretained, remember to set to nil before view goes away
+@property (nonatomic, weak) TUIView *view; // weak, remember to set to nil before view goes away
 
 @property (nonatomic, assign) CGSize shadowOffset;
 @property (nonatomic, assign) CGFloat shadowBlur;

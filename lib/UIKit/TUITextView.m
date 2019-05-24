@@ -81,6 +81,14 @@
 @synthesize autocorrectedResults;
 @synthesize placeholderRenderer;
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p; baseClass: %@; frame:%@; layer= <%@: %p>; '%@'>",
+            NSStringFromClass(self.class), self, NSStringFromClass(self.superclass),
+            NSStringFromRect(self.frame),
+            NSStringFromClass(self.layer.class), self.layer,
+            self.text];
+}
+
 - (NSFont *)font {
 	// Fall back to the system font if none (or an invalid one) was set.
 	// Otherwise, text rendering becomes dog slow.

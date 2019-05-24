@@ -89,6 +89,13 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 // use the accessor from the main implementation block
 @synthesize subviews = _subviews;
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p; baseClass: %@; frame:%@; layer= <%@: %p>;>",
+            NSStringFromClass(self.class), self, NSStringFromClass(self.superclass),
+            NSStringFromRect(self.frame),
+            NSStringFromClass(self.layer.class), self.layer];
+}
+
 - (void)setSubviews:(NSArray *)s
 {
 	NSMutableArray *toRemove = [NSMutableArray array];

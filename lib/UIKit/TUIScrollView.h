@@ -77,7 +77,7 @@ typedef enum {
   CGSize          resizeKnobSize;
   TUIEdgeInsets   _contentInset;
 	
-	__unsafe_unretained id _delegate;
+	__weak id _delegate;
 	
 	CVDisplayLinkRef displayLink;
 	CGPoint destinationOffset;
@@ -152,7 +152,7 @@ typedef enum {
 @property (nonatomic) BOOL alwaysBounceHorizontal;
 @property (nonatomic) CGSize resizeKnobSize;
 @property (nonatomic) TUIEdgeInsets contentInset;
-@property (nonatomic, unsafe_unretained) id<TUIScrollViewDelegate> delegate;
+@property (nonatomic, weak) id<TUIScrollViewDelegate> delegate;
 @property (nonatomic, getter=isScrollEnabled) BOOL scrollEnabled;
 @property (nonatomic) TUIScrollViewIndicatorVisibility horizontalScrollIndicatorVisibility;
 @property (nonatomic) TUIScrollViewIndicatorVisibility verticalScrollIndicatorVisibility;

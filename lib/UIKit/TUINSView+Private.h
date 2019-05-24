@@ -23,7 +23,7 @@
 @property (nonatomic, readonly, strong) NSView *appKitHostView;
 
 // The view currently tracking mouse events.
-@property (nonatomic, unsafe_unretained) TUIView *trackingView;
+@property (nonatomic, weak) TUIView *trackingView;
 
 /*
  * Informs the receiver that the clipping of a TUIViewNSViewContainer it is hosting has

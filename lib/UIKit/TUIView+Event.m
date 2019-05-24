@@ -46,7 +46,7 @@
 	_viewFlags.didStartMovingByDragging = 0;
 	_viewFlags.didStartResizeByDragging = 0;
 	
-	__unsafe_unretained id _self = self;
+	__weak id _self = self;
 	CGPoint _startDrag = startDrag;
 	
 	self.dragHandler = ^(NSEvent *event) {
