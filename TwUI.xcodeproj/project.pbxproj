@@ -20,6 +20,7 @@
 		48A10E8B15B77A46007F9EE3 /* TUIView+Layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 48A10E8A15B77A46007F9EE3 /* TUIView+Layout.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5E6ECEB613BE791C00109598 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EE9839C13BE7650005F430D /* ApplicationServices.framework */; };
 		730373022296247300B9105F /* libSpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 730372FD2296240300B9105F /* libSpecta.a */; };
+		73D2F6F4229B7F1200872606 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D2F6F3229B7F1200872606 /* libc++.tbd */; };
 		8819794413E26E0200AA39EB /* TUIView+Accessibility.h in Headers */ = {isa = PBXBuildFile; fileRef = 8819794213E26E0200AA39EB /* TUIView+Accessibility.h */; };
 		8819794713E26E0200AA39EB /* TUIView+Accessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 8819794313E26E0200AA39EB /* TUIView+Accessibility.m */; };
 		8819794C13E26E5800AA39EB /* TUINSView+Accessibility.h in Headers */ = {isa = PBXBuildFile; fileRef = 8819794A13E26E5800AA39EB /* TUINSView+Accessibility.h */; };
@@ -260,6 +261,7 @@
 		48A10E8A15B77A46007F9EE3 /* TUIView+Layout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+Layout.h"; sourceTree = "<group>"; };
 		5EE9839C13BE7650005F430D /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		730372EB2296240300B9105F /* Specta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Specta.xcodeproj; path = specta/Specta/Specta.xcodeproj; sourceTree = "<group>"; };
+		73D2F6F3229B7F1200872606 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		8819794213E26E0200AA39EB /* TUIView+Accessibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+Accessibility.h"; sourceTree = "<group>"; };
 		8819794313E26E0200AA39EB /* TUIView+Accessibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIView+Accessibility.m"; sourceTree = "<group>"; };
 		8819794A13E26E5800AA39EB /* TUINSView+Accessibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUINSView+Accessibility.h"; sourceTree = "<group>"; };
@@ -408,6 +410,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73D2F6F4229B7F1200872606 /* libc++.tbd in Frameworks */,
 				CB5E327F13BE710C004B7899 /* Cocoa.framework in Frameworks */,
 				CB5E31B713BE6F49004B7899 /* QuartzCore.framework in Frameworks */,
 				5E6ECEB613BE791C00109598 /* ApplicationServices.framework in Frameworks */,
@@ -465,6 +468,7 @@
 		CB5B264E13BE6DA200579B1E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				73D2F6F3229B7F1200872606 /* libc++.tbd */,
 				BE176A3B197750AC00EE78ED /* XCTest.framework */,
 				5EE9839C13BE7650005F430D /* ApplicationServices.framework */,
 				CB5B264F13BE6DA200579B1E /* Cocoa.framework */,
@@ -1179,11 +1183,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_VERSION = A;
+				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
 				INFOPLIST_FILE = "Resources/TwUI-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -1206,6 +1211,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_VERSION = A;
+				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
 				INFOPLIST_FILE = "Resources/TwUI-Info.plist";
@@ -1224,7 +1230,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
@@ -1238,6 +1247,7 @@
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.twitter.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -1245,7 +1255,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
@@ -1259,6 +1272,7 @@
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.twitter.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
@@ -1322,6 +1336,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_VERSION = A;
+				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
 				INFOPLIST_FILE = "Resources/TwUI-Info.plist";
@@ -1340,7 +1355,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
@@ -1354,6 +1372,7 @@
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.twitter.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Profile;
 		};

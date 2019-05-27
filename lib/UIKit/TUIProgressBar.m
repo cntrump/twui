@@ -89,7 +89,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		
 		//Backing grad
 		[NSGraphicsContext saveGraphicsState];		
-		CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+		CGContextRef context = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 		
 		CGContextAddRoundRect(context, trackRect, radius);
 		CGContextClip(context);
@@ -101,8 +101,8 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		
 		//Stroke
 		[NSGraphicsContext saveGraphicsState];
-		context = [[NSGraphicsContext currentContext] graphicsPort];
-		CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);
+		context = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+		CGContextSetBlendMode((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);
 		[[NSColor colorWithCalibratedWhite:(66.0/255.0) alpha:1.0] set];
 		CGContextAddRoundRect(context, trackRect, radius);
 		CGContextStrokePath(context);
@@ -110,7 +110,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		
 		//Drop shadow
 		[NSGraphicsContext saveGraphicsState];
-		CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeScreen);
+		CGContextSetBlendMode((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeScreen);
 		[[NSColor colorWithCalibratedWhite:1.0 alpha:0.54] set];
 		CGFloat y = NSMinY(view.bounds);
 		[NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(view.bounds) + radius, y) toPoint:NSMakePoint((NSMaxX(view.bounds) - radius), y)];
@@ -130,7 +130,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		if (!progressBar.indeterminate && progressBar.progress == 0.0) //Eesh… I feel dirty comparing to 0 here
 			return;
 		
-		CGContextRef currentContext = [[NSGraphicsContext currentContext] graphicsPort];
+		CGContextRef currentContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 		CGRect fillRect = [progressBar fillRect];
 		CGFloat radius = (NSHeight(fillRect) / 2.0);
 		
@@ -311,7 +311,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		CGRect patternBounds = CGRectMake(0.0, 0.0, GHUIProgressBarBarberPolePatternWidth, NSHeight(view.bounds));
 		
 		[NSGraphicsContext saveGraphicsState];
-		CGContextRef currentContext = [[NSGraphicsContext currentContext] graphicsPort];
+		CGContextRef currentContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 		
 		CGColorSpaceRef patternColorSpace = CGColorSpaceCreatePattern(NULL);
 		CGContextSetFillColorSpace(currentContext, patternColorSpace);
@@ -357,12 +357,12 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 
 void GHUIProgressPatternDrawCallback(void *info, CGContextRef context)
 {
-	const struct TUIProgressBarPatternInfoStruct *passedInfo = info;
+	const struct TUIProgressBarPatternInfoStruct *passedInfo = (struct TUIProgressBarPatternInfoStruct *)info;
 	CGFloat contentsScale = passedInfo->contentsScale;
 	CGContextScaleCTM(context, contentsScale, contentsScale);
 	
 	CGRect bounds = passedInfo->bounds;
-	CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeOverlay);
+	CGContextSetBlendMode((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeOverlay);
 	
 	CGMutablePathRef fillPath = CGPathCreateMutable();
 	CGPathMoveToPoint(fillPath, NULL, NSMinX(bounds), NSMinY(bounds));

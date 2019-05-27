@@ -86,10 +86,10 @@
                   scale:(CGFloat)scale
                  offset:(CGFloat)offset {
     
-	double attributeRange = floor(log10(attr));
-	double sourceAttributeRange = floor(log10(srcAttr));
+	double attributeRange = floor(log10((double)attr));
+	double sourceAttributeRange = floor(log10((double)srcAttr));
 	
-	NSAssert(fabs(attributeRange - sourceAttributeRange) < 0.001, @"Invalid source and target attributes: %f, %f.", sourceAttributeRange, attributeRange);
+	NSAssert2(fabs(attributeRange - sourceAttributeRange) < 0.001, @"Invalid source and target attributes: %f, %f.", sourceAttributeRange, attributeRange);
 	
 	if((self = [super init])) {
 		_attribute = attr;
@@ -108,11 +108,11 @@
               attribute:(TUILayoutConstraintAttribute)srcAttr
        valueTransformer:(NSValueTransformer *)transformer {
     
-	double attributeRange = floor(log10(attr));
-	double sourceAttributeRange = floor(log10(srcAttr));
+	double attributeRange = floor(log10((double)attr));
+	double sourceAttributeRange = floor(log10((double)srcAttr));
 	
-	NSAssert(fabs(attributeRange - sourceAttributeRange) < 0.001, @"Invalid source and target attributes: %f, %f.", sourceAttributeRange, attributeRange);
-	NSAssert(transformer != nil, @"Cannot have a nil transformer.", sourceAttributeRange, attributeRange);
+	NSAssert2(fabs(attributeRange - sourceAttributeRange) < 0.001, @"Invalid source and target attributes: %f, %f.", sourceAttributeRange, attributeRange);
+	NSAssert2(transformer != nil, @"Cannot have a nil transformer.", sourceAttributeRange, attributeRange);
 	
 	if((self = [super init])) {
 		_attribute = attr;

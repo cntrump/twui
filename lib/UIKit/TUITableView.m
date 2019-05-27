@@ -56,7 +56,7 @@ typedef struct {
 		_tableView = t;
 		sectionIndex = s;
 		numberOfRows = n;
-		rowInfo = calloc(n, sizeof(TUITableViewRowInfo));
+		rowInfo = (TUITableViewRowInfo *)calloc(n, sizeof(TUITableViewRowInfo));
 	}
 	return self;
 }

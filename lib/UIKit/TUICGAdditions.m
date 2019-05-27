@@ -17,6 +17,10 @@
 #import "TUICGAdditions.h"
 #import "TUIView.h"
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+    
 CGContextRef TUICreateOpaqueGraphicsContext(CGSize size)
 {
 	size_t width = size.width;
@@ -270,3 +274,7 @@ NSData* TUIGraphicsDrawAsPDF(CGRect *optionalMediaBox, void(^draw)(CGContextRef)
 	CGDataConsumerRelease(dataConsumer);
 	return data;
 }
+
+#if defined(__cplusplus)
+}
+#endif

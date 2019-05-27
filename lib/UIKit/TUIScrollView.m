@@ -141,7 +141,7 @@ static BOOL isAtleastLion = NO;
 
 - (TUIScrollViewIndicatorStyle)scrollIndicatorStyle
 {
-	return _scrollViewFlags.scrollIndicatorStyle;
+	return (TUIScrollViewIndicatorStyle)_scrollViewFlags.scrollIndicatorStyle;
 }
 
 - (void)setScrollIndicatorStyle:(TUIScrollViewIndicatorStyle)s
@@ -161,7 +161,7 @@ static BOOL isAtleastLion = NO;
  * @return vertical scroll indicator visibility
  */
 -(TUIScrollViewIndicatorVisibility)verticalScrollIndicatorVisibility {
-	return _scrollViewFlags.verticalScrollIndicatorVisibility;
+	return (TUIScrollViewIndicatorVisibility)_scrollViewFlags.verticalScrollIndicatorVisibility;
 }
 
 /**
@@ -187,7 +187,7 @@ static BOOL isAtleastLion = NO;
  * @return horizontal scroll indicator visibility
  */
 -(TUIScrollViewIndicatorVisibility)horizontalScrollIndicatorVisibility {
-	return _scrollViewFlags.horizontalScrollIndicatorVisibility;
+	return (TUIScrollViewIndicatorVisibility)_scrollViewFlags.horizontalScrollIndicatorVisibility;
 }
 
 /**

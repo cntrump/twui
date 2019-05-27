@@ -672,7 +672,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 }
 
 - (void)didAddSubview:(NSView *)view {
-	NSAssert(view == self || view == self.appKitHostView, @"Subviews should not be added to TUINSView %@: %@", self, view);
+	NSAssert2(view == self || view == self.appKitHostView, @"Subviews should not be added to TUINSView %@: %@", self, view);
 	[super didAddSubview:view];
 }
 

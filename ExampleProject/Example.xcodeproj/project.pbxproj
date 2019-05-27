@@ -23,6 +23,7 @@
 		5C782FD013A54FFF00CF69EF /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C782FCF13A54FFD00CF69EF /* ApplicationServices.framework */; };
 		5C782FD713A556A900CF69EF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C782FD613A556A800CF69EF /* QuartzCore.framework */; };
 		5ED56678139DC30300031CDF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5ED56677139DC30300031CDF /* Cocoa.framework */; };
+		73D2F6F2229B7BAC00872606 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D2F6F1229B7BAC00872606 /* libc++.tbd */; };
 		D01D9CF4146F54BC00147234 /* TwUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D01D9CEB146F54B300147234 /* TwUI.framework */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +80,7 @@
 		5ED5667A139DC30300031CDF /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		5ED5667B139DC30300031CDF /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		5ED5667C139DC30300031CDF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		73D2F6F1229B7BAC00872606 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		D01D9CE0146F54B300147234 /* TwUI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TwUI.xcodeproj; path = ../TwUI.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,6 +89,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73D2F6F2229B7BAC00872606 /* libc++.tbd in Frameworks */,
 				D01D9CF4146F54BC00147234 /* TwUI.framework in Frameworks */,
 				5C782FD713A556A900CF69EF /* QuartzCore.framework in Frameworks */,
 				5C782FD013A54FFF00CF69EF /* ApplicationServices.framework in Frameworks */,
@@ -153,6 +156,7 @@
 		5ED56676139DC30300031CDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				73D2F6F1229B7BAC00872606 /* libc++.tbd */,
 				D01D9CE0146F54B300147234 /* TwUI.xcodeproj */,
 				5C782FD613A556A800CF69EF /* QuartzCore.framework */,
 				5C782FCF13A54FFD00CF69EF /* ApplicationServices.framework */,

@@ -103,7 +103,7 @@
 }
 
 - (void)didAddSubview:(TUIView *)subview {
-	NSAssert(NO, @"%@ must be a leaf in the TwUI hierarchy, should not have added subview: %@", self, subview);
+	NSAssert2(NO, @"%@ must be a leaf in the TwUI hierarchy, should not have added subview: %@", self, subview);
 	[super didAddSubview:subview];
 }
 
@@ -167,7 +167,7 @@
 		return;
 	}
 
-	NSAssert(self.ancestorTUINSView, @"%@ should be in an TUINSView if it has a window", self);
+	NSAssert1(self.ancestorTUINSView, @"%@ should be in an TUINSView if it has a window", self);
 
 	CGRect frame = self.NSViewFrame;
 	self.rootView.frame = frame;
@@ -182,7 +182,7 @@
 		return;
 	}
 
-	CGContextRef context = [NSGraphicsContext currentContext].graphicsPort;
+	CGContextRef context = (CGContextRef)[NSGraphicsContext currentContext].graphicsPort;
 	CGContextSaveGState(context);
 	CGContextClearRect(context, self.bounds);
 
@@ -214,7 +214,7 @@
 }
 
 - (void)stopRenderingContainedView; {
-	NSAssert(_renderingContainedViewCount > 0, @"Mismatched call to %s", __func__);
+	NSAssert1(_renderingContainedViewCount > 0, @"Mismatched call to %s", __func__);
 
 	if (--_renderingContainedViewCount == 0) {
 		self.layer.contents = nil;

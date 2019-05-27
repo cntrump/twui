@@ -15,7 +15,7 @@
 #endif
 
 static void drawCGImagePattern (void *info, CGContextRef context) {
-    CGImageRef image = info;
+    CGImageRef image = (CGImageRef)info;
 
     size_t width = CGImageGetWidth(image);
     size_t height = CGImageGetHeight(image);
@@ -52,6 +52,13 @@ static void releasePatternInfo (void *info) {
         size_t height = CGImageGetHeight(patternImage);
 
         CGRect patternBounds = CGRectMake(0, 0, width, height);
+
+        static CGPatternCallbacks const callbacks = {
+            .version = 0,
+            .drawPattern = &drawCGImagePattern,
+            .releaseInfo = &releasePatternInfo
+        };
+
         CGPatternRef pattern = CGPatternCreate(
             (void *)CFRetain(patternImage),
             patternBounds,
@@ -60,11 +67,7 @@ static void releasePatternInfo (void *info) {
             height,
             kCGPatternTilingConstantSpacingMinimalDistortion,
             YES,
-            &(CGPatternCallbacks){
-                .version = 0,
-                .drawPattern = &drawCGImagePattern,
-                .releaseInfo = &releasePatternInfo
-            }
+            &callbacks
         );
 
         CGColorSpaceRef colorSpaceRef = CGColorSpaceCreatePattern(NULL);

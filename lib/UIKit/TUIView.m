@@ -327,7 +327,7 @@ CGFloat TUICurrentContextScaleFactor(void)
 	 Key is set up in +initialize
 	 Use TLS rather than a simple global so drawsInBackground should continue to work (views in the same process may be drawing destined for different windows on different screens with different scale factors).
 	 */
-	CGFloat *v = pthread_getspecific(TUICurrentContextScaleFactorTLSKey);
+	CGFloat *v = (CGFloat *)pthread_getspecific(TUICurrentContextScaleFactorTLSKey);
 	if(v)
 		return *v;
 	return 1.0;
@@ -335,9 +335,9 @@ CGFloat TUICurrentContextScaleFactor(void)
 
 static void TUISetCurrentContextScaleFactor(CGFloat s)
 {
-	CGFloat *v = pthread_getspecific(TUICurrentContextScaleFactorTLSKey);
+	CGFloat *v = (CGFloat *)pthread_getspecific(TUICurrentContextScaleFactorTLSKey);
 	if(!v) {
-		v = malloc(sizeof(CGFloat));
+		v = (CGFloat *)malloc(sizeof(CGFloat));
 		pthread_setspecific(TUICurrentContextScaleFactorTLSKey, v);
 	}
 	*v = s;

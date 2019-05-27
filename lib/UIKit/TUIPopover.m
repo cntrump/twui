@@ -569,7 +569,7 @@ CGFloat const TUIPopoverBackgroundViewArrowWidth = 35.0;
     [NSGraphicsContext saveGraphicsState];
 	
     
-    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef context = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
     [[NSColor whiteColor] set];
 	
 	CGRect targetRect = CGRectZero;

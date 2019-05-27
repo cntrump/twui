@@ -14,7 +14,13 @@ It differs from UIKit in a few ways:
 
 # Setup
 
-To use the current development version, include all the files in your project and import TUIKit.h. Set your target to link to the ApplicationServices and QuartzCore frameworks.
+To use the current development version, include all the files in your project and import TUIKit.h.
+
+Set your target to link to those frameworks:
+
+- ApplicationServices
+- QuartzCore
+- libc++
 
 # Usage
 

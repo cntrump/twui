@@ -31,44 +31,52 @@ typedef NSUInteger TUICGRoundedRectCorner;
 
 @class TUIView;
 
-extern CGContextRef TUICreateOpaqueGraphicsContext(CGSize size);
-extern CGContextRef TUICreateGraphicsContext(CGSize size);
-extern CGContextRef TUICreateGraphicsContextWithOptions(CGSize size, BOOL opaque);
-extern CGImageRef TUICreateCGImageFromBitmapContext(CGContextRef ctx);
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
-extern CGPathRef TUICGPathCreateRoundedRect(CGRect rect, CGFloat radius);
-extern CGPathRef TUICGPathCreateRoundedRectWithCorners(CGRect rect, CGFloat radius, TUICGRoundedRectCorner corners);
-extern void CGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
-extern void CGContextClipToRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
+CGContextRef TUICreateOpaqueGraphicsContext(CGSize size);
+CGContextRef TUICreateGraphicsContext(CGSize size);
+CGContextRef TUICreateGraphicsContextWithOptions(CGSize size, BOOL opaque);
+CGImageRef TUICreateCGImageFromBitmapContext(CGContextRef ctx);
 
-extern CGRect ABScaleToFill(CGSize s, CGRect r);
-extern CGRect ABScaleToFit(CGSize s, CGRect r);
-extern CGRect ABRectCenteredInRect(CGRect a, CGRect b);
-extern CGRect ABRectRoundOrigin(CGRect f);
-extern CGRect ABIntegralRectWithSizeCenteredInRect(CGSize s, CGRect r);
+CGPathRef TUICGPathCreateRoundedRect(CGRect rect, CGFloat radius);
+CGPathRef TUICGPathCreateRoundedRectWithCorners(CGRect rect, CGFloat radius, TUICGRoundedRectCorner corners);
+void CGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
+void CGContextClipToRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
 
-extern void CGContextFillRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
-extern void CGContextDrawLinearGradientBetweenPoints(CGContextRef context, CGPoint a, CGFloat color_a[4], CGPoint b, CGFloat color_b[4]);
+CGRect ABScaleToFill(CGSize s, CGRect r);
+CGRect ABScaleToFit(CGSize s, CGRect r);
+CGRect ABRectCenteredInRect(CGRect a, CGRect b);
+CGRect ABRectRoundOrigin(CGRect f);
+CGRect ABIntegralRectWithSizeCenteredInRect(CGSize s, CGRect r);
 
-extern CGContextRef TUIGraphicsGetCurrentContext(void);
-extern void TUIGraphicsPushContext(CGContextRef context);
-extern void TUIGraphicsPopContext(void);
+void CGContextFillRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
+void CGContextDrawLinearGradientBetweenPoints(CGContextRef context, CGPoint a, CGFloat color_a[4], CGPoint b, CGFloat color_b[4]);
 
-extern NSImage *TUIGraphicsContextGetImage(CGContextRef ctx);
+CGContextRef TUIGraphicsGetCurrentContext(void);
+void TUIGraphicsPushContext(CGContextRef context);
+void TUIGraphicsPopContext(void);
 
-extern void TUIGraphicsBeginImageContext(CGSize size);
+NSImage *TUIGraphicsContextGetImage(CGContextRef ctx);
+
+void TUIGraphicsBeginImageContext(CGSize size);
 // as in the iOS docs, "if you specify a value of 0.0, the scale factor is set to the scale factor of the device’s main screen."
-extern void TUIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale);
-extern NSImage *TUIGraphicsGetImageFromCurrentImageContext(void);
-extern void TUIGraphicsEndImageContext(void); 
+void TUIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale);
+NSImage *TUIGraphicsGetImageFromCurrentImageContext(void);
+void TUIGraphicsEndImageContext(void);
 
-extern NSImage *TUIGraphicsGetImageForView(TUIView *view);
+NSImage *TUIGraphicsGetImageForView(TUIView *view);
 
-extern NSImage *TUIGraphicsDrawAsImage(CGSize size, void(^draw)(void));
+NSImage *TUIGraphicsDrawAsImage(CGSize size, void(^draw)(void));
 
 /**
  Draw drawing as a PDF
  @param optionalMediaBox may be NULL
  @returns NSData encapsulating the PDF drawing, suitable for writing to a file or the pasteboard
  */
-extern NSData *TUIGraphicsDrawAsPDF(CGRect *optionalMediaBox, void(^draw)(CGContextRef));
+NSData *TUIGraphicsDrawAsPDF(CGRect *optionalMediaBox, void(^draw)(CGContextRef));
+
+#if defined(__cplusplus)
+}
+#endif

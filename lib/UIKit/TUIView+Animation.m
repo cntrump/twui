@@ -182,7 +182,7 @@ static CGFloat TUIViewAnimationSlowMotionMultiplier (void) {
 			functionName = kCAMediaTimingFunctionEaseInEaseOut;
 			break;
 		default:
-			NSAssert(NO, @"Unrecognized animation curve: %i", (int)curve);
+			NSAssert1(NO, @"Unrecognized animation curve: %i", (int)curve);
 	}
 
 	TUIViewCurrentAnimation.basicAnimation.timingFunction = [CAMediaTimingFunction functionWithName:functionName];

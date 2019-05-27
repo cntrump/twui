@@ -91,7 +91,7 @@
 
 - (TUIButtonType)buttonType
 {
-	return _buttonFlags.buttonType;
+	return (TUIButtonType)_buttonFlags.buttonType;
 }
 
 - (TUILabel *)titleLabel
