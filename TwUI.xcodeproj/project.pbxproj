@@ -19,7 +19,6 @@
 		48A10E8915B778E8007F9EE3 /* TUIView+Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A10E8715B778E8007F9EE3 /* TUIView+Layout.m */; };
 		48A10E8B15B77A46007F9EE3 /* TUIView+Layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 48A10E8A15B77A46007F9EE3 /* TUIView+Layout.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5E6ECEB613BE791C00109598 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EE9839C13BE7650005F430D /* ApplicationServices.framework */; };
-		730373022296247300B9105F /* libSpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 730372FD2296240300B9105F /* libSpecta.a */; };
 		73D2F6F4229B7F1200872606 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D2F6F3229B7F1200872606 /* libc++.tbd */; };
 		8819794413E26E0200AA39EB /* TUIView+Accessibility.h in Headers */ = {isa = PBXBuildFile; fileRef = 8819794213E26E0200AA39EB /* TUIView+Accessibility.h */; };
 		8819794713E26E0200AA39EB /* TUIView+Accessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 8819794313E26E0200AA39EB /* TUIView+Accessibility.m */; };
@@ -31,7 +30,6 @@
 		884E8F5E1538809C000F7A8D /* CAAnimation+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 884E8F5A1538809C000F7A8D /* CAAnimation+TUIExtensions.m */; };
 		886EBA7F13D64393006DE018 /* TUIControl+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 886EBA7D13D64393006DE018 /* TUIControl+Private.h */; };
 		886EBA8213D64393006DE018 /* TUIControl+Private.m in Sources */ = {isa = PBXBuildFile; fileRef = 886EBA7E13D64393006DE018 /* TUIControl+Private.m */; };
-		886EBA8513D64393006DE018 /* TUIControl+Private.m in Sources */ = {isa = PBXBuildFile; fileRef = 886EBA7E13D64393006DE018 /* TUIControl+Private.m */; };
 		887C227B15C1C7BB006EC31D /* NSFont+TUIExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 887C227915C1C7BB006EC31D /* NSFont+TUIExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		887C227C15C1C7BB006EC31D /* NSFont+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 887C227A15C1C7BB006EC31D /* NSFont+TUIExtensions.m */; };
 		887F272C13F9969800D75DE6 /* TUITableViewSectionHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 887F272A13F9969800D75DE6 /* TUITableViewSectionHeader.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -46,12 +44,7 @@
 		88D25F5813F5D96500CFAAA9 /* TUITableView+Cell.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D25F5413F5D96500CFAAA9 /* TUITableView+Cell.m */; };
 		88EFFB5113F417E200CF91A9 /* TUITextViewEditor.h in Headers */ = {isa = PBXBuildFile; fileRef = 88EFFB4F13F417E200CF91A9 /* TUITextViewEditor.h */; };
 		88EFFB5413F417E200CF91A9 /* TUITextViewEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 88EFFB5013F417E200CF91A9 /* TUITextViewEditor.m */; };
-		BE176A3C197750AC00EE78ED /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE176A3B197750AC00EE78ED /* XCTest.framework */; };
 		CB5B265A13BE6DA200579B1E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CB5B265813BE6DA200579B1E /* InfoPlist.strings */; };
-		CB5B266413BE6DA300579B1E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5B264F13BE6DA200579B1E /* Cocoa.framework */; };
-		CB5B266713BE6DA300579B1E /* TwUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5B264C13BE6DA200579B1E /* TwUI.framework */; };
-		CB5B266D13BE6DA300579B1E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CB5B266B13BE6DA300579B1E /* InfoPlist.strings */; };
-		CB5B267113BE6DA300579B1E /* TwUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5B267013BE6DA300579B1E /* TwUITests.m */; };
 		CB5E31B713BE6F49004B7899 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5E31B613BE6F49004B7899 /* QuartzCore.framework */; };
 		CB5E327F13BE710C004B7899 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5B264F13BE6DA200579B1E /* Cocoa.framework */; };
 		CBB74C9113BE6E1900C85CB5 /* ABActiveRange.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C3913BE6E1900C85CB5 /* ABActiveRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -126,7 +119,6 @@
 		CBB74CE513BE6E1900C85CB5 /* TUIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8E13BE6E1900C85CB5 /* TUIViewController.m */; };
 		CBB74CE613BE6E1900C85CB5 /* TUIViewNSViewContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C8F13BE6E1900C85CB5 /* TUIViewNSViewContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB74CE713BE6E1900C85CB5 /* TUIViewNSViewContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C9013BE6E1900C85CB5 /* TUIViewNSViewContainer.m */; };
-		D04007EB15BF2BC000FD49DB /* libExpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D04007CD15BF2BB000FD49DB /* libExpecta.a */; };
 		D05D23A015BF7239000ED14F /* NSImage+TUIExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = D05D239E15BF7239000ED14F /* NSImage+TUIExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D05D23A315BF7239000ED14F /* NSImage+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D05D239F15BF7239000ED14F /* NSImage+TUIExtensions.m */; };
 		D05DEE8C15BF645D005D8769 /* TUIStretchableImage.h in Headers */ = {isa = PBXBuildFile; fileRef = D05DEE8A15BF645D005D8769 /* TUIStretchableImage.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -153,100 +145,6 @@
 		D0EA12F415C34FEA00FAA603 /* NSColor+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D0EA12F015C34FEA00FAA603 /* NSColor+TUIExtensions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		730372F42296240300B9105F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 730372EB2296240300B9105F /* Specta.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E9536CD81968D30B003D1FBA;
-			remoteInfo = Specta;
-		};
-		730372F62296240300B9105F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 730372EB2296240300B9105F /* Specta.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E9536CE31968D30B003D1FBA;
-			remoteInfo = SpectaTests;
-		};
-		730372F82296240300B9105F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 730372EB2296240300B9105F /* Specta.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E9536D011968D3EE003D1FBA;
-			remoteInfo = "Specta-iOS";
-		};
-		730372FA2296240300B9105F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 730372EB2296240300B9105F /* Specta.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E9536D0B1968D3EE003D1FBA;
-			remoteInfo = "Specta-iOSTests";
-		};
-		730372FC2296240300B9105F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 730372EB2296240300B9105F /* Specta.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E91713F119DF07BB00921712;
-			remoteInfo = libSpecta;
-		};
-		730372FE2296240300B9105F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 730372EB2296240300B9105F /* Specta.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E917140919DF07D700921712;
-			remoteInfo = "libSpecta-iOS";
-		};
-		730373002296245500B9105F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 730372EB2296240300B9105F /* Specta.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = E91713F019DF07BB00921712;
-			remoteInfo = libSpecta;
-		};
-		CB5B266513BE6DA300579B1E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CB5B264213BE6DA200579B1E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CB5B264B13BE6DA200579B1E;
-			remoteInfo = TwUI;
-		};
-		D04007CC15BF2BB000FD49DB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D04007C215BF2BAF00FD49DB /* Expecta.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E9ACDF0C13B2DD520010F4D7;
-			remoteInfo = Expecta;
-		};
-		D04007CE15BF2BB000FD49DB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D04007C215BF2BAF00FD49DB /* Expecta.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E93067CE13B2E6D100EA26FF;
-			remoteInfo = "Expecta-iOS";
-		};
-		D04007D015BF2BB000FD49DB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D04007C215BF2BAF00FD49DB /* Expecta.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E9ACDF1D13B2DD520010F4D7;
-			remoteInfo = ExpectaTests;
-		};
-		D04007D215BF2BB000FD49DB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D04007C215BF2BAF00FD49DB /* Expecta.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E93067DA13B2E6D100EA26FF;
-			remoteInfo = "Expecta-iOSTests";
-		};
-		D04007E715BF2BBC00FD49DB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D04007C215BF2BAF00FD49DB /* Expecta.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = E9ACDF0B13B2DD520010F4D7;
-			remoteInfo = Expecta;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		30D399C6156D8ADD006ECDAE /* TUIProgressBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIProgressBar.h; sourceTree = "<group>"; };
 		30D399C7156D8ADD006ECDAE /* TUIProgressBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIProgressBar.m; sourceTree = "<group>"; };
@@ -260,7 +158,6 @@
 		48A10E8715B778E8007F9EE3 /* TUIView+Layout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIView+Layout.m"; sourceTree = "<group>"; };
 		48A10E8A15B77A46007F9EE3 /* TUIView+Layout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+Layout.h"; sourceTree = "<group>"; };
 		5EE9839C13BE7650005F430D /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
-		730372EB2296240300B9105F /* Specta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Specta.xcodeproj; path = specta/Specta/Specta.xcodeproj; sourceTree = "<group>"; };
 		73D2F6F3229B7F1200872606 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		8819794213E26E0200AA39EB /* TUIView+Accessibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+Accessibility.h"; sourceTree = "<group>"; };
 		8819794313E26E0200AA39EB /* TUIView+Accessibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIView+Accessibility.m"; sourceTree = "<group>"; };
@@ -295,10 +192,6 @@
 		CB5B265713BE6DA200579B1E /* TwUI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TwUI-Info.plist"; sourceTree = "<group>"; };
 		CB5B265913BE6DA200579B1E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CB5B265B13BE6DA200579B1E /* TwUI-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TwUI-Prefix.pch"; sourceTree = "<group>"; };
-		CB5B266113BE6DA300579B1E /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB5B266A13BE6DA300579B1E /* TwUITests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TwUITests-Info.plist"; sourceTree = "<group>"; };
-		CB5B266C13BE6DA300579B1E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		CB5B267013BE6DA300579B1E /* TwUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwUITests.m; sourceTree = "<group>"; };
 		CB5E31B613BE6F49004B7899 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		CBB74C3913BE6E1900C85CB5 /* ABActiveRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABActiveRange.h; sourceTree = "<group>"; };
 		CBB74C3A13BE6E1900C85CB5 /* ABActiveRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABActiveRange.m; sourceTree = "<group>"; };
@@ -373,8 +266,6 @@
 		CBB74C8E13BE6E1900C85CB5 /* TUIViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIViewController.m; sourceTree = "<group>"; };
 		CBB74C8F13BE6E1900C85CB5 /* TUIViewNSViewContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIViewNSViewContainer.h; sourceTree = "<group>"; };
 		CBB74C9013BE6E1900C85CB5 /* TUIViewNSViewContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIViewNSViewContainer.m; sourceTree = "<group>"; };
-		D04007C215BF2BAF00FD49DB /* Expecta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Expecta.xcodeproj; path = expecta/Expecta.xcodeproj; sourceTree = "<group>"; };
-		D04007ED15BF2C0700FD49DB /* TwUITests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TwUITests-Prefix.pch"; sourceTree = "<group>"; };
 		D05D239E15BF7239000ED14F /* NSImage+TUIExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+TUIExtensions.h"; sourceTree = "<group>"; };
 		D05D239F15BF7239000ED14F /* NSImage+TUIExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSImage+TUIExtensions.m"; sourceTree = "<group>"; };
 		D05DEE8A15BF645D005D8769 /* TUIStretchableImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIStretchableImage.h; sourceTree = "<group>"; };
@@ -417,40 +308,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CB5B265D13BE6DA300579B1E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BE176A3C197750AC00EE78ED /* XCTest.framework in Frameworks */,
-				730373022296247300B9105F /* libSpecta.a in Frameworks */,
-				D04007EB15BF2BC000FD49DB /* libExpecta.a in Frameworks */,
-				CB5B266413BE6DA300579B1E /* Cocoa.framework in Frameworks */,
-				CB5B266713BE6DA300579B1E /* TwUI.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		730372EC2296240300B9105F /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				730372F52296240300B9105F /* Specta.framework */,
-				730372F72296240300B9105F /* SpectaTests.xctest */,
-				730372F92296240300B9105F /* Specta.framework */,
-				730372FB2296240300B9105F /* Specta-iOSTests.xctest */,
-				730372FD2296240300B9105F /* libSpecta.a */,
-				730372FF2296240300B9105F /* libSpecta.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		CB5B264013BE6DA200579B1E = {
 			isa = PBXGroup;
 			children = (
 				CBB74C3713BE6E0200C85CB5 /* Source */,
 				CB5B265513BE6DA200579B1E /* Resources */,
-				CB5B266813BE6DA300579B1E /* TwUITests */,
 				CB5B264E13BE6DA200579B1E /* Frameworks */,
 				CB5B264D13BE6DA200579B1E /* Products */,
 			);
@@ -460,7 +325,6 @@
 			isa = PBXGroup;
 			children = (
 				CB5B264C13BE6DA200579B1E /* TwUI.framework */,
-				CB5B266113BE6DA300579B1E /* Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -502,27 +366,6 @@
 				CB5B265713BE6DA200579B1E /* TwUI-Info.plist */,
 				CB5B265813BE6DA200579B1E /* InfoPlist.strings */,
 				CB5B265B13BE6DA200579B1E /* TwUI-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		CB5B266813BE6DA300579B1E /* TwUITests */ = {
-			isa = PBXGroup;
-			children = (
-				D04007C215BF2BAF00FD49DB /* Expecta.xcodeproj */,
-				730372EB2296240300B9105F /* Specta.xcodeproj */,
-				CB5B267013BE6DA300579B1E /* TwUITests.m */,
-				CB5B266913BE6DA300579B1E /* Supporting Files */,
-			);
-			path = TwUITests;
-			sourceTree = "<group>";
-		};
-		CB5B266913BE6DA300579B1E /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				CB5B266A13BE6DA300579B1E /* TwUITests-Info.plist */,
-				CB5B266B13BE6DA300579B1E /* InfoPlist.strings */,
-				D04007ED15BF2C0700FD49DB /* TwUITests-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -688,17 +531,6 @@
 			path = lib/UIKit;
 			sourceTree = "<group>";
 		};
-		D04007C315BF2BAF00FD49DB /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				D04007CD15BF2BB000FD49DB /* libExpecta.a */,
-				D04007CF15BF2BB000FD49DB /* libExpecta-iOS.a */,
-				D04007D115BF2BB000FD49DB /* ExpectaTests.octest */,
-				D04007D315BF2BB000FD49DB /* Expecta-iOSTests.octest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -795,26 +627,6 @@
 			productReference = CB5B264C13BE6DA200579B1E /* TwUI.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		CB5B266013BE6DA300579B1E /* Tests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CB5B267713BE6DA300579B1E /* Build configuration list for PBXNativeTarget "Tests" */;
-			buildPhases = (
-				CB5B265C13BE6DA300579B1E /* Sources */,
-				CB5B265D13BE6DA300579B1E /* Frameworks */,
-				CB5B265E13BE6DA300579B1E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				730373012296245500B9105F /* PBXTargetDependency */,
-				D04007E815BF2BBC00FD49DB /* PBXTargetDependency */,
-				CB5B266613BE6DA300579B1E /* PBXTargetDependency */,
-			);
-			name = Tests;
-			productName = TwUITests;
-			productReference = CB5B266113BE6DA300579B1E /* Tests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -840,96 +652,12 @@
 			mainGroup = CB5B264013BE6DA200579B1E;
 			productRefGroup = CB5B264D13BE6DA200579B1E /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = D04007C315BF2BAF00FD49DB /* Products */;
-					ProjectRef = D04007C215BF2BAF00FD49DB /* Expecta.xcodeproj */;
-				},
-				{
-					ProductGroup = 730372EC2296240300B9105F /* Products */;
-					ProjectRef = 730372EB2296240300B9105F /* Specta.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				CB5B264B13BE6DA200579B1E /* TwUI */,
-				CB5B266013BE6DA300579B1E /* Tests */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		730372F52296240300B9105F /* Specta.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Specta.framework;
-			remoteRef = 730372F42296240300B9105F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		730372F72296240300B9105F /* SpectaTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = SpectaTests.xctest;
-			remoteRef = 730372F62296240300B9105F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		730372F92296240300B9105F /* Specta.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Specta.framework;
-			remoteRef = 730372F82296240300B9105F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		730372FB2296240300B9105F /* Specta-iOSTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "Specta-iOSTests.xctest";
-			remoteRef = 730372FA2296240300B9105F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		730372FD2296240300B9105F /* libSpecta.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSpecta.a;
-			remoteRef = 730372FC2296240300B9105F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		730372FF2296240300B9105F /* libSpecta.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSpecta.a;
-			remoteRef = 730372FE2296240300B9105F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		D04007CD15BF2BB000FD49DB /* libExpecta.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libExpecta.a;
-			remoteRef = D04007CC15BF2BB000FD49DB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		D04007CF15BF2BB000FD49DB /* libExpecta-iOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libExpecta-iOS.a";
-			remoteRef = D04007CE15BF2BB000FD49DB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		D04007D115BF2BB000FD49DB /* ExpectaTests.octest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = ExpectaTests.octest;
-			remoteRef = D04007D015BF2BB000FD49DB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		D04007D315BF2BB000FD49DB /* Expecta-iOSTests.octest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "Expecta-iOSTests.octest";
-			remoteRef = D04007D215BF2BB000FD49DB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		CB5B264A13BE6DA200579B1E /* Resources */ = {
@@ -937,14 +665,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB5B265A13BE6DA200579B1E /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CB5B265E13BE6DA300579B1E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CB5B266D13BE6DA300579B1E /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1024,48 +744,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CB5B265C13BE6DA300579B1E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CB5B267113BE6DA300579B1E /* TwUITests.m in Sources */,
-				886EBA8513D64393006DE018 /* TUIControl+Private.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		730373012296245500B9105F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = libSpecta;
-			targetProxy = 730373002296245500B9105F /* PBXContainerItemProxy */;
-		};
-		CB5B266613BE6DA300579B1E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CB5B264B13BE6DA200579B1E /* TwUI */;
-			targetProxy = CB5B266513BE6DA300579B1E /* PBXContainerItemProxy */;
-		};
-		D04007E815BF2BBC00FD49DB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Expecta;
-			targetProxy = D04007E715BF2BBC00FD49DB /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		CB5B265813BE6DA200579B1E /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				CB5B265913BE6DA200579B1E /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		CB5B266B13BE6DA300579B1E /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CB5B266C13BE6DA300579B1E /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1124,7 +809,6 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 				TEST_AFTER_BUILD = YES;
-				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -1175,7 +859,6 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 				TEST_AFTER_BUILD = YES;
-				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};
@@ -1226,56 +909,6 @@
 			};
 			name = Release;
 		};
-		CB5B267813BE6DA300579B1E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PREFIX_HEADER = "TwUITests/TwUITests-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					"TwUITests/expecta/src/**",
-					"TwUITests/specta/Specta/**",
-				);
-				INFOPLIST_FILE = "TwUITests/TwUITests-Info.plist";
-				OTHER_LDFLAGS = "-all_load";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.twitter.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-			};
-			name = Debug;
-		};
-		CB5B267913BE6DA300579B1E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PREFIX_HEADER = "TwUITests/TwUITests-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					"TwUITests/expecta/src/**",
-					"TwUITests/specta/Specta/**",
-				);
-				INFOPLIST_FILE = "TwUITests/TwUITests-Info.plist";
-				OTHER_LDFLAGS = "-all_load";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.twitter.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-			};
-			name = Release;
-		};
 		D03FC4BB1602EA0100BCFA73 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1323,7 +956,6 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 				TEST_AFTER_BUILD = YES;
-				VALID_ARCHS = x86_64;
 			};
 			name = Profile;
 		};
@@ -1351,31 +983,6 @@
 			};
 			name = Profile;
 		};
-		D03FC4BF1602EA0100BCFA73 /* Profile */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PREFIX_HEADER = "TwUITests/TwUITests-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					"TwUITests/expecta/src/**",
-					"TwUITests/specta/Specta/**",
-				);
-				INFOPLIST_FILE = "TwUITests/TwUITests-Info.plist";
-				OTHER_LDFLAGS = "-all_load";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.twitter.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-			};
-			name = Profile;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1395,16 +1002,6 @@
 				CB5B267513BE6DA300579B1E /* Debug */,
 				CB5B267613BE6DA300579B1E /* Release */,
 				D03FC4BC1602EA0100BCFA73 /* Profile */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		CB5B267713BE6DA300579B1E /* Build configuration list for PBXNativeTarget "Tests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CB5B267813BE6DA300579B1E /* Debug */,
-				CB5B267913BE6DA300579B1E /* Release */,
-				D03FC4BF1602EA0100BCFA73 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
