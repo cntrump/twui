@@ -41,11 +41,11 @@
 	objc_setAssociatedObject(self, @selector(hostView), hostView, OBJC_ASSOCIATION_ASSIGN);
 }
 
-- (void)ancestorDidLayout; {
+- (void)ancestorDidLayout {
 	[self.subviews makeObjectsPerformSelector:_cmd];
 }
 
-- (TUINSView *)ancestorTUINSView; {
+- (TUINSView *)ancestorTUINSView {
 	NSView *view = self;
 
 	do {
@@ -67,25 +67,25 @@
 
 #pragma mark Geometry
 
-- (CGPoint)convertFromWindowPoint:(CGPoint)point; {
+- (CGPoint)convertFromWindowPoint:(CGPoint)point {
 	NSPoint windowPoint = NSPointFromCGPoint(point);
 	NSPoint selfPoint = [self convertPoint:windowPoint fromView:nil];
 	return NSPointToCGPoint(selfPoint);
 }
 
-- (CGPoint)convertToWindowPoint:(CGPoint)point; {
+- (CGPoint)convertToWindowPoint:(CGPoint)point {
 	NSPoint windowPoint = NSPointFromCGPoint(point);
 	NSPoint selfPoint = [self convertPoint:windowPoint toView:nil];
 	return NSPointToCGPoint(selfPoint);
 }
 
-- (CGRect)convertFromWindowRect:(CGRect)rect; {
+- (CGRect)convertFromWindowRect:(CGRect)rect {
 	NSRect windowRect = NSRectFromCGRect(rect);
 	NSRect selfRect = [self convertRect:windowRect fromView:nil];
 	return NSRectToCGRect(selfRect);
 }
 
-- (CGRect)convertToWindowRect:(CGRect)rect; {
+- (CGRect)convertToWindowRect:(CGRect)rect {
 	NSRect windowRect = NSRectFromCGRect(rect);
 	NSRect selfRect = [self convertRect:windowRect toView:nil];
 	return NSRectToCGRect(selfRect);
@@ -112,11 +112,11 @@
 
 #pragma mark View hierarchy
 
-- (void)willMoveToTUINSView:(TUINSView *)view; {
+- (void)willMoveToTUINSView:(TUINSView *)view {
 	[self.subviews makeObjectsPerformSelector:_cmd withObject:view];
 }
 
-- (void)didMoveFromTUINSView:(TUINSView *)view; {
+- (void)didMoveFromTUINSView:(TUINSView *)view {
 	[self.subviews makeObjectsPerformSelector:_cmd withObject:view];
 }
 

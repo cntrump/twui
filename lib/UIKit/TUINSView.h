@@ -20,14 +20,16 @@
 
 @class TUITextRenderer;
 
+@protocol TUINSViewDelegate;
 /**
  TUINSView is the bridge that hosts a TUIView-based interface heirarchy. You may add it as the contentView of your window if you want to build a pure TwUI-based UI, or you can use it for a small part.
  */
-@interface TUINSView : NSView <TUIHostView>
+@interface TUINSView : NSView <TUIHostView, CALayoutManager>
 {
 	TUIView *_hoverView;
 
-	__weak TUIView *_hyperFocusView; // hyperfocus view, weak
+	__weak TUIView *_trackingView; // dragging view, weak
+	__weak TUIView *_hyperFocusView; // weak
 
 	TUIView *_hyperFadeView;
 	void(^_hyperCompletion)(BOOL);
@@ -46,6 +48,7 @@
  Set this as the root TUIView-based view.
  */
 @property (nonatomic, strong) TUIView *rootView;
+@property (nonatomic, assign) id<TUINSViewDelegate> viewDelegate;
 
 - (TUIView *)viewForLocationInWindow:(NSPoint)locationInWindow;
 - (TUIView *)viewForEvent:(NSEvent *)event; // ignores views with 'userInteractionEnabled=NO'
@@ -59,8 +62,35 @@
 - (BOOL)isHoveringSubviewOfView:(TUIView *)v; // v or subview of v
 - (BOOL)isHoveringView:(TUIView *)v; // only v
 
+- (TUIView *)hoverView;
+- (void)ab_setIsOpaque:(BOOL)o __attribute__((deprecated)); // don't use this
+
 - (void)tui_setOpaque:(BOOL)o;
 
 - (BOOL)isWindowKey;
 
 @end
+
+#import <QuartzCore/QuartzCore.h>
+@class TUIViewController;
+
+@protocol TUINSViewDelegate <NSObject>
+
+@optional
+- (void)nsView:(TUINSView *)nsView mouseEntered:(NSEvent *)event;
+- (void)nsView:(TUINSView *)nsView mouseExited:(NSEvent *)event;
+- (void)nsView:(TUINSView *)nsView mouseMoved:(NSEvent *)event;
+- (void)nsView:(TUINSView *)nsView mouseUp:(NSEvent *)event;
+- (void)nsView:(TUINSView *)nsView rightMouseDown:(NSEvent *)event;
+- (void)nsView:(TUINSView *)nsView rightMouseUp:(NSEvent *)event;
+- (NSMenu *)nsView:(TUINSView *)nsView menuForEvent:(NSEvent *)event;
+- (void)nsView:(TUINSView *)nsView scrollWheel:(NSEvent *)event;
+
+- (void)nsView:(TUINSView *)nsView beginGestureWithEvent:(NSEvent *)event;
+- (void)nsView:(TUINSView *)nsView endGestureWithEvent:(NSEvent *)event;
+
+- (void)nsView:(TUINSView *)nsView previewViewController:(TUIViewController *)controller sourceRect:(CGRect)sourceRect contentSize:(CGSize)contentSize;
+
+@end
+
+#import "TUINSView+Hyperfocus.h"

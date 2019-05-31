@@ -15,19 +15,24 @@
  */
 
 #import "TUIView.h"
+#import "TUITextRenderer.h"
 
-typedef void (^TUIMouseDraggedHandler)(NSEvent *dragEvent);
+@interface TUIView (Private)
 
-@class TUITextRenderer;
+@property (nonatomic, assign) CGDirectDisplayID displayID;
 
-@interface TUIView ()
-
-@property (nonatomic, strong) NSArray *textRenderers;
-@property (nonatomic, copy) TUIMouseDraggedHandler dragHandler;
-
-- (TUITextRenderer *)textRendererAtPoint:(CGPoint)point;
 - (void)_updateLayerScaleFactor;
+- (void)_updateDisplayID;
+- (void)_superSetNextResponder:(NSResponder *)responder;
 
 @end
 
-extern CGFloat TUICurrentContextScaleFactor(void);
+TUI_EXTERN_C_BEGIN
+
+CGFloat TUICurrentContextScaleFactor(void);
+void TUISetCurrentContextScaleFactor(CGFloat scale);
+
+CGDirectDisplayID TUICurrentContextDisplayID(void);
+void TUISetCurrentContextDisplayID(CGDirectDisplayID displayID);
+
+TUI_EXTERN_C_END

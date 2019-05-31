@@ -22,7 +22,7 @@
 - (void)viewDidEndLiveResize;
 
 /* Observing events in subviews
- * 
+ *
  * The subview parameter is the view which recieved the event, not the
  * immediate subview of the view recieving the message. To determine if
  * the event belongs to a subview of a particular immediate subview, use
@@ -35,5 +35,7 @@
 - (void)rightMouseUp:(NSEvent *)event fromSubview:(TUIView *)subview;
 - (void)mouseEntered:(NSEvent *)event onSubview:(TUIView *)subview;
 - (void)mouseExited:(NSEvent *)event fromSubview:(TUIView *)subview;
+
+- (BOOL)needsHoverStateDuringScroll;
 
 @end

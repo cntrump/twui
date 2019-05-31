@@ -21,15 +21,17 @@
 #import "TUINSView.h"
 #import "CALayer+TUIExtensions.h"
 #import "TUIBridgedScrollView.h"
+#import "TUINSHostView.h"
 #import "TUINSView+Hyperfocus.h"
 #import "TUINSView+Private.h"
 #import "TUIViewNSViewContainer.h"
+#import "TUIView.h"
+#import "TUIView+Private.h"
+#import "TUITextRenderer+Event.h"
 #import "TUITooltipWindow.h"
-
-#define LOG_IF_NOT_MAINTHREAD(view) \
-	if (![NSThread isMainThread]) { \
-		NSLog(@"%s [Line %d] Called on a background thread for TUINSView %@ with identifier %@", __PRETTY_FUNCTION__, __LINE__, view, view.identifier); \
-	}
+#import "TUIViewControllerPreviewing.h"
+#import "TUIViewControllerPreviewingContext_Private.h"
+#import <CoreFoundation/CoreFoundation.h>
 
 // If enabled, NSViews contained within TUIViewNSViewContainers will be clipped
 // by any TwUI ancestors that enable clipping to bounds.
@@ -37,7 +39,7 @@
 // This should really only be disabled for debugging.
 #define ENABLE_NSVIEW_CLIPPING 1
 
-static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, void *context) {
+static NSComparisonResult compareNSViewOrdering (__kindof NSView *viewA, __kindof NSView *viewB, void * __nullable context) {
 	TUIViewNSViewContainer *hostA = viewA.hostView;
 	TUIViewNSViewContainer *hostB = viewB.hostView;
 
@@ -80,6 +82,27 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 }
 
 @interface TUINSView ()
+{
+    struct {
+        unsigned int delegateMouseEntered:1;
+        unsigned int delegateMouseExited:1;
+        unsigned int delegateMouseMoved:1;
+        unsigned int delegateMenuForEvent:1;
+        unsigned int delegateRightMouseDown:1;
+        unsigned int delegateRightMouseUp:1;
+        unsigned int delegateMouseUp:1;
+        unsigned int delegateScrollWheel:1;
+        unsigned int delegateBeginGesture:1;
+        unsigned int delegateEndGesture:1;
+        
+        unsigned int previewEventFired: 1;
+    } _viewFlags;
+}
+
+/*
+ * The layer-hosted view which actually holds the TwUI hierarchy.
+ */
+@property (nonatomic, readonly, strong) TUINSHostView *tuiHostView;
 
 - (void)recalculateNSViewClipping;
 - (void)recalculateNSViewOrdering;
@@ -92,6 +115,8 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
  * clipping its TUIViewNSViewContainer would have in the TwUI hierarchy.
  */
 @property (nonatomic, strong) CAShapeLayer *maskLayer;
+
+@property (nonatomic, weak) TUIView * gesturePerformingView;
 
 /*
  * Returns any existing AppKit-created focus ring layer for the given view, or
@@ -119,9 +144,9 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 // these cannot be implicitly synthesized because they're from protocols/categories
 @synthesize hostView = _hostView;
 @synthesize appKitHostView = _appKitHostView;
-@synthesize trackingView = _trackingView;
 @synthesize rootView = _rootView;
 @synthesize maskLayer = _maskLayer;
+@synthesize tuiHostView = _tuiHostView;
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
@@ -138,7 +163,6 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	self = [super initWithFrame:frameRect];
 	if (self == nil)
 		return nil;
-	
 	[self setUp];
 	return self;
 }
@@ -146,9 +170,6 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	
-	_rootView.nextResponder = nil;
-	_rootView.hostView = nil;
 	_rootView.nsView = nil;
 	[_rootView removeFromSuperview];
 	
@@ -164,6 +185,11 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	NSRect f = [self frame];
 	f.origin = NSZeroPoint;
 	[self addCursorRect:f cursor:[NSCursor arrowCursor]];
+}
+		 
+- (void)ab_setIsOpaque:(BOOL)o
+{
+	opaque = o;
 }
 
 - (void)tui_setOpaque:(BOOL)o
@@ -221,12 +247,6 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 {
 	v.autoresizingMask = TUIViewAutoresizingFlexibleSize;
 
-	TUINSView *originalNSView = v.ancestorTUINSView;
-	TUIView *originalRootView = _rootView;
-
-	[v willMoveToTUINSView:self];
-	[originalRootView willMoveToTUINSView:nil];
-
 	_rootView.nsView = nil;
 	_rootView.hostView = nil;
 	_rootView = v;
@@ -235,23 +255,21 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	
 	[_rootView setNextResponder:self];
 	
-	[self setWantsLayer:YES];
-	CALayer *layer = [self layer];
-	[layer setDelegate:(id<CALayerDelegate>)self];
 	CGSize s = [self frame].size;
 	v.frame = CGRectMake(0, 0, s.width, s.height);
-	[self.layer insertSublayer:_rootView.layer atIndex:0];
+	[self.tuiHostView.layer addSublayer:_rootView.layer];
 	
+    [self _updateDisplayID];
 	[self _updateLayerScaleFactor];
-
-	[originalRootView didMoveFromTUINSView:self];
-	[v didMoveFromTUINSView:originalNSView];
 }
 
 - (void)setNextResponder:(NSResponder *)r
 {
+    if (!r) [super setNextResponder:r];
+    
 	NSResponder *nextResponder = [self nextResponder];
-	if([nextResponder isKindOfClass:[NSViewController class]] && r != nextResponder) {
+	if([nextResponder isKindOfClass:[NSViewController class]] &&
+       nextResponder != r) {
 		// keep view controller in chain
 		[nextResponder setNextResponder:r];
 	} else {
@@ -264,6 +282,12 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeKeyNotification object:self.window];
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidResignKeyNotification object:self.window];
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidChangeScreenProfileNotification object:self.window];
+        
+        
+        if (OSXMinorVersion > 7 || (OSXMinorVersion == 7 && OSXBugfixVersion >= 3))
+        {
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"NSWindowDidChangeBackingPropertiesNotification" object:self.window];
+        }
 	}
 	
 	CALayer *hostLayer = self.layer;
@@ -271,21 +295,22 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 		_rootView.layer.frame = hostLayer.bounds;
 		[hostLayer insertSublayer:_rootView.layer atIndex:0];
 	}
-	
+    
 	[self.rootView willMoveToWindow:(TUINSWindow *) newWindow];
-	
+    
 	if(newWindow == nil) {
 		[_rootView removeFromSuperview];
 		// since the layer retains the layoutManger, we need to set it to nil to
 		// make sure TUINSView will be deallocated
 		self.appKitHostView.layer.layoutManager = nil;
 	} else {
-		self.appKitHostView.layer.layoutManager = (id<CALayoutManager>)self;
+		self.appKitHostView.layer.layoutManager = self;
 	}
 }
 
 - (void)viewDidMoveToWindow
 {
+    [self _updateDisplayID];
 	[self _updateLayerScaleFactor];
 	
 	[self.rootView didMoveToWindow];
@@ -297,6 +322,11 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 		// make sure the window will post NSWindowDidChangeScreenProfileNotification
 		[self.window setDisplaysWhenScreenProfileChanges:YES];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenProfileOrBackingPropertiesDidChange:) name:NSWindowDidChangeScreenProfileNotification object:self.window];
+        
+        if (OSXMinorVersion > 7 || (OSXMinorVersion == 7 && OSXBugfixVersion >= 3))
+        {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenProfileOrBackingPropertiesDidChange:) name:@"NSWindowDidChangeBackingPropertiesNotification" object:self.window];
+        }
 	}
 }
 
@@ -307,9 +337,9 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 			scale = [[self window] backingScaleFactor];
 		}
 		
-		if([self.layer respondsToSelector:@selector(setContentsScale:)]) {
-			if(fabs(self.layer.contentsScale - scale) > 0.1f) {
-				self.layer.contentsScale = scale;
+		if([self.tuiHostView.layer respondsToSelector:@selector(setContentsScale:)]) {
+			if(fabs(self.tuiHostView.layer.contentsScale - scale) > 0.1f) {
+				self.tuiHostView.layer.contentsScale = scale;
 			}
 		}
 		
@@ -317,8 +347,15 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	}
 }
 
+- (void)_updateDisplayID {
+    if([self window] != nil) {
+        [self.rootView _updateDisplayID];
+    }
+}
+
 - (void)screenProfileOrBackingPropertiesDidChange:(NSNotification *)notification
 {
+    [self performSelector:@selector(_updateDisplayID) withObject:nil afterDelay:0.0];
 	[self performSelector:@selector(_updateLayerScaleFactor) withObject:nil afterDelay:0.0]; // the window's backingScaleFactor doesn't update until after this notification fires (10.8) - so delay it a bit.
 }
 
@@ -384,9 +421,11 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	}
 	
 	if(_newHoverView != _hoverView) {
-		[_hoverView mouseExited:event];
+        TUIView * oldHoverView = _hoverView;
+        _hoverView = _newHoverView;
+
+		[oldHoverView mouseExited:event];
 		[_newHoverView mouseEntered:event];
-		_hoverView = _newHoverView;
 		
 		if([[self window] isKeyWindow]) {
 			[TUITooltipWindow updateTooltip:_hoverView.toolTip delay:_hoverView.toolTipDelay];
@@ -410,6 +449,13 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	}
 	
 	[self _updateHoverView:_newHoverView withEvent:event];
+}
+
+- (void)updateHoverView
+{
+    NSPoint point = [self.window convertRectFromScreen:(NSRect){.origin = [NSEvent mouseLocation], .size = NSZeroSize}].origin;
+    NSEvent * event = [NSEvent mouseEventWithType:NSEventTypeMouseMoved location:point modifierFlags:0 timestamp:0 windowNumber:self.window.windowNumber context:nil eventNumber:0 clickCount:0 pressure:0];
+    [self _updateHoverViewWithEvent:event];
 }
 
 - (void)invalidateHover
@@ -440,8 +486,8 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 		// normal case
 	normal:
 		;
-		self.trackingView = [self viewForEvent:event];
-		[self.trackingView mouseDown:event];
+		_trackingView = [self viewForEvent:event];
+		[_trackingView mouseDown:event];
 	}
 	
 	[TUITooltipWindow endTooltip];
@@ -449,62 +495,117 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 - (void)mouseUp:(NSEvent *)event
 {
-	TUIView *lastTrackingView = self.trackingView;
+    if (_viewFlags.delegateMouseUp)
+    {
+        [_viewDelegate nsView:self mouseUp:event];
+    }
+    
+	TUIView *lastTrackingView = _trackingView;
 
-	self.trackingView = nil;
+	_trackingView = nil;
 
-	[lastTrackingView mouseUp:event]; // after trackingView is set to nil, will call mouseUp:fromSubview:
+    if (!_viewFlags.previewEventFired) {
+        [lastTrackingView mouseUp:event]; // after _trackingView set to nil, will call mouseUp:fromSubview:
+    } else {
+        [lastTrackingView setDisablesActionSending:YES];
+        [lastTrackingView mouseUp:event];
+        [lastTrackingView setDisablesActionSending:NO];
+        _viewFlags.previewEventFired = NO;
+    }
 	
 	[self _updateHoverViewWithEvent:event];
 }
 
 - (void)mouseDragged:(NSEvent *)event
 {
-	[self.trackingView mouseDragged:event];
+	[_trackingView mouseDragged:event];
 }
 
 - (void)mouseMoved:(NSEvent *)event
 {
 	[self _updateHoverViewWithEvent:event];
+    
+    if (_viewFlags.delegateMouseMoved)
+    {
+        [_viewDelegate nsView:self mouseMoved:event];
+    }
 }
 
 -(void)mouseEntered:(NSEvent *)event {
   [self _updateHoverViewWithEvent:event];
+    
+    if (_viewFlags.delegateMouseEntered)
+    {
+        [_viewDelegate nsView:self mouseEntered:event];
+    }
 }
 
 -(void)mouseExited:(NSEvent *)event {
   [self _updateHoverViewWithEvent:event];
+    
+    if (_viewFlags.delegateMouseExited)
+    {
+        [_viewDelegate nsView:self mouseExited:event];
+    }    
 }
 
 - (void)rightMouseDown:(NSEvent *)event
 {
-	self.trackingView = [self viewForEvent:event];
-	[self.trackingView rightMouseDown:event];
+	_trackingView = [self viewForEvent:event];
+	[_trackingView rightMouseDown:event];
 	[TUITooltipWindow endTooltip];
 	[super rightMouseDown:event]; // we need to send this up the responder chain so that -menuForEvent: will get called for two-finger taps
+    
+    if (_viewFlags.delegateRightMouseDown)
+    {
+        [_viewDelegate nsView:self rightMouseDown:event];
+    }
 }
 
 - (void)rightMouseUp:(NSEvent *)event
 {
-	TUIView *lastTrackingView = self.trackingView;
+	TUIView *lastTrackingView = _trackingView;
 	
-	self.trackingView = nil;
+	_trackingView = nil;
 	
-	[lastTrackingView rightMouseUp:event]; // after trackingView is set to nil, will call mouseUp:fromSubview:
+	[lastTrackingView rightMouseUp:event]; // after _trackingView set to nil, will call mouseUp:fromSubview:
+    
+    if (_viewFlags.delegateRightMouseUp)
+    {
+        [_viewDelegate nsView:self rightMouseUp:event];
+    }
 }
 
 - (void)scrollWheel:(NSEvent *)event
 {
-	[[self viewForEvent:event] scrollWheel:event];
-	[self _updateHoverView:nil withEvent:event]; // don't pop in while scrolling
+    if (event.phase == NSEventPhaseBegan) {
+        [self beginGesturePerformingIfNeededWithEvent:event];
+    }
+    
+    {
+        TUIView * view = [self viewForEvent:event];
+        [view scrollWheel:event];
+        if (view != _hoverView || !view.needsHoverStateDuringScroll) {
+            [self _updateHoverView:nil withEvent:event]; // don't pop in while scrolling
+        }
+        
+        if (_viewFlags.delegateScrollWheel)
+        {
+            [_viewDelegate nsView:self scrollWheel:event];
+        }
+    }
+    
+    if (event.phase == NSEventPhaseEnded) {
+        [self endGesturePerformingWithEvent:event];
+    }
 }
 
-- (void)beginGestureWithEvent:(NSEvent *)event
+- (void)beginGestureWithEvent:(nonnull NSEvent *)event
 {
 	[[self viewForEvent:event] beginGestureWithEvent:event];
 }
 
-- (void)endGestureWithEvent:(NSEvent *)event
+- (void)endGestureWithEvent:(nonnull NSEvent *)event
 {
 	[[self viewForEvent:event] endGestureWithEvent:event];
 }
@@ -536,6 +637,64 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	}
 }
 
+- (void)beginGesturePerformingIfNeededWithEvent:(NSEvent *)event
+{
+    if (_gesturePerformingView) {
+        return;
+    }
+    
+    if ((event.phase == NSEventPhaseBegan) || [event touchesMatchingPhase:NSTouchPhaseTouching inView:self].count > 1) {
+        _gesturePerformingView = [self viewForEvent:event];
+        [_gesturePerformingView beginGestureWithEvent:event];
+        
+        if (_viewFlags.delegateBeginGesture) {
+            [_viewDelegate nsView:self beginGestureWithEvent:event];
+        }
+    }
+}
+
+- (void)endGesturePerformingWithEvent:(NSEvent *)event
+{
+    if (!_gesturePerformingView) {
+        return;
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+		if (!self->_gesturePerformingView) {
+            return;
+        }
+        
+		[self->_gesturePerformingView endGestureWithEvent:event];
+		self->_gesturePerformingView = nil;
+        
+		if (self->_viewFlags.delegateEndGesture) {
+			[self->_viewDelegate nsView:self endGestureWithEvent:event];
+        }
+    });
+}
+
+- (void)touchesBeganWithEvent:(NSEvent *)event
+{
+    [self beginGesturePerformingIfNeededWithEvent:event];
+}
+
+- (void)touchesMovedWithEvent:(NSEvent *)event
+{
+    [self beginGesturePerformingIfNeededWithEvent:event];
+}
+
+- (void)touchesCancelledWithEvent:(NSEvent *)event
+{
+    _viewFlags.previewEventFired = NO;
+    [self endGesturePerformingWithEvent:event];
+}
+
+- (void)touchesEndedWithEvent:(NSEvent *)event
+{
+    _viewFlags.previewEventFired = NO;
+    [self endGesturePerformingWithEvent:event];
+}
+
 - (void)keyDown:(NSEvent *)event
 {
 	BOOL consumed = NO;
@@ -554,6 +713,21 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	return [_rootView performKeyEquivalent:event];
 }
 
+- (void)setViewDelegate:(id <TUINSViewDelegate>)d
+{
+	_viewDelegate = d;
+	_viewFlags.delegateMouseEntered = [_viewDelegate respondsToSelector:@selector(nsView:mouseEntered:)];
+	_viewFlags.delegateMouseExited = [_viewDelegate respondsToSelector:@selector(nsView:mouseExited:)];
+    _viewFlags.delegateMouseMoved = [_viewDelegate respondsToSelector:@selector(nsView:mouseMoved:)];
+    _viewFlags.delegateMenuForEvent = [_viewDelegate respondsToSelector:@selector(nsView:menuForEvent:)];
+    _viewFlags.delegateRightMouseDown = [_viewDelegate respondsToSelector:@selector(nsView:rightMouseDown:)];
+    _viewFlags.delegateRightMouseUp = [_viewDelegate respondsToSelector:@selector(nsView:rightMouseUp:)];
+    _viewFlags.delegateMouseUp = [_viewDelegate respondsToSelector:@selector(nsView:mouseUp:)];
+    _viewFlags.delegateScrollWheel = [_viewDelegate respondsToSelector:@selector(nsView:scrollWheel:)];
+    _viewFlags.delegateBeginGesture = [_viewDelegate respondsToSelector:@selector(nsView:beginGestureWithEvent:)];
+    _viewFlags.delegateEndGesture = [_viewDelegate respondsToSelector:@selector(nsView:endGestureWithEvent:)];
+}
+
 - (void)setEverythingNeedsDisplay
 {
 	[_rootView setEverythingNeedsDisplay];
@@ -561,7 +735,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 - (BOOL)isTrackingSubviewOfView:(TUIView *)v
 {
-	return [self.trackingView isDescendantOfView:v];
+	return [_trackingView isDescendantOfView:v];
 }
 
 - (BOOL)isHoveringSubviewOfView:(TUIView *)v
@@ -572,6 +746,11 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 - (BOOL)isHoveringView:(TUIView *)v
 {
 	return _hoverView == v;
+}
+
+- (TUIView *)hoverView
+{
+    return _hoverView;
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)event
@@ -629,6 +808,11 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 - (NSMenu *)menuForEvent:(NSEvent *)event
 {
+    if (_viewFlags.delegateMenuForEvent)
+    {
+        return [_viewDelegate nsView:self menuForEvent:event];
+    }
+    
 	TUIView *v = [self viewForEvent:event];
 	do {
 		NSMenu *m = [v menuForEvent:event];
@@ -639,7 +823,63 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	return nil;
 }
 
+- (void)quickLookWithEvent:(NSEvent *)event
+{
+    [self viewForEvent:event];
+    
+    if ([self firePreviewEventIfNeeded:event]) {
+        return;
+    }
+    
+    [super quickLookWithEvent:event];
+}
+
+- (void)pressureChangeWithEvent:(NSEvent *)event
+{
+    if (event.stage == 2) {
+        [self firePreviewEventIfNeeded:event];
+    }
+}
+
+- (BOOL)firePreviewEventIfNeeded:(NSEvent *)event
+{
+    if (!self.window.canBecomeMainWindow) {
+        return NO;
+    }
+    
+    if (!_viewFlags.previewEventFired) {
+        _viewFlags.previewEventFired = YES;
+        
+        TUIView * view = [self viewForEvent:event];
+        Protocol * protocol = @protocol(TUIViewControllerPreviewing);
+        while (view) {
+            if ([view conformsToProtocol:protocol]) {
+                break;
+            }
+            view = view.superview;
+        }
+        
+        if ([view conformsToProtocol:protocol]) {
+            if ([self beginPreviewingWithView:(id)view event:event]) {
+                return YES;
+            }
+        }
+        
+        TUITextRenderer * renderer = [view textRendererAtPoint:[view localPointForEvent:event]];
+        
+        if (renderer) {
+            [renderer quickLookWithEvent:event];
+            return YES;
+        }
+        _viewFlags.previewEventFired = NO;
+    }
+    return NO;
+}
+
 - (void)setUp {
+    
+    self.acceptsTouchEvents = YES;
+    
 	opaque = YES;
 
 	_maskLayer = [CAShapeLayer layer];
@@ -650,20 +890,21 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	self.wantsLayer = YES;
 	self.layerContentsRedrawPolicy = NSViewLayerContentsRedrawNever;
 
+	_tuiHostView = [[TUINSHostView alloc] initWithFrame:self.bounds];
+	_tuiHostView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+	[self addSubview:_tuiHostView];
+
 	_appKitHostView = [[NSView alloc] initWithFrame:self.bounds];
-	_appKitHostView.layer = CALayer.layer;
 	_appKitHostView.autoresizesSubviews = NO;
 	_appKitHostView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
 	_appKitHostView.wantsLayer = YES;
+    _appKitHostView.layer = [CALayer layer];
 	_appKitHostView.layerContentsRedrawPolicy = NSViewLayerContentsRedrawNever;
-	
-	// keep this on top of TUIViews
-	_appKitHostView.layer.zPosition = 1;
 	[self addSubview:_appKitHostView];
 
 	// set up masking on the AppKit host view, and make ourselves the layout
 	// manager, so that we'll know when new sublayers are added
-	self.appKitHostView.layer.layoutManager = (id<CALayoutManager>)self;
+	self.appKitHostView.layer.layoutManager = self;
 
 	#if ENABLE_NSVIEW_CLIPPING
 	self.appKitHostView.layer.mask = self.maskLayer;
@@ -672,28 +913,25 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 }
 
 - (void)didAddSubview:(NSView *)view {
-	NSAssert2(view == self || view == self.appKitHostView, @"Subviews should not be added to TUINSView %@: %@", self, view);
+	NSAssert2(view == self.tuiHostView || view == self.appKitHostView, @"Subviews should not be added to TUINSView %@: %@", self, view);
 	[super didAddSubview:view];
 }
 
 #pragma mark AppKit bridging
 
-- (BOOL)acceptsFirstResponder {
-	return NO;
-}
-
-- (BOOL)becomeFirstResponder {
-	return NO;
-}
-
 - (NSView *)hitTest:(NSPoint)point {
 	// convert point into our coordinate system, so it's ready to go for all
 	// subviews (which expect it in their superview's coordinate system)
-	point = [self convertPoint:point fromView:self.superview];
-
+    point = [self convertPoint:point fromView:self.superview];
+    
 	if (!CGRectContainsPoint(self.bounds, point))
 		return nil;
 
+    TUIView * view = [self.rootView hitTest:point withEvent:nil];
+    if (view.moveWindowByDragging && self.mouseDownCanMoveWindow) {
+        return nil;
+    }
+    
 	__block NSView *result = self;
 
 	// we need to avoid hitting any NSViews that are clipped by their
@@ -720,14 +958,13 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	return result;
 }
 
-- (void)recalculateNSViewOrdering; {
-	LOG_IF_NOT_MAINTHREAD(self);
-
+- (void)recalculateNSViewOrdering {
+	NSAssert([NSThread isMainThread], @"");
 	[self.appKitHostView sortSubviewsUsingFunction:&compareNSViewOrdering context:NULL];
 }
 
-- (void)recalculateNSViewClipping; {
-	LOG_IF_NOT_MAINTHREAD(self);
+- (void)recalculateNSViewClipping {
+	NSAssert([NSThread isMainThread], @"");
 
 	#if !ENABLE_NSVIEW_CLIPPING
 	return;
@@ -794,7 +1031,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 #pragma mark CALayer delegate
 
 - (void)layoutSublayersOfLayer:(CALayer *)layer {
-	LOG_IF_NOT_MAINTHREAD(self);
+	NSAssert([NSThread isMainThread], @"");
 
 	if (layer == self.layer) {
 		// TUINSView.layer is being laid out
@@ -808,7 +1045,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	[self recalculateNSViewClipping];
 }
 
-- (CALayer *)focusRingLayerForView:(NSView *)view; {
+- (CALayer *)focusRingLayerForView:(NSView *)view {
 	CALayer *resultSoFar = nil;
 
 	for (CALayer *layer in self.appKitHostView.layer.sublayers) {
@@ -836,7 +1073,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 #pragma mark TUIHostView
 
-- (void)ancestorDidLayout; {
+- (void)ancestorDidLayout {
 	[super ancestorDidLayout];
 	[self.rootView ancestorDidLayout];
 }
@@ -849,10 +1086,10 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 }
 
 - (id<TUIHostView>)hostView {
-	if (_hostView)
-		return _hostView;
-	else
-		return self.superview.hostView;
+    if (_hostView)
+        return _hostView;
+    else
+        return self.superview.hostView;
 }
 
 - (void)viewHierarchyDidChange {
@@ -860,18 +1097,61 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	[self.rootView viewHierarchyDidChange];
 }
 
-- (void)willMoveToTUINSView:(TUINSView *)view; {
+- (void)willMoveToTUINSView:(TUINSView *)view {
 	// despite the TUIBridgedView contract that says we should forward this
 	// message onto all subviews and our rootView, doing so could result in
 	// crazy behavior, since the TUINSView of those views is and will remain
 	// 'self' by definition
 }
 
-- (void)didMoveFromTUINSView:(TUINSView *)view; {
+- (void)didMoveFromTUINSView:(TUINSView *)view {
 	// despite the TUIBridgedView contract that says we should forward this
 	// message onto all subviews and our rootView, doing so could result in
 	// crazy behavior, since the TUINSView of those views is and will remain
 	// 'self' by definition
+}
+
+#pragma mark - Previewing
+
+- (BOOL)beginPreviewingWithView:(TUIView<TUIViewControllerPreviewing> *)view event:(NSEvent *)event
+{
+    if (!view || !event) {
+        return NO;
+    }
+    
+    TUIViewControllerPreviewingContext * context = [[TUIViewControllerPreviewingContext alloc] initWithSourceView:view];
+    CGPoint location = [view localPointForEvent:event];
+    TUIViewController * controller = [view previewingContext:context viewControllerForLocation:location];
+    
+    if (!controller) {
+        return NO;
+    }
+    
+    CGRect sourceRect = context.sourceRect;
+    if (context.sourceSubview) {
+        sourceRect = [view convertRect:context.sourceSubview.bounds fromView:context.sourceSubview];
+    } else if (context.sourcePath) {
+        sourceRect = (CGRect)context.sourcePath.bounds;
+    }
+    if (CGRectIsNull(sourceRect)) {
+        sourceRect = view.bounds;
+    }
+    
+    sourceRect = [view convertRect:sourceRect toView:view.nsView.rootView];
+    
+    CGSize contentSize = context.preferredContentSize;
+    if (CGSizeEqualToSize(contentSize, CGSizeZero)) {
+        contentSize = controller.preferredContentSize;
+    }
+    if (CGSizeEqualToSize(contentSize, CGSizeZero)) {
+        contentSize = self.bounds.size;
+    }
+    
+    if ([self.viewDelegate respondsToSelector:@selector(nsView:previewViewController:sourceRect:contentSize:)]) {
+        [self.viewDelegate nsView:self previewViewController:controller sourceRect:sourceRect contentSize:contentSize];
+    }
+    
+    return YES;
 }
 
 @end

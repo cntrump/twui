@@ -16,6 +16,7 @@
 
 #import "TUIResponder.h"
 #import "TUIAccessibility.h"
+#import "TUIAppearance.h"
 
 extern NSString * const TUIViewWillMoveToWindowNotification; // both notification's userInfo will contain the new window under the key TUIViewWindow
 extern NSString * const TUIViewDidMoveToWindowNotification;
@@ -61,6 +62,23 @@ typedef enum {
     TUIViewContentModeScaleAspectFill,
 } TUIViewContentMode;
 
+typedef NS_ENUM(NSInteger, TUIViewBlendingMode) {
+    TUIViewBlendingModeNormal = 0,
+    TUIViewBlendingModeDarken,
+    TUIViewBlendingModeMultiply,
+    TUIViewBlendingModeColorBurn,
+    TUIViewBlendingModeLighten,
+    TUIViewBlendingModeScreen,
+    TUIViewBlendingModeColorDodge,
+    TUIViewBlendingModeOverlay,
+    TUIViewBlendingModeSoftLight,
+    TUIViewBlendingModeHardLight,
+    TUIViewBlendingModeDifference,
+    TUIViewBlendingModeExclusion,
+    TUIViewBlendingModeCount,
+};
+
+@class TUIColor;
 @class TUINSView;
 @class TUINSWindow;
 @class TUIView;
@@ -76,14 +94,16 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
  Root view class
  */
 
-@interface TUIView : TUIResponder
+@interface TUIView : TUIResponder <CALayerDelegate>
 {
 	CALayer		*_layer;
 	NSInteger	 _tag;
 	NSArray		*_textRenderers;
 	__weak id   _currentTextRenderer; // weak
-	
+    CGDirectDisplayID _displayID;
+    
 	CGPoint		startDrag;
+    NSEvent     *_mouseDownEvent;
 	
 	__weak id<TUIViewDelegate> _viewDelegate;
 	
@@ -103,6 +123,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 		CGContextRef context;
 		CGRect dirtyRect;
 		CGFloat lastContentsScale;
+        CGDirectDisplayID lastDisplayID;
 	} _context;
 	
 	struct {
@@ -118,6 +139,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 		unsigned int clearsContextBeforeDrawing:1;
 		unsigned int drawInBackground:1;
 		unsigned int needsDisplayWhenWindowsKeyednessChanges:1;
+        unsigned int windowServerDragging:1;
 		
 		unsigned int delegateMouseEntered:1;
 		unsigned int delegateMouseExited:1;
@@ -147,7 +169,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 - (instancetype)initWithFrame:(CGRect)frame;
 
 /**
- Default is YES. if set to NO, user events (clicks, keys) are ignored and removed from the event queue.
+ Default is YES. if set to NO, user events (touch, keys) are ignored and removed from the event queue.
  */
 @property (nonatomic,getter=isUserInteractionEnabled) BOOL userInteractionEnabled;
 
@@ -220,6 +242,15 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
  * Does this view need to be redisplayed when the view's window's keyedness changes? If YES, the view will get automatically marked as needing display when the window's keyedness changes. Defaults to NO.
  */
 @property (nonatomic, assign) BOOL needsDisplayWhenWindowsKeyednessChanges;
+
+@property (nonatomic, assign) BOOL cachesCGContext; // Default to NO, if you want dirty drawing, you should enable this.
+
+@property (nonatomic, strong) TUIAppearance * appearance;
+
+- (void)appearanceDidUpdate;
+- (void)setAppearanceForViewHierarchy:(TUIAppearance *)appearance;
+
+@property (nonatomic, assign) BOOL supportsConstraints;
 
 @end
 
@@ -329,6 +360,11 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 - (void)layoutIfNeeded;
 
 /**
+ Recursive -setNeedsLayout
+ */
+- (void)setEverythingNeedsLayout;
+
+/**
  Subclasses may override to layout their subviews.  Also see the ^layout property for another mechanism for this.
  */
 - (void)layoutSubviews;
@@ -372,7 +408,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 /**
  default is nil.  Setting this with a color with <1.0 alpha will also set opaque=NO
  */
-@property (nonatomic,copy) NSColor *backgroundColor;
+@property (nonatomic,copy) TUIColor *backgroundColor;
 
 /**
  animatable. default is 1.0
@@ -394,7 +430,13 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
  */
 @property (nonatomic) BOOL clearsContextBeforeDrawing;
 
+@property (nonatomic) TUIViewBlendingMode blendingMode;
+
 @end
+
+typedef NS_OPTIONS(NSUInteger, TUIViewAnimationOptions) {
+    TUIViewAnimationOptionCurveEaseInOut = 0 << 16,
+};
 
 @interface TUIView (TUIViewAnimation)
 
@@ -435,19 +477,18 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
  */
 + (void)setAnimationDelay:(NSTimeInterval)delay;
 
++ (void)setAnimationStartDate:(NSDate *)startDate;                  // default = now ([NSDate date])
 + (void)setAnimationCurve:(TUIViewAnimationCurve)curve;              // default = UIViewAnimationCurveEaseInOut
 + (void)setAnimationRepeatCount:(float)repeatCount;                 // default = 0.0.  May be fractional
 + (void)setAnimationRepeatAutoreverses:(BOOL)repeatAutoreverses;    // default = NO. used if repeat count is non-zero
++ (void)setAnimationBeginsFromCurrentState:(BOOL)fromCurrentState;  // default = NO. If YES, the current view position is always used for new animations -- allowing animations to "pile up" on each other. Otherwise, the last end state is used for the animation (the default).
 + (void)setAnimationIsAdditive:(BOOL)additive;
+
++ (void)setAnimationTransition:(TUIViewAnimationTransition)transition forView:(TUIView *)view cache:(BOOL)cache;  // current limitation - only one per begin/commit block
 
 + (void)setAnimationsEnabled:(BOOL)enabled block:(void(^)(void))block;
 + (void)setAnimationsEnabled:(BOOL)enabled;                         // ignore any attribute changes while set.
 + (BOOL)areAnimationsEnabled;
-
-/**
- Whether the current code is being executed from within an animation (block-based or not).
- */
-+ (BOOL)isInAnimationContext;
 
 /**
  animate the 'contents' property when set, defaults to NO
@@ -457,6 +498,9 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 
 + (void)animateWithDuration:(NSTimeInterval)duration animations:(void (^)(void))animations;
 + (void)animateWithDuration:(NSTimeInterval)duration animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion;
++ (void)animateWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion;
++ (void)animateWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay curve:(TUIViewAnimationCurve)curve animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion;
++ (void)animateWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay usingSpringWithDamping:(CGFloat)dampingRatio initialSpringVelocity:(CGFloat)velocity options:(TUIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion;
 
 /**
  from receiver and all subviews
@@ -487,6 +531,16 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 
 @end
 
+@class TUITextRenderer;
+
+@interface TUIView (TextRenderer)
+
+@property (nonatomic, strong) NSArray *textRenderers;
+
+- (TUITextRenderer *)textRendererAtPoint:(CGPoint)point;
+
+@end
+
 @protocol TUIViewDelegate <NSObject>
 
 @optional
@@ -498,6 +552,5 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 @end
 
 #import "TUIView+Layout.h"
-#import "TUIView+Private.h"
 #import "TUIView+Event.h"
 #import "TUIView+PasteboardDragging.h"

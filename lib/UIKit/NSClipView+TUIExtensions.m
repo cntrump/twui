@@ -26,7 +26,7 @@
 
 #pragma mark TUIBridgedScrollView
 
-- (void)scrollToIncludeRect:(CGRect)rect; {
+- (void)scrollToIncludeRect:(CGRect)rect {
 	CGRect visibleRect = self.documentVisibleRect;
 	CGSize visibleSize = visibleRect.size;
 

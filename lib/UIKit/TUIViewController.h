@@ -14,10 +14,9 @@
  limitations under the License.
  */
 
-#import "TUIResponder.h"
+#import "TUIView.h"
 
 @class TUINavigationItem;
-@class TUIView;
 
 @interface TUIViewController : TUIResponder <NSCopying>
 {
@@ -42,5 +41,9 @@
 - (void)didReceiveMemoryWarning;
 
 @property(nonatomic,weak) TUIViewController *parentViewController; // If this view controller is inside a navigation controller or tab bar controller, or has been presented modally by another view controller, return it.
+
+- (TUIView *)setupStandardView; // don't use this
+
+@property (nonatomic, assign) CGSize preferredContentSize;
 
 @end

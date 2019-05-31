@@ -7,13 +7,14 @@
 //
 
 #import "TUINSView+Accessibility.h"
+#import "TUIView+Accessibility.h"
 
 
 @implementation TUINSView (Accessibility)
 
 - (id)accessibilityHitTest:(NSPoint)point
 {
-	NSPoint windowPoint = [[self window] convertScreenToBase:point];
+	NSPoint windowPoint = [[self window] convertRectFromScreen:NSMakeRect(point.x, point.y, 0, 0)].origin;
 	NSPoint localPoint = [self convertPoint:windowPoint fromView:nil];
 	return [self.rootView accessibilityHitTest:localPoint];
 }

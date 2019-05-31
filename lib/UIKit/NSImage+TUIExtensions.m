@@ -38,9 +38,9 @@
 	CGContextScaleCTM(ctx, scale, scale);
 
 	draw(ctx);
-	NSImage *i = TUIGraphicsContextGetImage(ctx);
+	TUIImage *i = TUIGraphicsContextGetImage(ctx);
 	CGContextRelease(ctx);
-	return i;
+	return [[self alloc] initWithCGImage:i.CGImage];
 }
 
 - (CGImageRef)tui_CGImage

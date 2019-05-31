@@ -16,13 +16,15 @@
 
 #import "TUIResponder.h"
 #import "CoreText+Additions.h"
+#import "TUITextLayout.h"
 
-@class NSFont;
+@class TUIColor;
+@class TUIFont;
 @class TUIView;
+@class TUITextAttachment;
 @protocol ABActiveTextRange;
-
-extern NSString *const TUITextRendererDidBecomeFirstResponder;
-extern NSString *const TUITextRendererDidResignFirstResponder;
+@protocol TUITextRendererDelegate;
+@protocol TUITextLayoutDelegate;
 
 typedef enum {
 	TUITextSelectionAffinityCharacter = 0,
@@ -41,25 +43,18 @@ typedef enum {
 
 @protocol TUITextRendererDelegate;
 
-@interface TUITextRenderer : TUIResponder {
-	NSAttributedString *attributedString;
-	CGRect frame;
-	__weak TUIView *view;
-	
-	CTFramesetterRef _ct_framesetter;
-	CGPathRef _ct_path;
-	CTFrameRef _ct_frame;
-	
+@interface TUITextRenderer : TUIResponder
+{
 	CFIndex _selectionStart;
 	CFIndex _selectionEnd;
 	TUITextSelectionAffinity _selectionAffinity;
 	
-	__weak id<TUITextRendererDelegate> delegate;
 	id<ABActiveTextRange> hitRange;
+    TUITextAttachment * hitAttachment;
 	
 	CGSize shadowOffset;
 	CGFloat shadowBlur;
-	NSColor *shadowColor;
+	TUIColor *shadowColor;
 	
 	NSMutableDictionary *lineRects;
 	
@@ -69,57 +64,41 @@ typedef enum {
 		unsigned int drawMaskDragSelection:1;
 		unsigned int backgroundDrawingEnabled:1;
 		unsigned int preDrawBlocksEnabled:1;
-		
-		unsigned int delegateActiveRangesForTextRenderer:1;
-		unsigned int delegateWillBecomeFirstResponder:1;
-		unsigned int delegateDidBecomeFirstResponder:1;
-		unsigned int delegateWillResignFirstResponder:1;
-		unsigned int delegateDidResignFirstResponder:1;
+        unsigned int isFirstResponder: 1;
 	} _flags;
 }
 
-@property (nonatomic, copy) NSAttributedString *attributedString;
+@property (nonatomic, strong) NSAttributedString *attributedString;
+
+@property (nonatomic, strong) TUITextLayout * textLayout;
+
 @property (nonatomic, assign) CGRect frame;
-@property (nonatomic, weak) TUIView *view; // weak, remember to set to nil before view goes away
+
+@property (nonatomic, weak) id<TUITextRendererDelegate> renderDelegate;
+@property (nonatomic, weak) id<TUITextLayoutDelegate> layoutDelegate;
 
 @property (nonatomic, assign) CGSize shadowOffset;
 @property (nonatomic, assign) CGFloat shadowBlur;
-@property (nonatomic, strong) NSColor *shadowColor; // default = nil for no shadow
-@property (nonatomic, strong) NSColor *selectionColor;
+@property (nonatomic, strong) TUIColor *shadowColor; // default = nil for no shadow
 
 @property (nonatomic, assign) TUITextVerticalAlignment verticalAlignment;
 
-// These are advanced features that carry with them a potential performance hit.
+// These are both advanced features that carry with them a potential performance hit.
 @property (nonatomic, assign) BOOL backgroundDrawingEnabled; // default = NO
 @property (nonatomic, assign) BOOL preDrawBlocksEnabled; // default = NO
 
-// Don't become first responder. This might be useful to you if
-// you'd like to disable the ability to select text while using the
-// text renderer. Allows the renderer to become "active" as a responder.
-@property (nonatomic, assign) BOOL shouldRefuseFirstResponder;
+@property (nonatomic, assign, readonly) CGPoint drawingOrigin;
 
 - (void)draw;
 - (void)drawInContext:(CGContextRef)context;
-- (CGSize)size; // calculates vertical size based on frame width
+- (void)drawInContext:(CGContextRef)context threadSafely:(BOOL)threadSafe;
+
 - (CGSize)sizeConstrainedToWidth:(CGFloat)width;
 - (CGSize)sizeConstrainedToWidth:(CGFloat)width numberOfLines:(NSUInteger)numberOfLines;
-- (void)reset;
-
-// The -drawingAttributedString method allows for direct access
-// to the string being drawn to the screen. For example, if the
-// text rendering control is secure, this string would then 
-// contain a string with the same length as the original string,
-// but all characters replaced by large ellipses instead.
-// This method may be expanded or removed in the future.
-- (NSAttributedString *)drawingAttributedString;
 
 - (NSRange)selectedRange;
 - (void)setSelection:(NSRange)selection;
 - (NSString *)selectedString;
-
-- (CGRect)firstRectForCharacterRange:(CFRange)range;
-- (NSArray *)rectsForCharacterRange:(CFRange)range;
-- (NSArray *)rectsForCharacterRange:(CFRange)range aggregationType:(AB_CTLineRectAggregationType)aggregationType;
 
 // Draw the selection for the given rects. You probably shouldn't ever call this directly but it is exposed to allow for overriding. This will only get called if the selection is not empty and the selected text isn't being dragged.
 // Note that at the point at which this is called, the selection color has already been set.
@@ -129,10 +108,77 @@ typedef enum {
 - (void)drawSelectionWithRects:(CGRect *)rects count:(CFIndex)count;
 
 @property (nonatomic, strong) id<ABActiveTextRange> hitRange;
+@property (nonatomic, strong) id<ABActiveTextRange> highlightedRange; // yellow background
+@property (nonatomic, strong) TUITextAttachment * hitAttachment;
+
+@property (nonatomic, assign) CGFloat baselineAscent;
+@property (nonatomic, assign) CGFloat baselineDescent;
+@property (nonatomic, assign) CGFloat baselineLeading;
+
+- (void)renderAttachment:(TUITextAttachment *)attachment highlighted:(BOOL)highlighted inContext:(CGContextRef)ctx;
+
+- (NSColor *)selectedTextBackgroundColor;
+
+@end
+
+@protocol TUITextRendererDelegate <NSObject>
+
+@optional
+
+/**
+ *  TextAttachment 渲染的回调方法，delegate 可以通过此方法定义 Attachment 的样式，具体显示的方式可以是绘制到 context 或者添加一个自定义 View
+ *
+ *  @param textRenderer 执行文字渲染的 TextRenderer
+ *  @param attachment   需要渲染的 TextAttachment
+ *  @param highlighted  是否高亮
+ *  @param ctx      当前的 CGContext
+ */
+- (void)textRenderer:(TUITextRenderer *)textRenderer renderTextAttachment:(TUITextAttachment *)attachment highlighted:(BOOL)highlighted inContext:(CGContextRef)ctx;
+
+@end
+
+@interface TUITextRenderer (Coordinates)
+
+/**
+ *  将坐标点从文字布局中转换到 TextRenderer 的绘制区域中
+ *
+ *  @param point 需要转换的坐标点
+ *
+ *  @return 转换过的坐标点
+ */
+- (CGPoint)convertPointFromLayout:(CGPoint)point;
+
+/**
+ *  将坐标点从 TextRenderer 的绘制区域转换到文字布局中
+ *
+ *  @param point 需要转换的坐标点
+ *
+ *  @return 转换过的坐标点
+ */
+- (CGPoint)convertPointToLayout:(CGPoint)point;
+
+/**
+ *  将一个 rect 从文字布局中转换到 TextRenderer 的绘制区域中
+ *
+ *  @param rect 需要转换的 rect
+ *
+ *  @return 转换后的 rect
+ */
+- (CGRect)convertRectFromLayout:(CGRect)rect;
+
+/**
+ *  将一个 rect 从 TextRenderer 的绘制区域转换到文字布局中
+ *
+ *  @param rect 需要转换的 rect
+ *
+ *  @return 转换后的 rect
+ */
+- (CGRect)convertRectToLayout:(CGRect)rect;
 
 @end
 
 #import "TUITextRenderer+Event.h"
+#import "TUITextRenderer+LayoutResult.h"
 
 NS_INLINE NSRange ABNSRangeFromCFRange(CFRange r) { return NSMakeRange(r.location, r.length); }
 NS_INLINE CFRange ABCFRangeFromNSRange(NSRange r) { return CFRangeMake(r.location, r.length); }

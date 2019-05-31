@@ -16,6 +16,8 @@
 
 #import "TUIView.h"
 
+@class TUIFastIndexPath;
+
 typedef enum {
 	TUITableViewCellStyleDefault,
 } TUITableViewCellStyle;
@@ -31,6 +33,7 @@ typedef enum {
 	struct {
 		unsigned int highlighted:1;
 		unsigned int selected:1;
+        unsigned int dragged:1;
 	} _tableViewCellFlags;
 	
 }
@@ -43,10 +46,11 @@ typedef enum {
 - (void)prepareForDisplay; // after frame is set, before it is brought onscreen
 
 @property (weak, nonatomic, readonly) TUITableView *tableView;
-@property (strong, nonatomic, readonly) NSIndexPath *indexPath;
+@property (strong, nonatomic, readonly) TUIFastIndexPath *indexPath;
 
 @property (nonatomic, readonly, getter=isHighlighted) BOOL highlighted;
 @property (nonatomic, assign, getter=isSelected) BOOL selected;
+@property (nonatomic, assign) BOOL cancelClickWhenDragged;
 
 - (void)setSelected:(BOOL)s animated:(BOOL)animated; // called by table view (don't call directly). subclasses can override
 

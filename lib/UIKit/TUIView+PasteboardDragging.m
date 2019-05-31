@@ -15,8 +15,6 @@
  */
 
 #import "TUIView+PasteboardDragging.h"
-#import "TUICGAdditions.h"
-#import "TUINSView.h"
 
 @implementation TUIView (PasteboardDragging)
 
@@ -63,37 +61,37 @@
 		TUIView *dragView = [self handleForPasteboardDragView];
 		id<NSPasteboardWriting> pasteboardObject = [dragView representedPasteboardObject];
 		
-		NSImage *dragNSImage = TUIGraphicsDrawAsImage(dragView.frame.size, ^{
-			[TUIGraphicsGetImageForView(dragView) drawAtPoint:CGPointZero fromRect:CGRectZero operation:NSCompositeSourceOver fraction:0.75];
+		TUIImage *dragImage = TUIGraphicsDrawAsImage(dragView.frame.size, ^{
+			[TUIGraphicsGetImageForView(dragView) drawAtPoint:CGPointZero blendMode:kCGBlendModeNormal alpha:0.75];
 		});
 		
-		NSPasteboard *pasteboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-		[pasteboard clearContents];
-		[pasteboard writeObjects:[NSArray arrayWithObject:pasteboardObject]];
-		
-		[self.nsView dragImage:dragNSImage 
-							at:[dragView frameInNSView].origin
-						offset:NSZeroSize 
-						 event:event 
-					pasteboard:pasteboard 
-						source:self 
-					 slideBack:YES];
+		NSImage *dragNSImage = [[NSImage alloc] initWithCGImage:dragImage.CGImage size:NSZeroSize];
+        NSDraggingItem * item = [[NSDraggingItem alloc] initWithPasteboardWriter:pasteboardObject];
+        [item setDraggingFrame:[dragView frameInNSView] contents:dragNSImage];
+        
+        [self.nsView beginDraggingSessionWithItems:@[item] event:event source:self];
 	}
 }
 
 - (void)draggingSession:(NSDraggingSession *)session willBeginAtPoint:(NSPoint)screenPoint
 {
-	[[self handleForPasteboardDragView] startPasteboardDragging];
+    [[self handleForPasteboardDragView] startPasteboardDragging];
 }
 
 - (void)draggingSession:(NSDraggingSession *)session movedToPoint:(NSPoint)screenPoint
 {
+    
 }
 
 - (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation
 {
-	[self.nsView mouseUp:nil]; // will clear _trackingView
-	[[self handleForPasteboardDragView] endPasteboardDragging:operation];
+    [self.nsView mouseUp:nil]; // will clear _trackingView
+    [[self handleForPasteboardDragView] endPasteboardDragging:operation];
+}
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context
+{
+    return NSDragOperationCopy;
 }
 
 @end

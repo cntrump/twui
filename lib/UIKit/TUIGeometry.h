@@ -27,10 +27,14 @@ static inline TUIEdgeInsets TUIEdgeInsetsMake(CGFloat top, CGFloat left, CGFloat
 
 static inline CGRect TUIEdgeInsetsInsetRect(CGRect rect, TUIEdgeInsets insets) {
 	rect.origin.x    += insets.left;
-	rect.origin.y    += insets.top;
+	rect.origin.y    += insets.bottom;
 	rect.size.width  -= (insets.left + insets.right);
 	rect.size.height -= (insets.top  + insets.bottom);
 	return rect;
+}
+
+static inline TUIEdgeInsets TUIEdgeInsetsInvert(TUIEdgeInsets insets) {
+    return (TUIEdgeInsets){-insets.top, -insets.left, -insets.bottom, -insets.right};
 }
 
 static inline BOOL TUIEdgeInsetsEqualToEdgeInsets(TUIEdgeInsets insets1, TUIEdgeInsets insets2) {
@@ -53,3 +57,72 @@ static inline CGPoint CGPointConstrainToRect(CGPoint point, CGRect rect) {
   return CGPointMake(MAX(rect.origin.x, MIN((rect.origin.x + rect.size.width), point.x)), MAX(rect.origin.y, MIN((rect.origin.y + rect.size.height), point.y)));
 }
 
+struct TUIFontMetrics {
+    CGFloat ascent;
+    CGFloat descent;
+    CGFloat leading;
+};
+typedef struct TUIFontMetrics TUIFontMetrics;
+
+static inline TUIFontMetrics TUIFontMetricsMake(CGFloat a, CGFloat d, CGFloat l)
+{
+    TUIFontMetrics metrics;
+    metrics.ascent = a;
+    metrics.descent = d;
+    metrics.leading = l;
+    return metrics;
+}
+
+extern const TUIFontMetrics TUIFontMetricsZero;
+extern const TUIFontMetrics TUIFontMetricsNull;
+
+static inline TUIFontMetrics TUIFontMetricsMakeFromNSFont(NSFont * font)
+{
+    if (!font) {
+        return TUIFontMetricsNull;
+    }
+    
+    TUIFontMetrics metrics;
+    metrics.ascent = ABS(font.ascender);
+    metrics.descent = ABS(font.descender);
+    metrics.leading = ABS(font.leading);
+    return metrics;
+}
+static inline TUIFontMetrics TUIFontMetricsMakeFromCTFont(CTFontRef font)
+{
+    return TUIFontMetricsMake(ABS(CTFontGetAscent(font)), ABS(CTFontGetDescent(font)), ABS(CTFontGetLeading(font)));
+}
+
+static inline TUIFontMetrics TUIFontMetricsMakeWithTargetLineHeight(TUIFontMetrics metrics, CGFloat targetLineHeight)
+{
+    return TUIFontMetricsMake(targetLineHeight - metrics.descent - metrics.leading, metrics.descent, metrics.leading);
+}
+
+static inline CGFloat TUIFontMetricsGetLineHeight(TUIFontMetrics metrics)
+{
+    return ceil(metrics.ascent + metrics.descent + metrics.leading);
+}
+
+static inline BOOL TUIFontMetricsEqual(TUIFontMetrics m1, TUIFontMetrics m2)
+{
+    return m1.ascent == m2.ascent && m1.descent == m2.descent && m1.leading == m2.leading;
+}
+
+TUI_EXTERN TUIFontMetrics TUIFontMetricsGetDefault(NSInteger pointSize);
+
+@interface NSCoder (TUIFontMetricsKeyedCoding)
+
+- (void)tui_encodeFontMetrics:(TUIFontMetrics)metrics forKey:(NSString *)key;
+- (TUIFontMetrics)tui_decodeFontMetricsForKey:(NSString *)key;
+
+@end
+
+#import "TUIFont.h"
+
+static inline TUIFontMetrics TUIFontMetricsMakeFromTUIFont(TUIFont * font)
+{
+    if (!font) {
+        return TUIFontMetricsNull;
+    }
+    return TUIFontMetricsMake(font.ascender, font.descender, font.leading);
+}

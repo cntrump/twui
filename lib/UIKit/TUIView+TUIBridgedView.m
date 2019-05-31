@@ -27,7 +27,7 @@
 // correct -- they only take into account position, and do not include things
 // like transforms (however, the implementation does match TUIView geometry)
 
-- (CGPoint)convertFromWindowPoint:(CGPoint)point; {
+- (CGPoint)convertFromWindowPoint:(CGPoint)point {
 	if (self.hostView) {
 		CGPoint pointInHostView = [self.hostView convertFromWindowPoint:point];
 		return [self.layer convertPoint:pointInHostView fromLayer:self.hostView.layer];
@@ -39,7 +39,7 @@
 	return CGPointMake(pointInHostView.x - hostViewFrame.origin.x, pointInHostView.y - hostViewFrame.origin.y);
 }
 
-- (CGPoint)convertToWindowPoint:(CGPoint)point; {
+- (CGPoint)convertToWindowPoint:(CGPoint)point {
 	if (self.hostView) {
 		CGPoint pointInHostView = [self.layer convertPoint:point toLayer:self.hostView.layer];
 		return [self.hostView convertToWindowPoint:pointInHostView];
@@ -51,7 +51,7 @@
 	return [self.nsView convertPoint:pointInHostView toView:nil];
 }
 
-- (CGRect)convertFromWindowRect:(CGRect)rect; {
+- (CGRect)convertFromWindowRect:(CGRect)rect {
 	if (self.hostView) {
 		CGRect rectInHostView = [self.hostView convertFromWindowRect:rect];
 		return [self.layer convertRect:rectInHostView fromLayer:self.hostView.layer];
@@ -63,7 +63,7 @@
 	return CGRectOffset(rectInHostView, -hostViewFrame.origin.x, -hostViewFrame.origin.y);
 }
 
-- (CGRect)convertToWindowRect:(CGRect)rect; {
+- (CGRect)convertToWindowRect:(CGRect)rect {
 	if (self.hostView) {
 		CGRect rectInHostView = [self.layer convertRect:rect toLayer:self.hostView.layer];
 		return [self.hostView convertToWindowRect:rectInHostView];
@@ -98,7 +98,7 @@
 	return result;
 }
 
-- (BOOL)pointInside:(CGPoint)point; {
+- (BOOL)pointInside:(CGPoint)point {
 	return [self pointInside:point withEvent:nil];
 }
 
@@ -137,15 +137,19 @@
     }
 }
 
-- (void)ancestorDidLayout; {
+- (void)ancestorDidLayout {
 	[self.subviews makeObjectsPerformSelector:_cmd];
 }
 
-- (TUINSView *)ancestorTUINSView; {
-	return self.nsView;
+- (TUINSView *)ancestorTUINSView {
+	id<TUIHostView> hostView = self.hostView;
+	if (!hostView)
+		return nil;
+
+	return hostView.ancestorTUINSView;
 }
 
-- (id<TUIBridgedScrollView>)ancestorScrollView; {
+- (id<TUIBridgedScrollView>)ancestorScrollView {
 	if ([self conformsToProtocol:@protocol(TUIBridgedScrollView)])
 		return (id)self;
 
@@ -156,15 +160,15 @@
 	return self.hostView.ancestorScrollView;
 }
 
-- (void)didMoveFromTUINSView:(TUINSView *)view; {
+- (void)didMoveFromTUINSView:(TUINSView *)view {
 	[self.subviews makeObjectsPerformSelector:_cmd withObject:view];
 }
 
-- (void)willMoveToTUINSView:(TUINSView *)view; {
+- (void)willMoveToTUINSView:(TUINSView *)view {
 	[self.subviews makeObjectsPerformSelector:_cmd withObject:view];
 }
 
-- (void)viewHierarchyDidChange; {
+- (void)viewHierarchyDidChange {
 	[self.subviews makeObjectsPerformSelector:_cmd];
 }
 

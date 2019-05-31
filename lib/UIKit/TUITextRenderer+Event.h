@@ -15,28 +15,51 @@
  */
 
 #import "TUITextRenderer.h"
+#import "ABActiveRange.h"
+#import "TUITextAttachment.h"
+
+@protocol TUITextRendererEventDelegate;
 
 @interface TUITextRenderer (Event)
 
-- (CFIndex)stringIndexForPoint:(CGPoint)p;
-- (CFIndex)stringIndexForEvent:(NSEvent *)event;
 - (void)resetSelection;
 - (CGRect)rectForCurrentSelection;
 
 - (void)copy:(id)sender;
 
-@property (nonatomic, assign) id<TUITextRendererDelegate> delegate;
+- (CFIndex)stringIndexForEvent:(NSEvent *)event;
+
+@property (nonatomic, weak) id<TUITextRendererEventDelegate> eventDelegate;
+
+@property (nonatomic, assign, readonly) TUIView * eventDelegateContextView;
+
+- (id<ABActiveTextRange>)activeRangeForLocation:(CGPoint)point;
+- (NSArray *)activeRanges;
+
+- (void)invalidateHover;
 
 @end
 
-@protocol TUITextRendererDelegate <NSObject>
+@protocol TUITextRendererEventDelegate <NSObject>
+
+@required
+- (TUIView *)contextViewForTextRenderer:(TUITextRenderer *)textRenderer;
 
 @optional
-- (NSArray *)activeRangesForTextRenderer:(TUITextRenderer *)t;
+- (NSArray *)activeRangesForTextRenderer:(TUITextRenderer *)textRenderer;
+- (void)textRenderer:(TUITextRenderer *)textRenderer didClickActiveRange:(id<ABActiveTextRange>)textRange;
+- (NSMenu *)textRenderer:(TUITextRenderer *)textRenderer contextMenuForActiveRange:(id<ABActiveTextRange>)textRange event:(NSEvent *)event;
+
+- (void)textRenderer:(TUITextRenderer *)textRenderer didClickTextAttachment:(TUITextAttachment *)attachment;
+- (NSMenu *)textRenderer:(TUITextRenderer *)textRenderer contextMenuForTextAttachment:(TUITextAttachment *)attachment event:(NSEvent *)event;
 
 - (void)textRendererWillBecomeFirstResponder:(TUITextRenderer *)textRenderer;
 - (void)textRendererDidBecomeFirstResponder:(TUITextRenderer *)textRenderer;
 - (void)textRendererWillResignFirstResponder:(TUITextRenderer *)textRenderer;
 - (void)textRendererDidResignFirstResponder:(TUITextRenderer *)textRenderer;
+
+- (void)textRenderer:(TUITextRenderer *)textRenderer mouseEnteredActiveRange:(id<ABActiveTextRange>)textRange;
+- (void)textRenderer:(TUITextRenderer *)textRenderer mouseMovedInActiveRange:(id<ABActiveTextRange>)textRange;
+- (void)textRenderer:(TUITextRenderer *)textRenderer mouseExitedFromActiveRange:(id<ABActiveTextRange>)textRange;
 
 @end

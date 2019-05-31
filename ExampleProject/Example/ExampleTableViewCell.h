@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-#import "TUIKit.h"
+@import TwUI;
 
 @interface ExampleTableViewCell : TUITableViewCell
 {

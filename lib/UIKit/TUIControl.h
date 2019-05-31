@@ -17,52 +17,34 @@
 #import "TUIView.h"
 
 enum {
-	TUIControlEventMouseDown			= 1 <<  0,
-	TUIControlEventMouseDownRepeat		= 1 <<  1,
-	TUIControlEventMouseDragInside		= 1 <<  2,
-	TUIControlEventMouseDragOutside		= 1 <<  3,
-	/*
-	 Needs:
-	 TUIControlEventMouseDragEnter		= 1 <<  4,
-	 TUIControlEventMouseDragExit		= 1 <<  5,
-	 */
-	TUIControlEventMouseUpInside		= 1 <<  6,
-	TUIControlEventMouseUpOutside		= 1 <<  7,
-	TUIControlEventMouseCancel			= 1 <<  8,
-	
-	TUIControlEventMouseHover			= 1 <<  9,
-	TUIControlEventValueChanged			= 1 << 12,
-	
-	/*
-	 Needs:
-	TUIControlEventEditingDidBegin		= 1 << 16,
-	TUIControlEventEditingChanged		= 1 << 17,
-	TUIControlEventEditingDidEnd		= 1 << 18,
-	 */
-	TUIControlEventEditingDidEndOnExit = 1 << 19,
-	
-	TUIControlEventAllMouseEvents		= 0x00000FFF,
-	TUIControlEventAllEditingEvents		= 0x000F0000,
-	TUIControlEventApplicationReserved	= 0x0F000000,
-	TUIControlEventSystemReserved		= 0xF0000000,
-	TUIControlEventAllEvents			= 0xFFFFFFFF
+    TUIControlEventTouchDown           = 1 <<  0,
+    TUIControlEventTouchDownRepeat     = 1 <<  1,
+    TUIControlEventTouchUpInside       = 1 <<  6,
+    TUIControlEventTouchUpOutside      = 1 <<  7,
+    TUIControlEventValueChanged        = 1 << 12,
+    TUIControlEventEditingDidEndOnExit = 1 << 19,
+    TUIControlEventAllTouchEvents      = 0x00000FFF,
+    TUIControlEventAllEditingEvents    = 0x000F0000,
+    TUIControlEventApplicationReserved = 0x0F000000,
+    TUIControlEventSystemReserved      = 0xF0000000,
+    TUIControlEventAllEvents           = 0xFFFFFFFF
 };
 typedef NSUInteger TUIControlEvents;
 
 enum {
-  TUIControlStateNormal	   = 0,					   
-  TUIControlStateHighlighted  = 1 << 0,
-  TUIControlStateDisabled	 = 1 << 1,
-  TUIControlStateSelected	 = 1 << 2,
-  TUIControlStateNotKey	   = 1 << 11,
-  TUIControlStateApplication  = 0x00FF0000,
-  TUIControlStateReserved	 = 0xFF000000
+    TUIControlStateNormal       = 0,
+    TUIControlStateHighlighted  = 1 << 0,
+    TUIControlStateDisabled     = 1 << 1,
+    TUIControlStateSelected     = 1 << 2,
+    TUIControlStateNotKey       = 1 << 11,
+    TUIControlStateApplication  = 0x00FF0000,
+    TUIControlStateReserved     = 0xFF000000
 };
 typedef NSUInteger TUIControlState;
 
 @interface TUIControl : TUIView
 {
-  NSMutableArray*   _targetActions;
+    NSMutableArray*   _targetActions;
 	struct {
 		unsigned int disabled:1;
 		unsigned int selected:1;
@@ -81,23 +63,8 @@ typedef NSUInteger TUIControlState;
 
 @property (nonatomic, assign) BOOL acceptsFirstMouse;
 
-// When control tracking begins, usually by mouse down or
-// swipe start, this method is called to validate the event.
-// If YES is returned, tracking will continue, otherwise
-// if NO is returned, tracking ends there itself.
 - (BOOL)beginTrackingWithEvent:(NSEvent *)event;
-
-// If the control opts to continue tracking, then this method
-// will be continuously called to validate each event in the
-// chain of tracking events, and should be used to update the
-// control view to reflect tracking changes. If YES is returned,
-// the control continues to receive tracking events. If NO
-// is returned, tracking ends there itself.
 - (BOOL)continueTrackingWithEvent:(NSEvent *)event;
-
-// When control tracking ends, this method is called to allow
-// the control to clean up. It is NOT called when the control
-// opts to cancel it - only when the user cancels the tracking.
 - (void)endTrackingWithEvent:(NSEvent *)event;
 
 @end

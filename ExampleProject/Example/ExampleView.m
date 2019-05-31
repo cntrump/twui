@@ -25,11 +25,11 @@
 - (id)initWithFrame:(CGRect)frame
 {
 	if((self = [super initWithFrame:frame])) {
-		self.backgroundColor = [NSColor colorWithCalibratedWhite:0.9 alpha:1.0];
+		self.backgroundColor = [TUIColor colorWithWhite:0.9 alpha:1];
 		
 		// if you're using a font a lot, it's best to allocate it once and re-use it
-		exampleFont1 = [NSFont fontWithName:@"HelveticaNeue" size:15];
-		exampleFont2 = [NSFont fontWithName:@"HelveticaNeue-Bold" size:15];
+		exampleFont1 = [TUIFont fontWithName:@"HelveticaNeue" size:15];
+		exampleFont2 = [TUIFont fontWithName:@"HelveticaNeue-Bold" size:15];
 		
 		CGRect b = self.bounds;
 		b.origin.y += TAB_HEIGHT;
@@ -61,7 +61,7 @@
 		
 		// setup individual tabs
 		for(TUIView *tabView in _tabBar.tabViews) {
-			tabView.backgroundColor = [NSColor clearColor]; // will also set opaque=NO
+			tabView.backgroundColor = TUIColor.clearColor; // will also set opaque=NO
 			
 			// let's just teach the tabs how to draw themselves right here - no need to subclass anything
 			tabView.drawRect = ^(TUIView *v, CGRect rect) {
@@ -112,7 +112,7 @@
 		[textField.cell setScrollable:YES];
 
 		TUIViewNSViewContainer *textFieldContainer = [[TUIViewNSViewContainer alloc] initWithNSView:textField];
-		textFieldContainer.backgroundColor = [NSColor blueColor];
+		textFieldContainer.backgroundColor = TUIColor.blueColor;
 		[self addSubview:textFieldContainer];
 	}
 	return self;
@@ -147,7 +147,7 @@
 {
 	ExampleSectionHeaderView *view = [[ExampleSectionHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 32)];
 	TUIAttributedString *title = [TUIAttributedString stringWithString:[NSString stringWithFormat:@"Example Section %d", (int)section]];
-	title.color = [NSColor blackColor];
+	title.color = TUIColor.blackColor;
 	title.font = exampleFont2;
 	view.labelRenderer.attributedString = title;
 	
@@ -162,7 +162,7 @@
 	ExampleTableViewCell *cell = reusableTableCellOfClass(tableView, ExampleTableViewCell);
 	
 	TUIAttributedString *s = [TUIAttributedString stringWithString:[NSString stringWithFormat:@"example cell %d", (int)indexPath.row]];
-	s.color = [NSColor blackColor];
+	s.color = TUIColor.blackColor;
 	s.font = exampleFont1;
 	[s setFont:exampleFont2 inRange:NSMakeRange(8, 4)]; // make the word "cell" bold
 	cell.attributedString = s;
@@ -184,6 +184,8 @@
 	switch (event.type) {
 		case NSRightMouseDown:
 			return NO;
+        default:
+            break;
 	}
 
 	return YES;

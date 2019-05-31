@@ -24,7 +24,7 @@ NSString *TUICAAnimationCompletionBlockAssociatedObjectKey = @"TUICAAnimationCom
 
 - (void)setTui_completionBlock:(TUICAAnimationCompletionBlock)block
 {
-	self.delegate = (id<CAAnimationDelegate>)self;
+	self.delegate = self;
 	objc_setAssociatedObject(self, &TUICAAnimationCompletionBlockAssociatedObjectKey, block, OBJC_ASSOCIATION_COPY);
 }
 

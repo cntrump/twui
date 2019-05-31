@@ -22,9 +22,6 @@
  */
 @property (nonatomic, readonly, strong) NSView *appKitHostView;
 
-// The view currently tracking mouse events.
-@property (nonatomic, weak) TUIView *trackingView;
-
 /*
  * Informs the receiver that the clipping of a TUIViewNSViewContainer it is hosting has
  * changed, and asks it to update clipping paths accordingly.
@@ -39,5 +36,7 @@
 
 - (TUIView *)viewForLocalPoint:(NSPoint)p;
 - (NSPoint)localPointForLocationInWindow:(NSPoint)locationInWindow;
+
+- (void)updateHoverView;
 
 @end

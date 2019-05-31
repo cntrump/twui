@@ -9,6 +9,7 @@
 #import "TUINSWindow.h"
 #import "TUIView.h"
 #import "TUIViewNSViewContainer+Private.h"
+#import "CATransaction+TUIExtensions.h"
 #import <objc/runtime.h>
 
 @interface TUICAAction ()
@@ -92,7 +93,7 @@
 	return self;
 }
 
-+ (instancetype)actionWithAction:(id<CAAction>)innerAction {
++ (id)actionWithAction:(id<CAAction>)innerAction {
 	return [[self alloc] initWithAction:innerAction];
 }
 
@@ -108,7 +109,7 @@
 	}
 }
 
-- (void)startRenderingNSViewOfView:(TUIViewNSViewContainer *)view; {
+- (void)startRenderingNSViewOfView:(TUIViewNSViewContainer *)view {
 	// Resign first responder on an animating NSView
 	// to disable focus ring.
 	id responder = view.nsWindow.firstResponder;
@@ -147,7 +148,7 @@
 	}
 }
 
-- (void)stopRenderingNSViewOfView:(TUIViewNSViewContainer *)view; {
+- (void)stopRenderingNSViewOfView:(TUIViewNSViewContainer *)view {
 	[view stopRenderingContainedView];
 
 	if (!view.renderingContainedView) {
@@ -210,7 +211,7 @@
 	} forLayer:layer];
 }
 
-- (void)opacityChangedForLayer:(CALayer *)layer; {
+- (void)opacityChangedForLayer:(CALayer *)layer {
 	float newOpacity = layer.opacity;
 
 	if (fabs(1 - newOpacity) < 0.001) {
@@ -230,7 +231,7 @@
 	}
 }
 
-- (void)runWhenAnimationCompletes:(void (^)(void))block forLayer:(CALayer *)layer; {
+- (void)runWhenAnimationCompletes:(void (^)(void))block forLayer:(CALayer *)layer {
 	NSParameterAssert(block != nil);
 	NSParameterAssert(layer != nil);
 

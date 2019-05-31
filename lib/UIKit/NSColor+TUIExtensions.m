@@ -29,7 +29,7 @@ static void releasePatternInfo (void *info) {
 
 @implementation NSColor (TUIExtensions)
 
-+ (NSColor *)tui_colorWithCGColor:(CGColorRef)color; {
++ (NSColor *)tui_colorWithCGColor:(CGColorRef)color {
     if (!color)
         return nil;
 
@@ -42,7 +42,7 @@ static void releasePatternInfo (void *info) {
     return result;
 }
 
-- (CGColorRef)tui_CGColor; {
+- (CGColorRef)tui_CGColor {
     if ([self.colorSpaceName isEqualToString:NSPatternColorSpace]) {
         CGImageRef patternImage = self.patternImage.tui_CGImage;
         if (!patternImage)

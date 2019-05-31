@@ -35,7 +35,7 @@
  window or application.
  
  */
-+ (instancetype)sharedLayoutManager;
++ (id)sharedLayoutManager;
 
 /*
  

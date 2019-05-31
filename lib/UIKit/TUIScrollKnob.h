@@ -18,27 +18,28 @@
 
 @class TUIScrollView;
 
+typedef NS_ENUM(NSInteger, TUIScrollKnobDirection) {
+    TUIScrollKnobDirectionVertical = 0,
+    TUIScrollKnobDirectionHorizontal,
+};
+
 @interface TUIScrollKnob : TUIView
 {
-	__weak TUIScrollView *scrollView;
 	TUIView *knob;
 	CGPoint _mouseDown;
-	CGRect _knobStartFrame;
-	
-	struct {
-		unsigned int hover:1;
-		unsigned int active:1;
-		unsigned int trackingInsideKnob:1;
-		unsigned int scrollIndicatorStyle:2;
-		unsigned int flashing:1;
-	} _scrollKnobFlags;
+	CGRect _knobStartFrame;	
 }
 
-@property (nonatomic, weak) TUIScrollView *scrollView;
-@property (nonatomic, assign) unsigned int scrollIndicatorStyle;
-@property (nonatomic, readonly) TUIView *knob;
+- (instancetype)initWithDirection:(TUIScrollKnobDirection)direction;
+
+@property (nonatomic, weak) TUIScrollView * scrollView;
+@property (nonatomic, assign) unsigned int    scrollIndicatorStyle;
+@property (nonatomic, readonly) TUIView     * knob;
 @property (nonatomic, readonly) BOOL flashing;
 
 - (void)flash;
+
++ (CGFloat)preferedSize;
+- (void)update;
 
 @end

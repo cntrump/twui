@@ -79,6 +79,9 @@ typedef enum {
 	
 	__weak id _delegate;
 	
+  TUIScrollKnob * _verticalScrollKnob;
+  TUIScrollKnob * _horizontalScrollKnob;
+	
 	CVDisplayLinkRef displayLink;
 	CGPoint destinationOffset;
 	CGPoint unfixedContentOffset;
@@ -119,7 +122,6 @@ typedef enum {
 	BOOL x;
 	
 	struct {
-		unsigned int didChangeContentInset:1;
 		unsigned int bounceEnabled:1;
 		unsigned int alwaysBounceVertical:1;
 		unsigned int alwaysBounceHorizontal:1;
@@ -137,11 +139,12 @@ typedef enum {
 		unsigned int delegateScrollViewDidScroll:1;
 		unsigned int delegateScrollViewWillBeginDragging:1;
 		unsigned int delegateScrollViewDidEndDragging:1;
-		unsigned int delegateScrollViewDidEndDecelerating:1;
 		unsigned int delegateScrollViewWillShowScrollIndicator:1;
 		unsigned int delegateScrollViewDidShowScrollIndicator:1;
 		unsigned int delegateScrollViewWillHideScrollIndicator:1;
 		unsigned int delegateScrollViewDidHideScrollIndicator:1;
+        unsigned int delegateScrollViewDidEndScroll:1;
+        unsigned int delegateScrollViewDidEndDecelerating:1;
 	} _scrollViewFlags;
 }
 
@@ -152,6 +155,7 @@ typedef enum {
 @property (nonatomic) BOOL alwaysBounceHorizontal;
 @property (nonatomic) CGSize resizeKnobSize;
 @property (nonatomic) TUIEdgeInsets contentInset;
+@property (nonatomic) TUIEdgeInsets safeAreaInsets;
 @property (nonatomic, weak) id<TUIScrollViewDelegate> delegate;
 @property (nonatomic, getter=isScrollEnabled) BOOL scrollEnabled;
 @property (nonatomic) TUIScrollViewIndicatorVisibility horizontalScrollIndicatorVisibility;
@@ -159,21 +163,8 @@ typedef enum {
 @property (readonly, nonatomic) BOOL verticalScrollIndicatorShowing;
 @property (readonly, nonatomic) BOOL horizontalScrollIndicatorShowing;
 @property (nonatomic) TUIScrollViewIndicatorStyle scrollIndicatorStyle;
+@property (nonatomic) TUIEdgeInsets scrollIndicatorInsets; // only bottom and right available currently
 @property (nonatomic) float decelerationRate;
-
-@property (nonatomic, readonly) CGRect visibleRect;
-@property (nonatomic, readonly) TUIEdgeInsets scrollIndicatorInsets;
-
-@property (nonatomic, strong, readonly) TUIScrollKnob *verticalScrollKnob;
-@property (nonatomic, strong, readonly) TUIScrollKnob *horizontalScrollKnob;
-
-@property (nonatomic, readonly) CGPoint pullOffset;
-@property (nonatomic, readonly) CGPoint bounceOffset;
-
-@property (nonatomic, readonly, getter=isDragging) BOOL dragging;
-@property (nonatomic, readonly, getter=isBouncing) BOOL bouncing;
-@property (nonatomic, readonly, getter=isDecelerating) BOOL decelerating;
-@property (nonatomic, readonly, getter=isScrollingToTop) BOOL scrollingToTop;
 
 - (void)setContentOffset:(CGPoint)contentOffset animated:(BOOL)animated;
 - (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated;
@@ -183,8 +174,18 @@ typedef enum {
 - (void)beginContinuousScrollForDragAtPoint:(CGPoint)dragLocation animated:(BOOL)animated;
 - (void)endContinuousScrollAnimated:(BOOL)animated;
 
+@property (nonatomic, readonly) CGRect visibleRect;
+@property (nonatomic, readonly) TUIEdgeInsets visibleRectScrollIndicatorInsets;
+
 - (void)flashScrollIndicators;
-- (void)stopThrowing;
+
+- (BOOL)isScrollingToTop;
+
+@property (nonatomic, readonly) CGPoint pullOffset;
+@property (nonatomic, readonly) CGPoint bounceOffset;
+
+@property (nonatomic, readonly, getter=isDragging) BOOL dragging;
+@property (nonatomic, readonly, getter=isDecelerating) BOOL decelerating;
 
 @end
 
@@ -195,6 +196,7 @@ typedef enum {
 - (void)scrollViewDidScroll:(TUIScrollView *)scrollView;
 - (void)scrollViewWillBeginDragging:(TUIScrollView *)scrollView;
 - (void)scrollViewDidEndDragging:(TUIScrollView *)scrollView;
+- (void)scrollViewDidEndScroll:(TUIScrollView *)scrollView;
 - (void)scrollViewDidEndDecelerating:(TUIScrollView *)scrollView;
 
 - (void)scrollView:(TUIScrollView *)scrollView willShowScrollIndicator:(TUIScrollViewIndicator)indicator;

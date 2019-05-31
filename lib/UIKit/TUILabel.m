@@ -15,15 +15,14 @@
  */
 
 #import "TUILabel.h"
+#import "TUIColor.h"
+#import "TUIFont.h"
 #import "TUINSView.h"
+#import "TUIStringDrawing.h"
 #import "TUITextRenderer.h"
+#import "TUIView+Private.h"
 
-@interface TUILabel () {
-	struct {
-		unsigned int selectable:1;
-	} _textLabelFlags;
-}
-
+@interface TUILabel ()
 - (void)_recreateAttributedString;
 @end
 
@@ -41,14 +40,13 @@
             NSStringFromClass(self.class), self, NSStringFromClass(self.superclass),
             NSStringFromRect(self.frame),
             NSStringFromClass(self.layer.class), self.layer,
-            renderer.attributedString ? renderer.attributedString.string : _text];
+            self.attributedString.string];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
 	if((self = [super initWithFrame:frame])) {
 		renderer = [[TUITextRenderer alloc] init];
-		renderer.verticalAlignment = TUITextVerticalAlignmentMiddle;
 		[self setTextRenderers:[NSArray arrayWithObjects:renderer, nil]];
 		
 		_lineBreakMode = TUILineBreakModeClip;
@@ -86,7 +84,18 @@
 	
 	[super drawRect:rect]; // draw background
 	CGRect bounds = self.bounds;
-	renderer.frame = CGRectMake(0, 0, bounds.size.width, bounds.size.height);
+    
+    CGRect textFrame = CGRectMake(0, 0, bounds.size.width, bounds.size.height);
+    
+    if (self.verticalCenter)
+    {
+        CGSize textSize = [renderer sizeConstrainedToWidth:textFrame.size.width];
+        textFrame = ABIntegralRectWithSizeCenteredInRect(textSize, textFrame);
+        textFrame.origin.x = 0;
+        textFrame.size.width = bounds.size.width;
+    }
+    
+	renderer.frame = textFrame;
 	[renderer draw];	
 }
 
@@ -107,7 +116,6 @@
 - (void)setAttributedString:(NSAttributedString *)a
 {
 	renderer.attributedString = a;
-    _text = nil;
 	[self _update];
 }
 
@@ -141,7 +149,7 @@
 	self.attributedString = nil;
 }
 
-- (void)setFont:(NSFont *)font
+- (void)setFont:(TUIFont *)font
 {
 	if(font == _font) return;
 	
@@ -150,7 +158,7 @@
 	self.attributedString = nil;
 }
 
-- (void)setTextColor:(NSColor *)textColor
+- (void)setTextColor:(TUIColor *)textColor
 {
 	if(textColor == _textColor) return;
 	
@@ -175,6 +183,13 @@
 	_lineBreakMode = lineBreakMode;
 	
 	self.attributedString = nil;
+}
+
+- (void)setVerticalCenter:(BOOL)verticalCenter
+{
+    if (verticalCenter == _verticalCenter) return;
+    
+    _verticalCenter = verticalCenter;
 }
 
 @end

@@ -14,13 +14,14 @@
  limitations under the License.
  */
 
+#import "TUIImage.h"
 #import "TUIButton.h"
 #import "TUICGAdditions.h"
+#import "TUIColor.h"
 #import "TUIControl+Private.h"
 #import "TUIImageView.h"
 #import "TUILabel.h"
 #import "TUINSView.h"
-#import "TUIStretchableImage.h"
 #import "TUITextRenderer.h"
 
 @interface TUIButton ()
@@ -42,7 +43,7 @@
 		_buttonFlags.buttonType = TUIButtonTypeCustom;
 		_buttonFlags.dimsInBackground = 1;
 		_buttonFlags.firstDraw = 1;
-		self.backgroundColor = [NSColor clearColor];
+		self.backgroundColor = [TUIColor clearColor];
 		self.needsDisplayWhenWindowsKeyednessChanges = YES;
 		self.reversesTitleShadowWhenHighlighted = NO;
 	}
@@ -50,14 +51,15 @@
 }
 
 
-+ (instancetype)button
++ (id)button
 {
 	return [self buttonWithType:TUIButtonTypeCustom];
 }
 
-+ (instancetype)buttonWithType:(TUIButtonType)buttonType
++ (id)buttonWithType:(TUIButtonType)buttonType
 {
 	TUIButton *b = [[self alloc] initWithFrame:CGRectZero];
+    b->_buttonFlags.buttonType = buttonType;
 	return b;
 }
 
@@ -79,9 +81,6 @@
 - (void)setTitleEdgeInsets:(TUIEdgeInsets)i
 {
 	_titleEdgeInsets = i;
-	if (_imageView != nil) {
-		_imageView.frame = TUIEdgeInsetsInsetRect(self.bounds, self.imageEdgeInsets);
-	}
 }
 
 - (TUIEdgeInsets)titleEdgeInsets
@@ -99,7 +98,7 @@
 	if(!_titleView) {
 		_titleView = [[TUILabel alloc] initWithFrame:CGRectZero];
 		_titleView.userInteractionEnabled = NO;
-		_titleView.backgroundColor = [NSColor clearColor];
+		_titleView.backgroundColor = [TUIColor clearColor];
 		_titleView.hidden = YES; // we'll be drawing it ourselves
 		[self addSubview:_titleView];
 	}
@@ -109,9 +108,9 @@
 - (TUIImageView *)imageView
 {
 	if(!_imageView) {
-		_imageView = [[TUIImageView alloc] initWithFrame:TUIEdgeInsetsInsetRect(self.bounds, self.imageEdgeInsets)];
-		_imageView.backgroundColor = [NSColor clearColor];
-		[self addSubview:_imageView];
+		_imageView = [[TUIImageView alloc] initWithFrame:CGRectZero];
+		_imageView.backgroundColor = [TUIColor clearColor];
+		_imageView.hidden = YES;
 	}
 	return _imageView;
 }
@@ -162,8 +161,20 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 	return r;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size {
-	return self.currentImage.size;
+- (CGSize)sizeThatFits:(CGSize)size
+{
+    TUIImage *image = self.currentImage;
+    NSString *title = self.currentTitle;
+    
+    CGSize imageSize = image ? image.size : CGSizeZero;
+    imageSize.width += _imageEdgeInsets.left + _imageEdgeInsets.right;
+    imageSize.height += _imageEdgeInsets.top + _imageEdgeInsets.bottom;
+    
+    CGSize titleSize = title ? [title ab_sizeWithFont:self.titleLabel.font] : CGSizeZero;
+    titleSize.width += _titleEdgeInsets.left + _titleEdgeInsets.right;
+    titleSize.height += _titleEdgeInsets.top + _titleEdgeInsets.bottom;
+    
+    return CGSizeMake(MAX(imageSize.width, titleSize.width), MAX(imageSize.height, titleSize.height));
 }
 
 
@@ -175,7 +186,7 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 	}
 	
 	CGRect bounds = self.bounds;
-
+    
 	BOOL key = [self.nsView isWindowKey];
 	BOOL down = self.state == TUIControlStateHighlighted;
 	CGFloat alpha = (self.buttonType == TUIButtonTypeCustom ? 1.0 : down?0.7:1.0);
@@ -187,14 +198,14 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 		CGContextFillRect(TUIGraphicsGetCurrentContext(), self.bounds);
 	}
 	
-	NSImage *backgroundImage = self.currentBackgroundImage;
-	NSImage *image = self.currentImage;
+	TUIImage *backgroundImage = self.currentBackgroundImage;
+	TUIImage *image = self.currentImage;
 	
-	[backgroundImage drawInRect:[self backgroundRectForBounds:bounds] fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+	[backgroundImage drawInRect:[self backgroundRectForBounds:bounds] blendMode:kCGBlendModeNormal alpha:1.0];
 	
 	if(image) {
 		CGRect imageRect;
-		if([image isKindOfClass:[TUIStretchableImage class]]) {
+		if(image.leftCapWidth || image.topCapHeight) {
 			// stretchable
 			imageRect = self.bounds;
 		} else {
@@ -208,25 +219,24 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 			b.size.height -= _imageEdgeInsets.bottom + _imageEdgeInsets.top;
 			imageRect = ButtonRectRoundOrigin(ButtonRectCenteredInRect(imageRect, b));
 		}
-
-		[image drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:alpha];
+		[image drawInRect:imageRect blendMode:kCGBlendModeNormal alpha:alpha];
 	}
 	
 	NSString *title = self.currentTitle;
 	if(title != nil) {
-		self.titleLabel.text = title;
+		_titleView.text = title;
 	}
 	
-	NSColor *color = self.currentTitleColor;
+	TUIColor *color = self.currentTitleColor;
 	if(color != nil) {
-		self.titleLabel.textColor = color;
+		_titleView.textColor = color;
 	}
 	
-	NSColor *shadowColor = self.currentTitleShadowColor;
-	// they may have manually set the renderer's shadow color, in which case we 
+	TUIColor *shadowColor = self.currentTitleShadowColor;
+	// they may have manually set the renderer's shadow color, in which case we
 	// don't want to reset it to nothing
 	if(shadowColor != nil) {
-		self.titleLabel.renderer.shadowColor = shadowColor;
+		_titleView.renderer.shadowColor = shadowColor;
 	}
 	
 	CGContextRef ctx = TUIGraphicsGetCurrentContext();
@@ -236,16 +246,15 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 		CGContextSetAlpha(ctx, 0.5);
 	CGRect titleFrame = self.bounds;
 	titleFrame.size.width -= (_titleEdgeInsets.left + _titleEdgeInsets.right);
-	titleFrame.size.height -= (_titleEdgeInsets.top + _titleEdgeInsets.bottom);
-	self.titleLabel.frame = titleFrame;
-	[self.titleLabel drawRect:self.titleLabel.bounds];
+	_titleView.frame = titleFrame;
+	[_titleView drawRect:_titleView.bounds];
 	CGContextRestoreGState(ctx);
 }
 
 - (void)mouseDown:(NSEvent *)event
 {
 	[super mouseDown:event];
-
+    
 	if(popUpMenu) { // happens even if clickCount is big
 		NSMenu *menu = popUpMenu;
 		NSPoint p = [self frameInNSView].origin;

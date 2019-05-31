@@ -20,9 +20,9 @@
 
 @synthesize rangeValue;
 
-+ (instancetype)valueWithRange:(NSRange)r
++ (id)valueWithRange:(NSRange)r
 {
-	ABFlavoredRange *f = [[self alloc] init];
+	ABFlavoredRange *f = [[ABFlavoredRange alloc] init];
 	f.rangeValue = r;
 	return f;
 }

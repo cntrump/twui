@@ -26,7 +26,7 @@
 /*
  * Returns an action initialized with <initWithAction:>.
  */
-+ (instancetype)actionWithAction:(id<CAAction>)innerAction;
++ (id)actionWithAction:(id<CAAction>)innerAction;
 
 /*
  * Whether objects of this class add features to actions for the given key.

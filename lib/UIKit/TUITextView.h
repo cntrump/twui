@@ -19,19 +19,21 @@
 #import "TUIAttributedString.h"
 
 @class TUITextEditor;
-@class NSFont;
+@class TUIFont;
+@class TUIColor;
 
 @protocol TUITextViewDelegate;
 
-@interface TUITextView : TUIControl {
-	__weak id<TUITextViewDelegate> delegate;
+@interface TUITextView : TUIControl
+{
+	id<TUITextViewDelegate> __weak delegate;
 	TUIViewDrawRect drawFrame;
 	
 	NSString *placeholder;
 	TUITextRenderer *placeholderRenderer;
 	
-	NSFont *font;
-	NSColor *textColor;
+	TUIFont *font;
+	TUIColor *textColor;
 	TUITextAlignment textAlignment;
 	BOOL editable;
 	
@@ -65,10 +67,8 @@
 
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, copy) NSString *placeholder;
-@property (nonatomic, strong) NSFont *font;
-@property (nonatomic, strong) NSColor *textColor;
-@property (nonatomic, strong) NSColor *cursorColor;
-@property (nonatomic, assign) CGFloat cursorWidth;
+@property (nonatomic, strong) TUIFont *font;
+@property (nonatomic, strong) TUIColor *textColor;
 @property (nonatomic, assign) TUITextAlignment textAlignment;
 @property (nonatomic, assign) TUIEdgeInsets contentInset;
 
@@ -100,7 +100,10 @@
 
 @end
 
+TUI_EXTERN_C_BEGIN
 
-extern TUIViewDrawRect TUITextViewSearchFrame(void);
-extern TUIViewDrawRect TUITextViewSearchFrameOverDark(void);
-extern TUIViewDrawRect TUITextViewStandardFrame(void);
+TUIViewDrawRect TUITextViewSearchFrame(void);
+TUIViewDrawRect TUITextViewSearchFrameOverDark(void);
+TUIViewDrawRect TUITextViewStandardFrame(void);
+
+TUI_EXTERN_C_END

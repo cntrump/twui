@@ -11,6 +11,7 @@
 
 #import "TUIScrollView+TUIBridgedScrollView.h"
 #import "TUIView+TUIBridgedView.h"
+#import <objc/runtime.h>
 
 @implementation TUIScrollView (TUIBridgedScrollView)
 
@@ -22,11 +23,11 @@
 
 #pragma mark TUIBridgedScrollView
 
-- (void)scrollToPoint:(CGPoint)point; {
+- (void)scrollToPoint:(CGPoint)point {
 	[self setContentOffset:point animated:YES];
 }
 
-- (void)scrollToIncludeRect:(CGRect)rect; {
+- (void)scrollToIncludeRect:(CGRect)rect {
 	[self scrollRectToVisible:rect animated:YES];
 }
 

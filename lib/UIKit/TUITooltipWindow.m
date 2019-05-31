@@ -17,6 +17,7 @@
 #import "TUITooltipWindow.h"
 #import "TUIAttributedString.h"
 #import "TUICGAdditions.h"
+#import "TUIFont.h"
 #import "TUIStringDrawing.h"
 
 #define TOOLTIP_HEIGHT 18
@@ -38,14 +39,12 @@ static NSTimer *FadeOutTimer = nil;
 	
 	CGContextRef ctx = TUIGraphicsGetCurrentContext();
 	
-	CGContextSaveGState(ctx);
-	CGFloat _a[] = {1.0, 1.0, 198/255., 1.0};
-	CGFloat _b[] = {1.0, 1.0, 158/255., 1.0};
-	CGContextClipToRoundRect(ctx, b, 2);
-	CGContextDrawLinearGradientBetweenPoints(ctx, CGPointMake(0, b.size.height), _a, CGPointMake(0, 0), _b);
-	CGContextRestoreGState(ctx);
-	
-	[CurrentTooltipString ab_drawInRect:CGRectMake(0, -2, b.size.width, b.size.height)];
+    CGContextSetFillColorWithColor(ctx, [TUIColor colorWithWhite:228./255 alpha:1.0].CGColor);
+    CGContextFillRect(ctx, b);
+    
+    CGSize size = [CurrentTooltipString ab_size];
+    
+	[CurrentTooltipString ab_drawInRect:ABIntegralRectWithSizeCenteredInRect(size, b)];
 }
 
 @end
@@ -59,9 +58,9 @@ static NSTimer *FadeOutTimer = nil;
 	if(!w) {
 		NSRect r = NSMakeRect(0, 0, 10, TOOLTIP_HEIGHT);
 		w = [[TUITooltipWindow alloc] initWithContentRect:r
-												 styleMask:NSBorderlessWindowMask 
-												   backing:NSBackingStoreBuffered
-													 defer:NO];
+                                                styleMask:NSBorderlessWindowMask
+                                                  backing:NSBackingStoreBuffered
+                                                    defer:NO];
 		[w setLevel:NSPopUpMenuWindowLevel];
 		[w setOpaque:NO];
 		[w setBackgroundColor:[NSColor clearColor]];
@@ -126,7 +125,7 @@ static BOOL ShowingTooltip = NO;
 + (void)updateTooltip:(NSString *)s delay:(NSTimeInterval)delay
 {
 	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_beginTooltip) object:nil];
-
+    
 	if(s) {
 		if(FadeOutTimer || ShowingTooltip) {
 			// quick switch
@@ -139,9 +138,9 @@ static BOOL ShowingTooltip = NO;
 		}
 		
 		CurrentTooltipString = [TUIAttributedString stringWithString:s];
-		CurrentTooltipString.font = [NSFont fontWithName:@"HelveticaNeue" size:11];
+		CurrentTooltipString.font = [TUIFont fontWithName:@"HelveticaNeue" size:11];
 		CurrentTooltipString.kerning = 0.2;
-		[CurrentTooltipString setAlignment:TUITextAlignmentCenter lineBreakMode:TUILineBreakModeClip];
+		[CurrentTooltipString setAlignment:TUITextAlignmentLeft lineBreakMode:TUILineBreakModeClip];
 	} else {
 		if(ShowingTooltip) {
 			// fade out

@@ -23,11 +23,11 @@
 
 #pragma mark TUIBridgedScrollView
 
-- (void)scrollToPoint:(CGPoint)point; {
+- (void)scrollToPoint:(CGPoint)point {
 	[self.contentView scrollToPoint:point];
 }
 
-- (void)scrollToIncludeRect:(CGRect)rect; {
+- (void)scrollToIncludeRect:(CGRect)rect {
 	[self.contentView scrollToIncludeRect:rect];
 }
 

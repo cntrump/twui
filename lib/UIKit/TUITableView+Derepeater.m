@@ -15,6 +15,7 @@
  */
 
 #import "TUITableView.h"
+#import "TUITableView+Derepeater.h"
 
 @implementation TUITableView (Derepeater)
 

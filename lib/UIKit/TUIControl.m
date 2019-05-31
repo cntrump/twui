@@ -143,8 +143,8 @@
 	
 	if(_controlFlags.tracking) {
 		TUIControlEvents currentEvents = (([event clickCount] >= 2) ?
-										  TUIControlEventMouseDownRepeat :
-										  TUIControlEventMouseDown);
+                                          TUIControlEventTouchDownRepeat :
+                                          TUIControlEventTouchDown);
 		
 		[self sendActionsForControlEvents:currentEvents];
 		[self setNeedsDisplay];
@@ -170,8 +170,8 @@
 		
 		if(_controlFlags.tracking) {
 			TUIControlEvents currentEvents = (([self eventInside:event])?
-											  TUIControlEventMouseDragInside :
-											  TUIControlEventMouseDragOutside);
+                                              TUIControlEventTouchUpInside :
+                                              TUIControlEventTouchUpOutside);
 			
 			[self sendActionsForControlEvents:currentEvents];
 			[self setNeedsDisplay];
@@ -189,8 +189,8 @@
 		[self endTrackingWithEvent:event];
 		
 		TUIControlEvents currentEvents = (([self eventInside:event])?
-										  TUIControlEventMouseUpInside :
-										  TUIControlEventMouseUpOutside);
+                                          TUIControlEventTouchUpInside :
+                                          TUIControlEventTouchUpOutside);
 		
 		[self sendActionsForControlEvents:currentEvents];
 		[self setNeedsDisplay];

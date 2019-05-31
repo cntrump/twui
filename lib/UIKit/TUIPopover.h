@@ -18,6 +18,7 @@
 
 @class TUIPopover;
 @class TUIViewController;
+@class TUIColor;
 
 enum _TUIPopoverViewControllerBehaviour
 {
@@ -33,7 +34,7 @@ typedef void (^TUIPopoverDelegateBlock)(TUIPopover *popover);
 @interface TUIPopover : NSResponder
 
 @property (nonatomic, strong) TUIViewController *contentViewController;
-@property (nonatomic, strong) Class backgroundViewClass; //Must be a subclass of TUIPopoverBackgroundView
+@property (nonatomic, weak) Class backgroundViewClass; //Must be a subclass of TUIPopoverBackgroundView
 @property (nonatomic, assign) CGSize contentSize; //CGSizeZero uses the size of the view on contentViewController
 @property (nonatomic, assign) BOOL animates;
 @property (nonatomic, assign) TUIPopoverViewControllerBehaviour behaviour;
@@ -67,7 +68,7 @@ typedef void (^TUIPopoverDelegateBlock)(TUIPopover *popover);
 - (CGPathRef)newPopoverPathForEdge:(CGRectEdge)popoverEdge inFrame:(CGRect)frame; //override in subclasses to change the shape of the popover, but still use the default drawing.
 
 //Used in the default implementation
-@property (nonatomic, strong) NSColor *strokeColor;
-@property (nonatomic, strong) NSColor *fillColor;
+@property (nonatomic, strong) TUIColor *strokeColor;
+@property (nonatomic, strong) TUIColor *fillColor;
     
 @end

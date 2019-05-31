@@ -1,4 +1,5 @@
 #import "TUILayoutConstraint.h"
+#import "TUILayoutManager.h"
 #import "TUIView.h"
 
 @interface TUIView (Layout_Private)
@@ -30,7 +31,7 @@
 
 @property (nonatomic, copy) TUILayoutTransformer transformer;
 
-+ (instancetype)transformerWithBlock:(TUILayoutTransformer)block;
++ (id)transformerWithBlock:(TUILayoutTransformer)block;
 - (instancetype)initWithBlock:(TUILayoutTransformer)block;
 
 @end
@@ -44,20 +45,20 @@
 @synthesize offset = _offset;
 @synthesize valueTransformer = _valueTransformer;
 
-+ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)srcLayer
                     attribute:(TUILayoutConstraintAttribute)srcAttr {
 	return [self constraintWithAttribute:attr relativeTo:srcLayer attribute:srcAttr scale:1.0f offset:0.0f];
 }
 
-+ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)srcLayer
                     attribute:(TUILayoutConstraintAttribute)srcAttr
                        offset:(CGFloat)offset {
 	return [self constraintWithAttribute:attr relativeTo:srcLayer attribute:srcAttr scale:1.0f offset:offset];
 }
 
-+ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)source
                     attribute:(TUILayoutConstraintAttribute)srcAttr
                         scale:(CGFloat)scale
@@ -65,7 +66,7 @@
 	return [[TUILayoutConstraint alloc] initWithAttribute:attr relativeTo:source attribute:srcAttr scale:scale offset:offset];
 }
 
-+ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                     relativeTo:(NSString *)srcLayer
                     attribute:(TUILayoutConstraintAttribute)srcAttr
              blockTransformer:(TUILayoutTransformer)transformer {
@@ -73,7 +74,7 @@
 	return [self constraintWithAttribute:attr relativeTo:srcLayer attribute:srcAttr valueTransformer:t];
 }
 
-+ (instancetype)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
++ (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)srcLayer
                     attribute:(TUILayoutConstraintAttribute)srcAttr
              valueTransformer:(NSValueTransformer *)transformer {
@@ -159,7 +160,7 @@
 
 @synthesize transformer = _transformer;
 
-+ (instancetype)transformerWithBlock:(TUILayoutTransformer)block {
++ (id)transformerWithBlock:(TUILayoutTransformer)block {
 	return [[self alloc] initWithBlock:block];
 }
 

@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CB5B264B13BE6DA200579B1E"
+               BlueprintIdentifier = "73305F8322A0D78B006325A0"
                BuildableName = "TwUI.framework"
                BlueprintName = "TwUI"
                ReferencedContainer = "container:TwUI.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CB5B264B13BE6DA200579B1E"
+            BlueprintIdentifier = "73305F8322A0D78B006325A0"
             BuildableName = "TwUI.framework"
             BlueprintName = "TwUI"
             ReferencedContainer = "container:TwUI.xcodeproj">
@@ -63,7 +63,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CB5B264B13BE6DA200579B1E"
+            BlueprintIdentifier = "73305F8322A0D78B006325A0"
             BuildableName = "TwUI.framework"
             BlueprintName = "TwUI"
             ReferencedContainer = "container:TwUI.xcodeproj">

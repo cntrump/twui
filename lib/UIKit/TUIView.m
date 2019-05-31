@@ -14,16 +14,33 @@
  limitations under the License.
  */
 
-#import <pthread.h>
-#import "NSColor+TUIExtensions.h"
-#import "TUICGAdditions.h"
 #import "TUIView.h"
+#import <pthread.h>
+#import "TUICGAdditions.h"
+#import "TUIColor.h"
+#import "TUIImage.h"
 #import "TUILayoutManager.h"
 #import "TUINSView.h"
-#import "TUINSView+Private.h"
 #import "TUINSWindow.h"
 #import "TUITextRenderer.h"
+#import "TUIView+Private.h"
+#import "TUIView+TUIBridgedView.h"
 #import "TUIViewController.h"
+
+static NSString * TUIViewBlendingModeToString[TUIViewBlendingModeCount] = {
+    [TUIViewBlendingModeNormal] = @"normalBlendMode",
+    [TUIViewBlendingModeDarken] = @"darkenBlendMode",
+    [TUIViewBlendingModeMultiply] = @"multiplyBlendMode",
+    [TUIViewBlendingModeColorBurn] = @"colorBurnBlendMode",
+    [TUIViewBlendingModeLighten] = @"lightenBlendMode",
+    [TUIViewBlendingModeScreen] = @"screenBlendMode",
+    [TUIViewBlendingModeColorDodge] = @"colorDodgeBlendMode",
+    [TUIViewBlendingModeOverlay] = @"overlayBlendMode",
+    [TUIViewBlendingModeSoftLight] = @"softLightBlendMode",
+    [TUIViewBlendingModeHardLight] = @"hardLightBlendMode",
+    [TUIViewBlendingModeDifference] = @"differenceBlendMode",
+    [TUIViewBlendingModeExclusion] = @"exclusionBlendMode",
+};
 
 /*
  * Enable this to debug blending.
@@ -40,6 +57,43 @@ NSString * const TUIViewFrameDidChangeNotification = @"TUIViewFrameDidChangeNoti
 CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 
 @class TUIViewController;
+
+static pthread_key_t TUICurrentContextScaleFactorTLSKey;
+static pthread_key_t TUICurrentContextDisplayIDTLSKey;
+
+TUI_EXTERN_C_BEGIN
+
+CGFloat TUICurrentContextScaleFactor(void)
+{
+    /*
+     Key is set up in +initialize
+     Use TLS rather than a simple global so drawsInBackground should continue to work (views in the same process may be drawing destined for different windows on different screens with different scale factors).
+     */
+    CGFloat *v = (CGFloat *)pthread_getspecific(TUICurrentContextScaleFactorTLSKey);
+    if(v)
+        return *v;
+    return 1.0;
+}
+
+void TUISetCurrentContextScaleFactor(CGFloat s)
+{
+    CGFloat *v = (CGFloat *)pthread_getspecific(TUICurrentContextScaleFactorTLSKey);
+    if(!v) {
+        v = (CGFloat *)malloc(sizeof(CGFloat));
+        pthread_setspecific(TUICurrentContextScaleFactorTLSKey, v);
+    }
+    *v = s;
+}
+
+CGDirectDisplayID TUICurrentContextDisplayID(void)
+{
+    CGDirectDisplayID *v = (CGDirectDisplayID *)pthread_getspecific(TUICurrentContextDisplayIDTLSKey);
+    if(v)
+        return *v;
+    return 0;
+}
+
+TUI_EXTERN_C_END
 
 @interface CALayer (TUIViewAdditions)
 @property (nonatomic, readonly) TUIView *associatedView;
@@ -110,12 +164,11 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 	}
 }
 
-static pthread_key_t TUICurrentContextScaleFactorTLSKey;
-
 + (void)initialize
 {
 	if(self == [TUIView class]) {
 		pthread_key_create(&TUICurrentContextScaleFactorTLSKey, free);
+        pthread_key_create(&TUICurrentContextDisplayIDTLSKey, free);
 
 		TUIViewCenteredLayout = [^(TUIView *v) {
 			TUIView *superview = v.superview;
@@ -138,8 +191,6 @@ static pthread_key_t TUICurrentContextScaleFactorTLSKey;
 {
     [[TUILayoutManager sharedLayoutManager] removeLayoutConstraintsFromView:self];
     [[TUILayoutManager sharedLayoutManager] setLayoutName:nil forView:self];
-
-	if (self.nsView.trackingView == self) self.nsView.trackingView = nil;
     
 	[self setTextRenderers:nil];
 	_layer.delegate = nil;
@@ -147,6 +198,12 @@ static pthread_key_t TUICurrentContextScaleFactorTLSKey;
 		CGContextRelease(_context.context);
 		_context.context = NULL;
 	}
+    
+    for (TUIView * view in _subviews) {
+        if (view.nextResponder == self) {
+            [view _superSetNextResponder:nil];
+        }
+    }
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -166,9 +223,14 @@ static pthread_key_t TUICurrentContextScaleFactorTLSKey;
 {
 	if(!_layer) {
 		_layer = [[[[self class] layerClass] alloc] init];
-		_layer.delegate = (id<CALayerDelegate>)self;
+		_layer.delegate = self;
 		_layer.opaque = YES;
 		_layer.needsDisplayOnBoundsChange = YES;
+        
+        if (AtLeastLion) {
+            _layer.shouldRasterize = NO;
+//            _layer.contentsScale = [[NSScreen mainScreen] backingScaleFactor];
+        }
 	}
 	return _layer;
 }
@@ -245,16 +307,18 @@ static pthread_key_t TUICurrentContextScaleFactorTLSKey;
 
 - (void)windowDidBecomeKey
 {
-	if(self.needsDisplayWhenWindowsKeyednessChanges)
+	if(self.needsDisplayWhenWindowsKeyednessChanges) {
 		[self setNeedsDisplay];
+	}
 	
 	[self.subviews makeObjectsPerformSelector:@selector(windowDidBecomeKey)];
 }
 
 - (void)windowDidResignKey
 {
-	if(self.needsDisplayWhenWindowsKeyednessChanges)
+	if(self.needsDisplayWhenWindowsKeyednessChanges) {
 		[self setNeedsDisplay];
+	}
 	
 	[self.subviews makeObjectsPerformSelector:@selector(windowDidResignKey)];
 }
@@ -290,12 +354,14 @@ static pthread_key_t TUICurrentContextScaleFactorTLSKey;
 	NSInteger h = b.size.height;
 	BOOL o = self.opaque;
 	CGFloat currentScale = [self.layer respondsToSelector:@selector(contentsScale)] ? self.layer.contentsScale : 1.0f;
+    CGDirectDisplayID displayID = TUICurrentContextDisplayID();
 	
 	if(_context.context) {
 		// kill if we're a different size
 		if(w != _context.lastWidth || 
 		   h != _context.lastHeight ||
 		   o != _context.lastOpaque ||
+           displayID != _context.lastDisplayID ||
 		   fabs(currentScale - _context.lastContentsScale) > 0.1f) 
 		{
 			CGContextRelease(_context.context);
@@ -309,6 +375,7 @@ static pthread_key_t TUICurrentContextScaleFactorTLSKey;
 		_context.lastHeight = h;
 		_context.lastOpaque = o;
 		_context.lastContentsScale = currentScale;
+        _context.lastDisplayID = displayID;
 
 		b.size.width *= currentScale;
 		b.size.height *= currentScale;
@@ -321,30 +388,22 @@ static pthread_key_t TUICurrentContextScaleFactorTLSKey;
 	return _context.context;
 }
 
-CGFloat TUICurrentContextScaleFactor(void)
+void TUISetCurrentContextDisplayID(CGDirectDisplayID displayID)
 {
-	/*
-	 Key is set up in +initialize
-	 Use TLS rather than a simple global so drawsInBackground should continue to work (views in the same process may be drawing destined for different windows on different screens with different scale factors).
-	 */
-	CGFloat *v = (CGFloat *)pthread_getspecific(TUICurrentContextScaleFactorTLSKey);
-	if(v)
-		return *v;
-	return 1.0;
-}
-
-static void TUISetCurrentContextScaleFactor(CGFloat s)
-{
-	CGFloat *v = (CGFloat *)pthread_getspecific(TUICurrentContextScaleFactorTLSKey);
-	if(!v) {
-		v = (CGFloat *)malloc(sizeof(CGFloat));
-		pthread_setspecific(TUICurrentContextScaleFactorTLSKey, v);
-	}
-	*v = s;
+    CGDirectDisplayID *v = (CGDirectDisplayID *)pthread_getspecific(TUICurrentContextDisplayIDTLSKey);
+    if(!v) {
+        v = (CGDirectDisplayID *)malloc(sizeof(CGDirectDisplayID));
+        pthread_setspecific(TUICurrentContextDisplayIDTLSKey, v);
+    }
+    *v = displayID;
 }
 
 - (void)displayLayer:(CALayer *)layer
 {
+	if (_viewFlags.delegateWillDisplayLayer) {
+		[_viewDelegate viewWillDisplayLayer:self];
+	}
+	
 	typedef void (*DrawRectIMP)(id,SEL,CGRect);
 	SEL drawRectSEL = @selector(drawRect:);
 	DrawRectIMP drawRectIMP = (DrawRectIMP)[self methodForSelector:drawRectSEL];
@@ -355,32 +414,34 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 		return;
 	}
 
-	void (^drawBlock)(void) = ^{
-        if (self->_viewFlags.delegateWillDisplayLayer) {
-            [self->_viewDelegate viewWillDisplayLayer:self];
-		}
+	CGRect rectToDraw = self.bounds;
+	if (!CGRectIsEmpty(_context.dirtyRect)) {
+		rectToDraw = _context.dirtyRect;
+		_context.dirtyRect = CGRectZero;
+	}
 
-		CGRect rectToDraw = self.bounds;
-        if (!CGRectEqualToRect(self->_context.dirtyRect, CGRectZero)) {
-            rectToDraw = self->_context.dirtyRect;
-            self->_context.dirtyRect = CGRectZero;
-		}
+	void (^drawBlock)(void) = ^{
+        CGDirectDisplayID displayID = self.displayID;
+        if (displayID) {
+            TUISetCurrentContextDisplayID(displayID);
+        }
 
 		CGContextRef context = [self _CGContext];
 		TUIGraphicsPushContext(context);
-
-		CGFloat scale = [self.layer respondsToSelector:@selector(contentsScale)] ? self.layer.contentsScale : 1.0f;
+        
+        CGFloat scale = [self.layer respondsToSelector:@selector(contentsScale)] ? self.layer.contentsScale : 1.0f;
 		TUISetCurrentContextScaleFactor(scale);
+        
 		CGContextScaleCTM(context, scale, scale);
-
+        
         if (self->_viewFlags.clearsContextBeforeDrawing) {
 			CGContextClearRect(context, rectToDraw);
 		}
-
+        
 		CGContextSetAllowsAntialiasing(context, true);
 		CGContextSetShouldAntialias(context, true);
         CGContextSetShouldSmoothFonts(context, !self->_viewFlags.disableSubpixelTextRendering);
-
+        
 		if (self.drawRect) {
 			// drawRect is implemented via a block
 			self.drawRect(self, rectToDraw);
@@ -394,14 +455,24 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 			CGContextSetRGBFillColor(context, 0, 1, 0, 0.3);
 		} else {
 			CGContextSetRGBFillColor(context, 1, 0, 0, 0.3);
+			CGContextFillRect(context, rectToDraw);
 		}
-		CGContextFillRect(context, rectToDraw);
 		#endif
 
-		layer.contents = TUIGraphicsGetImageFromCurrentImageContext();
+		TUIImage *image = TUIGraphicsGetImageFromCurrentImageContext();
+		layer.contents = (id)image.CGImage;
 		CGContextScaleCTM(context, 1.0f / scale, 1.0f / scale);
 		TUIGraphicsPopContext();
-
+        
+        if (!self.cachesCGContext)
+        {
+            if (self->_context.context)
+            {
+                CGContextRelease(self->_context.context);
+                self->_context.context = NULL;
+            }
+        }
+        
 		if (self.drawInBackground) [CATransaction flush];
 	};
 	
@@ -413,13 +484,8 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 		} else {
 			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), drawBlock);
 		}
-	} else if ([NSThread isMainThread] || dispatch_get_current_queue() == dispatch_get_main_queue()) {
-		drawBlock();
 	} else {
-		// On Mac OS X 10.6 (and possibly other versions), spinning a run loop in
-		// a background thread can result in -displayLayer: calls, so make sure we
-		// only invoke -drawRect: on the main thread.
-		dispatch_async(dispatch_get_main_queue(), drawBlock);
+		drawBlock();
 	}
 }
 
@@ -533,7 +599,6 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 	_currentTextRenderer = nil;
 	
 	for(TUITextRenderer *renderer in _textRenderers) {
-		renderer.view = nil;
 		[renderer setNextResponder:nil];
 	}
 	
@@ -541,7 +606,6 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 
 	for(TUITextRenderer *renderer in _textRenderers) {
 		[renderer setNextResponder:self];
-		renderer.view = self;
 	}
 }
 
@@ -565,10 +629,36 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 		}
 		
 		if([self.layer respondsToSelector:@selector(setContentsScale:)]) {
-			self.layer.contentsScale = scale;
-			[self setNeedsDisplay];
+            if (self.layer.contentsScale != scale) {
+                self.layer.contentsScale = scale;
+                [self setNeedsDisplay];
+            }
 		}
 	}
+}
+
+- (void)_updateDisplayID
+{
+    if([self nsWindow] != nil) {
+        [self.subviews makeObjectsPerformSelector:_cmd];
+        
+        NSNumber * screenNumber = self.nsWindow.screen.deviceDescription[@"NSScreenNumber"];
+        if ([screenNumber respondsToSelector:@selector(integerValue)]) {
+            _displayID = (CGDirectDisplayID)[screenNumber integerValue];
+        } else {
+            _displayID = kCGNullDirectDisplay;
+        }
+    }
+}
+
+- (void)setDisplayID:(CGDirectDisplayID)displayID
+{
+    _displayID = displayID;
+}
+
+- (CGDirectDisplayID)displayID
+{
+    return _displayID;
 }
 
 - (void)prepareSubview:(TUIView *)view insertionBlock:(void (^)(void))block
@@ -585,7 +675,8 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 	[view willMoveToTUINSView:_nsView];
 	[view willMoveToSuperview:self];
 	view.nsView = _nsView;
-
+    view.appearance = self.appearance;
+    
 	block();
 
 	[self didAddSubview:view];
@@ -594,6 +685,29 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 
 	[view setNextResponder:self];
 	[self _blockLayout];
+}
+
+- (void)setAppearance:(TUIAppearance *)appearance
+{
+    if (_appearance != appearance) {
+        _appearance = appearance;
+        
+        [self appearanceDidUpdate];
+    }
+}
+
+- (void)appearanceDidUpdate
+{
+    
+}
+
+- (void)setAppearanceForViewHierarchy:(TUIAppearance *)appearance
+{
+    self.appearance = appearance;
+    
+    for (TUIView * v in self.subviews) {
+        [v setAppearanceForViewHierarchy:appearance];
+    }
 }
 
 @end
@@ -748,7 +862,7 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 - (void)_cleanupResponderChain // called when a view is about to be removed from the heirarchy
 {
 	[self.subviews makeObjectsPerformSelector:@selector(_cleanupResponderChain)]; // call this first because subviews may pass first responder responsibility up to the superview
-	
+    
 	NSWindow *window = [self nsWindow];
 	if([window firstResponder] == self) {
 		[window tui_makeFirstResponder:self.superview];
@@ -760,6 +874,7 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 - (void)removeFromSuperview // everything should go through this
 {
 	[self _cleanupResponderChain];
+    [self setNextResponder:nil];
 	
 	TUIView *superview = [self superview];
 	if(superview) {
@@ -833,6 +948,11 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 	}
 }
 
+- (void)_superSetNextResponder:(NSResponder *)responder
+{
+    [super setNextResponder:responder];
+}
+
 - (void)addSubview:(TUIView *)view
 {
 	if(!view)
@@ -859,7 +979,7 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 		return;
 	
 	[self prepareSubview:view insertionBlock:^{
-		[self.subviews insertObject:view atIndex:siblingIndex + 1];
+		[self.subviews insertObject:view atIndex:siblingIndex];
 		[self.layer insertSublayer:view.layer below:siblingSubview.layer];
 	}];
 }
@@ -871,7 +991,7 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 		return;
 	
 	[self prepareSubview:view insertionBlock:^{
-		[self.subviews insertObject:view atIndex:siblingIndex];
+		[self.subviews insertObject:view atIndex:siblingIndex + 1];
 		[self.layer insertSublayer:view.layer above:siblingSubview.layer];
 	}];
 }
@@ -995,6 +1115,12 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 	[self.layer layoutIfNeeded];
 }
 
+- (void)setEverythingNeedsLayout
+{
+    [self setNeedsLayout];
+	[self.subviews makeObjectsPerformSelector:@selector(setEverythingNeedsLayout)];
+}
+
 - (void)layoutSubviews
 {
 	// subclasses override
@@ -1087,20 +1213,18 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 - (void)setHidden:(BOOL)h
 {
 	self.layer.hidden = h;
-	[self.subviews makeObjectsPerformSelector:@selector(ancestorDidLayout)];
 }
 
-- (NSColor *)backgroundColor
+- (TUIColor *)backgroundColor
 {
-	return [NSColor tui_colorWithCGColor:self.layer.backgroundColor];
+	return [TUIColor colorWithCGColor:self.layer.backgroundColor];
 }
 
-- (void)setBackgroundColor:(NSColor *)color
+- (void)setBackgroundColor:(TUIColor *)color
 {
-	self.layer.backgroundColor = color.tui_CGColor;
+	self.layer.backgroundColor = color.CGColor;
 	if(color.alphaComponent < 1.0)
 		self.opaque = NO;
-
 	[self setNeedsDisplay];
 }
 
@@ -1114,7 +1238,43 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 	_viewFlags.clearsContextBeforeDrawing = newValue;
 }
 
+- (void)setBlendingMode:(TUIViewBlendingMode)blendingMode
+{
+    if (blendingMode <= 0 || blendingMode >= TUIViewBlendingModeCount) {
+        self.layer.compositingFilter = nil;
+    } else {
+        self.layer.compositingFilter = TUIViewBlendingModeToString[blendingMode];
+    }
+}
+
+- (TUIViewBlendingMode)blendingMode
+{
+    static NSDictionary * MapCache = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSMutableDictionary * map = [NSMutableDictionary dictionary];
+        for (NSInteger mode = 0; mode < TUIViewBlendingModeCount; mode++) {
+            NSString * string = TUIViewBlendingModeToString[mode];
+            if (string) {
+                map[string] = @(mode);
+            }
+        }
+        MapCache = map;
+    });
+    id filter = self.layer.compositingFilter;
+    if (!filter) {
+        return TUIViewBlendingModeNormal;
+    }
+    NSNumber * mode = MapCache[filter];
+    if (mode) {
+        return [mode integerValue];
+    }
+    return TUIViewBlendingModeNormal;
+}
+
 @end
+
+#import "TUINSView.h"
 
 @implementation TUIView (TUIViewAppKit)
 

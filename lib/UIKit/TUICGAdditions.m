@@ -15,19 +15,33 @@
  */
 
 #import "TUICGAdditions.h"
+#import "TUIImage.h"
 #import "TUIView.h"
+#import "TUIView+Private.h"
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+TUI_EXTERN_C_BEGIN
     
+CGColorSpaceRef TUICopyCurrentDisplayColorSpace(void)
+{
+    CGDirectDisplayID displayID = TUICurrentContextDisplayID();
+    if (!displayID) {
+        displayID = CGMainDisplayID();
+    }
+    CGColorSpaceRef colorSpace = CGDisplayCopyColorSpace(displayID);
+    if (!colorSpace) {
+        colorSpace = CGColorSpaceCreateDeviceRGB();
+    }
+    return colorSpace;
+}
+
 CGContextRef TUICreateOpaqueGraphicsContext(CGSize size)
 {
 	size_t width = size.width;
 	size_t height = size.height;
 	size_t bitsPerComponent = 8;
 	size_t bytesPerRow = 4 * width;
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGColorSpaceRef colorSpace = TUICopyCurrentDisplayColorSpace();
+
 	CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Host | kCGImageAlphaNoneSkipFirst;
 	CGContextRef ctx = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, bytesPerRow, colorSpace, bitmapInfo);
 	CGColorSpaceRelease(colorSpace);
@@ -40,7 +54,7 @@ CGContextRef TUICreateGraphicsContext(CGSize size)
 	size_t height = size.height;
 	size_t bitsPerComponent = 8;
 	size_t bytesPerRow = 4 * width;
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGColorSpaceRef colorSpace = TUICopyCurrentDisplayColorSpace();
 	// http://www.cocoTUIlder.com/archive/cocoa/228931-sub-pixel-font-smoothing-with-cgbitmapcontext.html
 	// http://developer.apple.com/mac/library/qa/qa2001/qa1037.html
 	CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Host | kCGImageAlphaPremultipliedFirst;
@@ -102,6 +116,56 @@ CGPathRef TUICGPathCreateRoundedRectWithCorners(CGRect rect, CGFloat radius, TUI
 	}
 	
 	return path;
+}
+
+CGPathRef TUICGPathCreateWithBezierPath(NSBezierPath * bezierPath)
+{
+    NSInteger i;
+    
+    // Need to begin a path here.
+    CGPathRef immutablePath = NULL;
+    
+    // Then draw the path elements.
+    NSInteger numElements = [bezierPath elementCount];
+    if (numElements > 0) {
+        CGMutablePathRef path = CGPathCreateMutable();
+        NSPoint points[3];
+        BOOL didClosePath = YES;
+        
+        for (i = 0; i < numElements; i++) {
+            switch ([bezierPath elementAtIndex:i associatedPoints:points]) {
+                case NSMoveToBezierPathElement:
+                    CGPathMoveToPoint(path, NULL, points[0].x, points[0].y);
+                    break;
+                    
+                case NSLineToBezierPathElement:
+                    CGPathAddLineToPoint(path, NULL, points[0].x, points[0].y);
+                    didClosePath = NO;
+                    break;
+                    
+                case NSCurveToBezierPathElement:
+                    CGPathAddCurveToPoint(path, NULL, points[0].x, points[0].y,
+                                          points[1].x, points[1].y,
+                                          points[2].x, points[2].y);
+                    didClosePath = NO;
+                    break;
+                    
+                case NSClosePathBezierPathElement:
+                    CGPathCloseSubpath(path);
+                    didClosePath = YES;
+                    break;
+            }
+        }
+        
+        // Be sure the path is closed or Quartz may not do valid hit detection.
+        if (!didClosePath)
+            CGPathCloseSubpath(path);
+        
+        immutablePath = CGPathCreateCopy(path);
+        CGPathRelease(path);
+    }
+    
+    return immutablePath;
 }
 
 void CGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius)
@@ -182,7 +246,7 @@ void CGContextDrawLinearGradientBetweenPoints(CGContextRef context, CGPoint a, C
 
 CGContextRef TUIGraphicsGetCurrentContext(void)
 {
-	return (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	return (CGContextRef)NSGraphicsContext.currentContext.graphicsPort;
 }
 
 void TUIGraphicsPushContext(CGContextRef context)
@@ -197,11 +261,17 @@ void TUIGraphicsPopContext(void)
 	[NSGraphicsContext restoreGraphicsState];
 }
 
-NSImage *TUIGraphicsContextGetImage(CGContextRef ctx)
+TUIImage* TUIGraphicsContextGetImage(CGContextRef ctx)
 {
 	CGImageRef CGImage = TUICreateCGImageFromBitmapContext(ctx);
-	CGSize size = CGSizeMake(CGImageGetWidth(CGImage), CGImageGetHeight(CGImage));
-	NSImage *image = [[NSImage alloc] initWithCGImage:CGImage size:size];
+    CGFloat scale = 1;
+    CGAffineTransform ctm = CGContextGetCTM(ctx);
+    if (ctm.a == 2 && ctm.d == 2)
+    {
+        scale = 2;
+    }
+    
+	TUIImage *image = [TUIImage imageWithCGImage:CGImage scale:scale];
 	CGImageRelease(CGImage);
     
 	return image;
@@ -209,37 +279,33 @@ NSImage *TUIGraphicsContextGetImage(CGContextRef ctx)
 
 void TUIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale)
 {
-	if (scale == 0.0) {
-		scale = [NSScreen instancesRespondToSelector:@selector(backingScaleFactor)] ? [[NSScreen mainScreen] backingScaleFactor] : 1.0;
-	}
-    
 	size.width *= scale;
 	size.height *= scale;
 	if(size.width < 1) size.width = 1;
 	if(size.height < 1) size.height = 1;
 	CGContextRef ctx = TUICreateGraphicsContextWithOptions(size, opaque);
-	CGContextScaleCTM(ctx, scale, scale);
+    TUISetCurrentContextScaleFactor(scale);
+    CGContextScaleCTM(ctx, scale, scale);
 	TUIGraphicsPushContext(ctx);
 	CGContextRelease(ctx);
 }
 
 void TUIGraphicsBeginImageContext(CGSize size)
 {
-	TUIGraphicsBeginImageContextWithOptions(size, NO, 1.0);
+	TUIGraphicsBeginImageContextWithOptions(size, NO, 1.0f);
 }
 
-NSImage *TUIGraphicsGetImageFromCurrentImageContext(void)
+TUIImage* TUIGraphicsGetImageFromCurrentImageContext(void)
 {
 	return TUIGraphicsContextGetImage(TUIGraphicsGetCurrentContext());
 }
 
-NSImage *TUIGraphicsGetImageForView(TUIView *view)
+TUIImage* TUIGraphicsGetImageForView(TUIView *view)
 {
 	TUIGraphicsBeginImageContext(view.frame.size);
 	[view.layer renderInContext:TUIGraphicsGetCurrentContext()];
-	NSImage *image = TUIGraphicsGetImageFromCurrentImageContext();
+	TUIImage *image = TUIGraphicsGetImageFromCurrentImageContext();
 	TUIGraphicsEndImageContext();
-    
 	return image;
 }
 
@@ -248,14 +314,12 @@ void TUIGraphicsEndImageContext(void)
 	TUIGraphicsPopContext();
 }
 
-NSImage *TUIGraphicsDrawAsImage(CGSize size, void(^draw)(void))
+TUIImage *TUIGraphicsDrawAsImage(CGSize size, void(^draw)(void))
 {
-	TUIGraphicsBeginImageContextWithOptions(size, NO, 0);
+	TUIGraphicsBeginImageContext(size);
 	draw();
-	NSImage *image = TUIGraphicsGetImageFromCurrentImageContext();
+	TUIImage *image = TUIGraphicsGetImageFromCurrentImageContext();
 	TUIGraphicsEndImageContext();
-
-	image.size = size;
 	return image;
 }
 
@@ -275,6 +339,4 @@ NSData* TUIGraphicsDrawAsPDF(CGRect *optionalMediaBox, void(^draw)(CGContextRef)
 	return data;
 }
 
-#if defined(__cplusplus)
-}
-#endif
+TUI_EXTERN_C_END

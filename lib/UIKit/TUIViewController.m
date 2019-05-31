@@ -15,7 +15,6 @@
  */
 
 #import "TUIViewController.h"
-#import "TUIView.h"
 
 @implementation TUIViewController
 
@@ -36,12 +35,6 @@
 {
 	if(!_view) {
 		[self loadView];
-
-        // if subclass do not create a view, create a default one.
-        if (!_view) {
-            [self setupStandardView];
-        }
-
 		[self viewDidLoad];
 		[_view setNextResponder:self];
 	}
@@ -109,10 +102,13 @@
 	return _view.initialFirstResponder;
 }
 
-- (void)setupStandardView
+- (TUIView *)setupStandardView
 {
-    _view = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 500, 500)];
-    _view.backgroundColor = NSColor.whiteColor;
+	TUIView *v = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 500, 500)];
+	v.backgroundColor = [TUIColor colorWithWhite:0.96 alpha:1.0];
+	self.view = v;
+	
+	return v;
 }
 
 @end

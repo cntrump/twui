@@ -14,9 +14,9 @@
  limitations under the License.
  */
 
-#import "TUIView.h"
+@class TUIView;
 
-@interface TUIView (PasteboardDragging)
+@interface TUIView (PasteboardDragging) <NSDraggingSource>
 
 @property (nonatomic, assign) BOOL pasteboardDraggingEnabled; // default NO
 

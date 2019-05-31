@@ -16,8 +16,8 @@
 
 #import "TUIPopover.h"
 #import "CAAnimation+TUIExtensions.h"
-#import "NSColor+TUIExtensions.h"
 #import "TUICGAdditions.h"
+#import "TUIColor.h"
 #import "TUINSView.h"
 #import "TUINSWindow.h"
 #import "TUIViewController.h"
@@ -52,7 +52,7 @@ NSTimeInterval const TUIPopoverDefaultFadeoutDuration = 0.3;
 @interface TUIPopover ()
 
 @property (nonatomic, strong) TUINSWindow *popoverWindow;
-@property (nonatomic, weak) id transientEventMonitor;
+@property (nonatomic, assign) id transientEventMonitor;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) CGSize originalViewSize;
 
@@ -109,7 +109,9 @@ NSTimeInterval const TUIPopoverDefaultFadeoutDuration = 0.3;
 {
     if (self.shown)
         return;
-
+    
+    [self.contentViewController viewWillAppear:YES]; //this will always be animated… in the current implementation
+    
     if (self.willShowBlock != nil)
         self.willShowBlock(self);
     
@@ -139,7 +141,7 @@ NSTimeInterval const TUIPopoverDefaultFadeoutDuration = 0.3;
     CGRect basePositioningRect = [positioningView convertRect:positioningRect toView:nil];
     NSRect windowRelativeRect = [positioningView.nsView convertRect:basePositioningRect toView:nil];
     CGRect screenPositioningRect = windowRelativeRect;
-	screenPositioningRect.origin = [positioningView.nsWindow convertBaseToScreen:windowRelativeRect.origin];
+	screenPositioningRect.origin = [positioningView.nsWindow convertRectToScreen:windowRelativeRect].origin;
     self.originalViewSize = self.contentViewController.view.frame.size;
     CGSize contentViewSize = (CGSizeEqualToSize(self.contentSize, CGSizeZero) ? self.contentViewController.view.frame.size : self.contentSize);
     
@@ -176,7 +178,7 @@ NSTimeInterval const TUIPopoverDefaultFadeoutDuration = 0.3;
     
     //This is as ugly as sin… but it gets the job done. I couldn't think of a nice way to code this but still get the desired behaviour
     __block CGRectEdge popoverEdge = preferredEdge;
-    CGRect (^popoverRect)(void) = ^
+    CGRect (^popoverRect)(void) = ^ 
     {
         CGRectEdge (^nextEdgeForEdge)(CGRectEdge) = ^ (CGRectEdge currentEdge) 
         {
@@ -242,9 +244,7 @@ NSTimeInterval const TUIPopoverDefaultFadeoutDuration = 0.3;
     [positioningView.nsWindow addChildWindow:self.popoverWindow ordered:NSWindowAbove]; 
 	[self.popoverWindow makeKeyAndOrderFront:self];
 	[backgroundView updateMaskLayer];
-
-	[self.contentViewController viewWillAppear:YES];
-
+    
     CABasicAnimation *fadeInAnimation = [CABasicAnimation animationWithKeyPath:@"alphaValue"];
     fadeInAnimation.duration = 0.3;
     fadeInAnimation.tui_completionBlock = ^ {
@@ -389,7 +389,7 @@ CGFloat const TUIPopoverBackgroundViewArrowWidth = 35.0;
 	CGFloat maxY = NSMaxY(contentRect);
 	
 	CGRect windowRect = self.screenOriginRect;
-	windowRect.origin = [self.nsWindow convertScreenToBase:self.screenOriginRect.origin];
+	windowRect.origin = [self.nsWindow convertRectFromScreen:self.screenOriginRect].origin;
 	CGRect originRect = [self convertRect:windowRect fromView:nil]; //hmm as we have no superview at this point is this retarded?
 	CGFloat midOriginY = floor(NSMidY(originRect));
 	CGFloat midOriginX = floor(NSMidX(originRect));
@@ -479,20 +479,20 @@ CGFloat const TUIPopoverBackgroundViewArrowWidth = 35.0;
     
 	_popoverEdge = popoverEdge;
 	_screenOriginRect = originScreenRect;
-	_strokeColor = [NSColor blackColor];
-	_fillColor = [NSColor whiteColor];
+	_strokeColor = [TUIColor blackColor];
+	_fillColor = [TUIColor whiteColor];
 	
-	__block __weak TUIPopoverBackgroundView *weakSelf = self;
+	__weak TUIPopoverBackgroundView *weakSelf = self;
     self.drawRect = ^ (TUIView *view, CGRect rect) 
     {
 		TUIPopoverBackgroundView *strongSelf = weakSelf;
         CGContextRef context = TUIGraphicsGetCurrentContext();
         CGPathRef outerBorder = [strongSelf newPopoverPathForEdge:strongSelf.popoverEdge inFrame:strongSelf.bounds];
-        CGContextSetStrokeColorWithColor(context, strongSelf.strokeColor.tui_CGColor);
+        CGContextSetStrokeColorWithColor(context, strongSelf.strokeColor.CGColor);
         CGContextAddPath(context, outerBorder);
         CGContextStrokePath(context);
         
-        CGContextSetFillColorWithColor(context, strongSelf.fillColor.tui_CGColor);
+        CGContextSetFillColorWithColor(context, strongSelf.fillColor.CGColor);
         CGContextAddPath(context, outerBorder);
         CGContextFillPath(context);
 		
@@ -569,7 +569,7 @@ CGFloat const TUIPopoverBackgroundViewArrowWidth = 35.0;
     [NSGraphicsContext saveGraphicsState];
 	
     
-    CGContextRef context = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef context = (CGContextRef)NSGraphicsContext.currentContext.graphicsPort;
     [[NSColor whiteColor] set];
 	
 	CGRect targetRect = CGRectZero;

@@ -37,7 +37,7 @@
 }
 
 - (void)removeLayoutConstraint:(TUILayoutConstraint *)constraint {
-	[[TUILayoutManager sharedLayoutManager] removeLayoutConstraint:constraint fromView:self];
+    [[TUILayoutManager sharedLayoutManager] removeLayoutConstraint:constraint fromView:self];
 }
 
 - (NSArray *)layoutConstraints {

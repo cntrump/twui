@@ -4,4 +4,76 @@
 
 #ifdef __OBJC__
 	#import <Cocoa/Cocoa.h>
+    #import <Foundation/Foundation.h>
+    #import <CoreFoundation/CoreFoundation.h>
+    #import <AppKit/AppKit.h>
 #endif
+
+#if !defined(TUI_EXTERN)
+#   if defined(__cplusplus)
+#       define TUI_EXTERN extern "C"
+#   else
+#       define TUI_EXTERN extern
+#   endif
+#endif
+
+#if !defined(TUI_EXTERN_C_BEGIN) && !defined(TUI_EXTERN_C_END)
+#   ifdef __cplusplus
+#       define TUI_EXTERN_C_BEGIN extern "C" {
+#       define TUI_EXTERN_C_END   }
+#   else
+#       define TUI_EXTERN_C_BEGIN
+#       define TUI_EXTERN_C_END
+#   endif
+#endif
+
+#import "CAAnimation+TUIExtensions.h"
+#import "CoreText+Additions.h"
+#import "NSClipView+TUIExtensions.h"
+#import "NSScrollView+TUIExtensions.h"
+#import "NSView+TUIExtensions.h"
+#import "NSImage+TUIExtensions.h"
+#import "TUIActivityIndicatorView.h"
+#import "TUIAttributedString.h"
+#import "TUIBridgedScrollView.h"
+#import "TUIBridgedView.h"
+#import "TUIButton.h"
+#import "TUICGAdditions.h"
+#import "TUIColor.h"
+#import "TUIFastIndexPath.h"
+#import "TUIFont.h"
+#import "TUIHostView.h"
+#import "TUIImage.h"
+#import "TUIImageView.h"
+#import "TUILabel.h"
+#import "TUILayoutConstraint.h"
+#import "TUINSView.h"
+#import "TUINSView+Hyperfocus.h"
+#import "TUINSView+NSTextInputClient.h"
+#import "TUINSWindow.h"
+#import "TUIPopover.h"
+#import "TUIProgressBar.h"
+#import "TUIResponder.h"
+#import "TUIScrollView.h"
+#import "TUIScrollView+TUIBridgedScrollView.h"
+#import "TUIStringDrawing.h"
+#import "TUIStyledView.h"
+#import "TUITableView+Additions.h"
+#import "TUITableView.h"
+#import "TUITableViewCell.h"
+#import "TUITableViewSectionHeader.h"
+#import "TUITextEditor.h"
+#import "TUITextField.h"
+#import "TUITextView.h"
+#import "TUIView.h"
+#import "TUIView+Layout.h"
+#import "TUIView+TUIBridgedView.h"
+#import "TUIViewController.h"
+#import "TUIViewNSViewContainer.h"
+#import "TUIVisualEffectView.h"
+
+extern BOOL AtLeastLion; // set at launch
+extern BOOL AtLeastElCapitan; // set at launch
+extern NSInteger OSXMajorVersion;
+extern NSInteger OSXMinorVersion;
+extern NSInteger OSXBugfixVersion;

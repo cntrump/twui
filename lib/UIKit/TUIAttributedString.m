@@ -15,10 +15,15 @@
  */
 
 #import "TUIAttributedString.h"
+#import "TUIFont.h"
+#import "TUIColor.h"
+#import "TUITextAttachment.h"
 
 NSString * const TUIAttributedStringBackgroundColorAttributeName = @"TUIAttributedStringBackgroundColorAttributeName";
 NSString * const TUIAttributedStringBackgroundFillStyleName = @"TUIAttributedStringBackgroundFillStyleName";
 NSString * const TUIAttributedStringPreDrawBlockName = @"TUIAttributedStringPreDrawBlockName";
+NSString * const TUIAttributedStringAttachmentName = @"TUIAttributedStringAttachmentName";
+NSString * const TUITextDefaultForegroundColorAttributeName = @"TUITextDefaultForegroundColorAttributeName";
 
 @implementation TUIAttributedString
 
@@ -36,24 +41,40 @@ NSString * const TUIAttributedStringPreDrawBlockName = @"TUIAttributedStringPreD
 	return NSMakeRange(0, [self length]);
 }
 
-- (void)setFont:(NSFont *)font inRange:(NSRange)range
+- (void)setFont:(TUIFont *)font inRange:(NSRange)range
 {
-	if (font != nil) {
-		// NSFont and CTFont are toll-free bridged.
-		[self addAttribute:(NSString *)kCTFontAttributeName value:font range:range];
-	} else {
-		[self removeAttribute:(NSString *)kCTFontAttributeName range:range];
-	}
+    if (font)
+    {
+        [self addAttribute:(NSString *)kCTFontAttributeName value:(id)[font ctFont] range:range];
+    }
+    else
+    {
+        [self removeAttribute:(NSString *)kCTFontAttributeName range:range];
+    }
 }
 
-- (void)setColor:(NSColor *)color inRange:(NSRange)range
+- (void)setColor:(TUIColor *)color inRange:(NSRange)range
 {
-	[self addAttribute:NSForegroundColorAttributeName value:color range:range];
+    if (color)
+    {
+        [self addAttribute:(NSString *)kCTForegroundColorAttributeName value:(id)[color CGColor] range:range];
+    }
+    else
+    {
+        [self removeAttribute:(NSString *)kCTForegroundColorAttributeName range:range];
+    }
 }
 
 - (void)setShadow:(NSShadow *)shadow inRange:(NSRange)range
 {
-	[self addAttribute:NSShadowAttributeName value:shadow range:range];
+    if (shadow)
+    {
+        [self addAttribute:NSShadowAttributeName value:shadow range:range];
+    }
+    else
+    {
+        [self removeAttribute:NSShadowAttributeName range:range];
+    }
 }
 
 - (void)setKerning:(CGFloat)k inRange:(NSRange)range
@@ -61,24 +82,24 @@ NSString * const TUIAttributedStringPreDrawBlockName = @"TUIAttributedStringPreD
 	[self addAttribute:(NSString *)kCTKernAttributeName value:[NSNumber numberWithFloat:k] range:range];
 }
 
-- (void)setFont:(NSFont *)font
+- (void)setFont:(TUIFont *)font
 {
 	[self setFont:font inRange:[self _stringRange]];
 }
 
-- (void)setColor:(NSColor *)color
+- (void)setColor:(TUIColor *)color
 {
 	[self setColor:color inRange:[self _stringRange]];
 }
 
-- (void)setBackgroundColor:(NSColor *)color
+- (void)setBackgroundColor:(TUIColor *)color
 {
 	[self setBackgroundColor:color inRange:[self _stringRange]];
 }
 
-- (void)setBackgroundColor:(NSColor *)color inRange:(NSRange)range
+- (void)setBackgroundColor:(TUIColor *)color inRange:(NSRange)range
 {
-	[self addAttribute:TUIAttributedStringBackgroundColorAttributeName value:color range:range];
+	[self addAttribute:TUIAttributedStringBackgroundColorAttributeName value:(id)[color CGColor] range:range];
 }
 
 - (void)setBackgroundFillStyle:(TUIBackgroundFillStyle)fillStyle
@@ -123,7 +144,7 @@ NSString * const TUIAttributedStringPreDrawBlockName = @"TUIAttributedStringPreD
 	CFRelease(paragraphStyle);
 }
 
-NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment)
+TUI_EXTERN NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment)
 {
 	NSTextAlignment a = NSLeftTextAlignment;
 	switch(alignment) {
@@ -174,17 +195,17 @@ NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment)
 	CTTextAlignment nativeTextAlignment;
 	switch(alignment) {
 		case TUITextAlignmentRight:
-			nativeTextAlignment = kCTRightTextAlignment;
+			nativeTextAlignment = kCTTextAlignmentRight;
 			break;
 		case TUITextAlignmentCenter:
-			nativeTextAlignment = kCTCenterTextAlignment;
+			nativeTextAlignment = kCTTextAlignmentCenter;
 			break;
 		case TUITextAlignmentJustified:
-			nativeTextAlignment = kCTJustifiedTextAlignment;
+			nativeTextAlignment = kCTTextAlignmentJustified;
 			break;
 		case TUITextAlignmentLeft:
 		default:
-			nativeTextAlignment = kCTLeftTextAlignment;
+			nativeTextAlignment = kCTTextAlignmentLeft;
 			break;
 	}
 	
@@ -202,12 +223,12 @@ NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment)
 	[self setAlignment:alignment lineBreakMode:TUILineBreakModeWordWrap];
 }
 
-- (NSFont *)font
+- (TUIFont *)font
 {
 	return nil;
 }
 
-- (NSColor *)color
+- (TUIColor *)color
 {
 	return nil;
 }
@@ -232,7 +253,7 @@ NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment)
 	return 0.0;
 }
 
-- (NSColor *)backgroundColor
+- (TUIColor *)backgroundColor
 {
 	return nil;
 }
@@ -253,16 +274,57 @@ NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment)
 	[self endEditing];
 }
 
+- (void)replaceCharactersInRange:(NSRange)range withTextAttachment:(TUITextAttachment *)attachment
+{
+    NSParameterAssert(attachment);
+    range = NSIntersectionRange([self _stringRange], range);
+    
+    CTRunDelegateRef runDelegate = TUICreateEmbeddedObjectRunDelegate(attachment);
+    
+    NSMutableDictionary * attributes = [[self attributesAtIndex:range.location effectiveRange:NULL] mutableCopy];
+    
+    if (runDelegate) {
+        [attributes setObject:(__bridge id)runDelegate forKey:(NSString*)kCTRunDelegateAttributeName];
+        CFRelease(runDelegate);
+    }
+    
+    [attributes setObject:(__bridge id)[TUIColor clearColor].CGColor forKey:(NSString*)kCTForegroundColorAttributeName];
+    [attributes setObject:attachment forKey:TUIAttributedStringAttachmentName];
+    
+    NSAttributedString * placeholderString = [[NSAttributedString alloc] initWithString:@"\uFFFC" attributes:attributes];
+    
+    [self replaceCharactersInRange:range withAttributedString:placeholderString];
+}
+
+@end
+
+@implementation NSAttributedString (TUIAdditions)
+
+- (void)tui_enumerateTextAttachments:(void (^)(TUITextAttachment * attachment, NSRange range, BOOL *stop))block
+{
+    [self tui_enumerateTextAttachments:block options:0];
+}
+- (void)tui_enumerateTextAttachments:(void (^)(TUITextAttachment * attachment, NSRange range, BOOL *stop))block options:(NSAttributedStringEnumerationOptions)options
+{
+    if (!block) return;
+    
+    [self enumerateAttribute:TUIAttributedStringAttachmentName inRange:NSMakeRange(0, self.length) options:options usingBlock:^(id value, NSRange range, BOOL *stop) {
+        if (value) {
+            block(value, range, stop);
+        }
+    }];
+}
+
 @end
 
 @implementation NSShadow (TUIAdditions)
 
-+ (NSShadow *)shadowWithRadius:(CGFloat)radius offset:(CGSize)offset color:(NSColor *)color
++ (NSShadow *)shadowWithRadius:(CGFloat)radius offset:(CGSize)offset color:(TUIColor *)color
 {
 	NSShadow *shadow = [[NSShadow alloc] init];
 	[shadow setShadowBlurRadius:radius];
 	[shadow setShadowOffset:offset];
-	[shadow setShadowColor:color];
+	[shadow setShadowColor:[color nsColor]];
 	return shadow;
 }
 

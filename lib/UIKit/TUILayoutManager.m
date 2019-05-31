@@ -1,3 +1,4 @@
+#import <objc/runtime.h>
 #import "TUILayoutConstraint.h"
 #import "TUILayoutManager.h"
 #import "TUIView+Layout.h"
@@ -24,7 +25,7 @@
 @synthesize layoutName = _layoutName;
 @synthesize layoutConstraints = _layoutConstraints;
 
-+ (instancetype)container {
++ (id)container {
 	return [[self alloc] init];
 }
 
@@ -54,7 +55,7 @@
 @synthesize viewsToProcess = _viewsToProcess;
 @synthesize processedViews = _processedViews;
 
-+ (instancetype)sharedLayoutManager {
++ (id)sharedLayoutManager {
 	static TUILayoutManager *_sharedLayoutManager = nil;
 	static dispatch_once_t onceToken;
 	
@@ -73,7 +74,7 @@
 		                                           object:nil];
 		_processingChanges = NO;
 		
-		_constraints = [NSMapTable mapTableWithWeakToStrongObjects];
+		_constraints = [NSMapTable weakToStrongObjectsMapTable];
 		_viewsToProcess = [[NSMutableArray alloc] init];
 		_processedViews = [[NSMutableSet alloc] init];
 	}
@@ -151,6 +152,9 @@
 
 - (void)frameChanged:(NSNotification *)notification {
 	TUIView *view = [notification object];
+    if (!view.supportsConstraints) {
+        return;
+    }
 	[self beginProcessingView:view];
 }
 
@@ -166,13 +170,13 @@
 }
 
 - (void)removeLayoutConstraint:(TUILayoutConstraint *)constraint fromView:(TUIView *)view {
-	TUILayoutContainer *viewContainer = [self.constraints objectForKey:view];
-	if(viewContainer == nil) {
-		return;
-	}
-	
-	[[viewContainer layoutConstraints] removeObject:constraint];
-	[self beginProcessingView:view];
+    TUILayoutContainer *viewContainer = [self.constraints objectForKey:view];
+    if(viewContainer == nil) {
+        return;
+    }
+
+    [[viewContainer layoutConstraints] removeObject:constraint];
+    [self beginProcessingView:view];
 }
 
 - (void)removeLayoutConstraintsFromView:(TUIView *)view {

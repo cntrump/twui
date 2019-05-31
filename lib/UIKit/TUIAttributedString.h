@@ -19,6 +19,12 @@
 extern NSString * const TUIAttributedStringBackgroundColorAttributeName;
 extern NSString * const TUIAttributedStringBackgroundFillStyleName;
 extern NSString * const TUIAttributedStringPreDrawBlockName;
+extern NSString * const TUIAttributedStringAttachmentName;
+extern NSString * const TUITextDefaultForegroundColorAttributeName;
+
+@class TUIFont;
+@class TUIColor;
+@class TUITextAttachment;
 
 typedef void (^TUIAttributedStringPreDrawBlock)(NSAttributedString *attributedString, NSRange substringRange, CGRect rects[], CFIndex rectCount);
 
@@ -58,9 +64,9 @@ typedef enum {
 @interface NSMutableAttributedString (TUIAdditions)
 
 // write-only properties, reading will return nil
-@property (nonatomic, strong) NSFont *font;
-@property (nonatomic, strong) NSColor *color;
-@property (nonatomic, strong) NSColor *backgroundColor;
+@property (nonatomic, strong) TUIFont *font;
+@property (nonatomic, strong) TUIColor *color;
+@property (nonatomic, strong) TUIColor *backgroundColor;
 @property (nonatomic, assign) TUIBackgroundFillStyle backgroundFillStyle;
 @property (nonatomic, strong) NSShadow *shadow;
 @property (nonatomic, assign) TUITextAlignment alignment; // setting this will set lineBreakMode to word wrap, use setAlignment:lineBreakMode: for more control
@@ -71,21 +77,30 @@ typedef enum {
 - (void)setAlignment:(TUITextAlignment)alignment lineBreakMode:(TUILineBreakMode)lineBreakMode;
 
 - (NSRange)_stringRange;
-- (void)setFont:(NSFont *)font inRange:(NSRange)range;
-- (void)setColor:(NSColor *)color inRange:(NSRange)range;
-- (void)setBackgroundColor:(NSColor *)color inRange:(NSRange)range;
+- (void)setFont:(TUIFont *)font inRange:(NSRange)range;
+- (void)setColor:(TUIColor *)color inRange:(NSRange)range;
+- (void)setBackgroundColor:(TUIColor *)color inRange:(NSRange)range;
 - (void)setBackgroundFillStyle:(TUIBackgroundFillStyle)fillStyle inRange:(NSRange)range;
 - (void)setPreDrawBlock:(TUIAttributedStringPreDrawBlock)block inRange:(NSRange)range; // the pre-draw block is called before the text or text background has been drawn
 - (void)setShadow:(NSShadow *)shadow inRange:(NSRange)range;
 - (void)setKerning:(CGFloat)f inRange:(NSRange)range;
 - (void)setLineHeight:(CGFloat)f inRange:(NSRange)range;
 
+- (void)replaceCharactersInRange:(NSRange)range withTextAttachment:(TUITextAttachment *)attachment;
+
+@end
+
+@interface NSAttributedString (TUIAdditions)
+
+- (void)tui_enumerateTextAttachments:(void (^)(TUITextAttachment * attachment, NSRange range, BOOL *stop))block;
+- (void)tui_enumerateTextAttachments:(void (^)(TUITextAttachment * attachment, NSRange range, BOOL *stop))block options:(NSAttributedStringEnumerationOptions)options;
+
 @end
 
 @interface NSShadow (TUIAdditions)
 
-+ (NSShadow *)shadowWithRadius:(CGFloat)radius offset:(CGSize)offset color:(NSColor *)color;
++ (NSShadow *)shadowWithRadius:(CGFloat)radius offset:(CGSize)offset color:(TUIColor *)color;
 
 @end
 
-extern NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment);
+TUI_EXTERN NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment);

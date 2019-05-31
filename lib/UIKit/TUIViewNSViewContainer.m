@@ -103,7 +103,7 @@
 }
 
 - (void)didAddSubview:(TUIView *)subview {
-	NSAssert2(NO, @"%@ must be a leaf in the TwUI hierarchy, should not have added subview: %@", self, subview);
+	NSAssert(NO, @"%@ must be a leaf in the TwUI hierarchy, should not have added subview: %@", self, subview);
 	[super didAddSubview:subview];
 }
 
@@ -167,7 +167,7 @@
 		return;
 	}
 
-	NSAssert1(self.ancestorTUINSView, @"%@ should be in an TUINSView if it has a window", self);
+	NSAssert(self.ancestorTUINSView, @"%@ should be in an TUINSView if it has a window", self);
 
 	CGRect frame = self.NSViewFrame;
 	self.rootView.frame = frame;
@@ -182,17 +182,18 @@
 		return;
 	}
 
-	CGContextRef context = (CGContextRef)[NSGraphicsContext currentContext].graphicsPort;
+	CGContextRef context = [NSGraphicsContext currentContext].graphicsPort;
 	CGContextSaveGState(context);
 	CGContextClearRect(context, self.bounds);
 
-	SInt32 major, minor;
-	Gestalt(gestaltSystemVersionMajor, &major);
-	Gestalt(gestaltSystemVersionMinor, &minor);
-
 	// 10.8 seems to have changed whether -renderInContext: renders the NSView
 	// flipped or not.
-	BOOL needsToFlip = (major > 10 || (major == 10 && minor >= 8)) ? [self.rootView isFlipped] : ![self.rootView isFlipped];
+    BOOL needsToFlip;
+    if (@available(macOS 10.8, *)) {
+        needsToFlip = [self.rootView isFlipped];
+    } else {
+        needsToFlip = ![self.rootView isFlipped];
+    }
 
 	if (needsToFlip) {
 		CGContextTranslateCTM(context, 0, self.bounds.size.height);
@@ -214,7 +215,7 @@
 }
 
 - (void)stopRenderingContainedView; {
-	NSAssert1(_renderingContainedViewCount > 0, @"Mismatched call to %s", __func__);
+	NSAssert(_renderingContainedViewCount > 0, @"Mismatched call to %s", __func__);
 
 	if (--_renderingContainedViewCount == 0) {
 		self.layer.contents = nil;

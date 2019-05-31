@@ -29,11 +29,12 @@ typedef NSUInteger TUICGRoundedRectCorner;
 
 #import <Foundation/Foundation.h>
 
+@class TUIImage;
 @class TUIView;
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+TUI_EXTERN_C_BEGIN
+    
+CGColorSpaceRef TUICopyCurrentDisplayColorSpace(void);
 
 CGContextRef TUICreateOpaqueGraphicsContext(CGSize size);
 CGContextRef TUICreateGraphicsContext(CGSize size);
@@ -42,6 +43,7 @@ CGImageRef TUICreateCGImageFromBitmapContext(CGContextRef ctx);
 
 CGPathRef TUICGPathCreateRoundedRect(CGRect rect, CGFloat radius);
 CGPathRef TUICGPathCreateRoundedRectWithCorners(CGRect rect, CGFloat radius, TUICGRoundedRectCorner corners);
+CGPathRef TUICGPathCreateWithBezierPath(NSBezierPath * bezierPath);
 void CGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
 void CGContextClipToRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
 
@@ -58,17 +60,16 @@ CGContextRef TUIGraphicsGetCurrentContext(void);
 void TUIGraphicsPushContext(CGContextRef context);
 void TUIGraphicsPopContext(void);
 
-NSImage *TUIGraphicsContextGetImage(CGContextRef ctx);
+TUIImage *TUIGraphicsContextGetImage(CGContextRef ctx);
 
 void TUIGraphicsBeginImageContext(CGSize size);
-// as in the iOS docs, "if you specify a value of 0.0, the scale factor is set to the scale factor of the device’s main screen."
 void TUIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale);
-NSImage *TUIGraphicsGetImageFromCurrentImageContext(void);
+TUIImage *TUIGraphicsGetImageFromCurrentImageContext(void);
 void TUIGraphicsEndImageContext(void);
 
-NSImage *TUIGraphicsGetImageForView(TUIView *view);
+TUIImage *TUIGraphicsGetImageForView(TUIView *view);
 
-NSImage *TUIGraphicsDrawAsImage(CGSize size, void(^draw)(void));
+TUIImage *TUIGraphicsDrawAsImage(CGSize size, void(^draw)(void));
 
 /**
  Draw drawing as a PDF
@@ -77,6 +78,4 @@ NSImage *TUIGraphicsDrawAsImage(CGSize size, void(^draw)(void));
  */
 NSData *TUIGraphicsDrawAsPDF(CGRect *optionalMediaBox, void(^draw)(CGContextRef));
 
-#if defined(__cplusplus)
-}
-#endif
+TUI_EXTERN_C_END
