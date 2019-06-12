@@ -48,7 +48,7 @@
  Set this as the root TUIView-based view.
  */
 @property (nonatomic, strong) TUIView *rootView;
-@property (nonatomic, assign) id<TUINSViewDelegate> viewDelegate;
+@property (nonatomic, weak) id<TUINSViewDelegate> viewDelegate;
 
 - (TUIView *)viewForLocationInWindow:(NSPoint)locationInWindow;
 - (TUIView *)viewForEvent:(NSEvent *)event; // ignores views with 'userInteractionEnabled=NO'

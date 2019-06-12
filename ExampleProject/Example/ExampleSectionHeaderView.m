@@ -61,7 +61,7 @@
     NSRectFill(NSMakeRect(0, 0, self.bounds.size.width, 1));
     
     CGFloat labelHeight = 18;
-    self.labelRenderer.frame = CGRectMake(15, roundf((self.bounds.size.height - labelHeight) / 2.0), self.bounds.size.width - 30, labelHeight);
+    self.labelRenderer.frame = CGRectMake(15, round((self.bounds.size.height - labelHeight) / 2.0), self.bounds.size.width - 30, labelHeight);
     [self.labelRenderer draw];
     
   }

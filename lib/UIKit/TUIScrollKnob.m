@@ -501,12 +501,12 @@ CGFloat maxContentOffset = contentSize.LENGTH - visible.size.LENGTH;
         if([self isVertical]) {
             KNOB_CALCULATIONS_REVERSE(y, height)
             CGPoint scrollOffset = _scrollView.contentOffset;
-            scrollOffset.y = roundf(-proportion * maxContentOffset);
+            scrollOffset.y = round(-proportion * maxContentOffset);
             _scrollView.contentOffset = scrollOffset;
         } else {
             KNOB_CALCULATIONS_REVERSE(x, width)
             CGPoint scrollOffset = _scrollView.contentOffset;
-            scrollOffset.x = roundf(-proportion * maxContentOffset);
+            scrollOffset.x = round(-proportion * maxContentOffset);
             _scrollView.contentOffset = scrollOffset;
         }
     } else { // dragging in knob-track area

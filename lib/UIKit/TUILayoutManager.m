@@ -55,7 +55,7 @@
 @synthesize viewsToProcess = _viewsToProcess;
 @synthesize processedViews = _processedViews;
 
-+ (id)sharedLayoutManager {
++ (instancetype)sharedLayoutManager {
 	static TUILayoutManager *_sharedLayoutManager = nil;
 	static dispatch_once_t onceToken;
 	
@@ -126,6 +126,10 @@
 }
 
 - (void)beginProcessingView:(TUIView *)view {
+    if (!view) {
+        return;
+    }
+    
 	if(self.processingChanges == NO) {
 		self.processingChanges = YES;
 		

@@ -149,7 +149,7 @@ typedef enum {
 - (void)enumerateIndexPathsFromIndexPath:(TUIFastIndexPath *)fromIndexPath toIndexPath:(TUIFastIndexPath *)toIndexPath withOptions:(NSEnumerationOptions)options usingBlock:(void (^)(TUIFastIndexPath *indexPath, BOOL *stop))block;
 
 - (TUIView *)headerViewForSection:(NSInteger)section;
-- (TUITableViewCell *)cellForRowAtIndexPath:(TUIFastIndexPath *)indexPath;            // returns nil if cell is not visible or index path is out of range
+- (__kindof TUITableViewCell *)cellForRowAtIndexPath:(TUIFastIndexPath *)indexPath;            // returns nil if cell is not visible or index path is out of range
 - (NSArray *)visibleCells; // no particular order
 - (NSArray *)sortedVisibleCells; // top to bottom
 - (NSArray *)indexPathsForVisibleRows;
@@ -175,10 +175,12 @@ typedef enum {
 
 @property (nonatomic, strong) TUIView *headerView;
 
+- (void)registerClass:(nullable Class)cellClass forCellReuseIdentifier:(NSString *)identifier;
+
 /**
  Used by the delegate to acquire an already allocated cell, in lieu of allocating a new one.
  */
-- (TUITableViewCell *)dequeueReusableCellWithIdentifier:(NSString *)identifier;
+- (__kindof TUITableViewCell *)dequeueReusableCellWithIdentifier:(NSString *)identifier;
 
 @end
 
@@ -188,7 +190,7 @@ typedef enum {
 
 - (NSInteger)tableView:(TUITableView *)table numberOfRowsInSection:(NSInteger)section;
 
-- (TUITableViewCell *)tableView:(TUITableView *)tableView cellForRowAtIndexPath:(TUIFastIndexPath *)indexPath;
+- (__kindof TUITableViewCell *)tableView:(TUITableView *)tableView cellForRowAtIndexPath:(TUIFastIndexPath *)indexPath;
 
 @optional
 

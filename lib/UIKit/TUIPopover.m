@@ -52,7 +52,7 @@ NSTimeInterval const TUIPopoverDefaultFadeoutDuration = 0.3;
 @interface TUIPopover ()
 
 @property (nonatomic, strong) TUINSWindow *popoverWindow;
-@property (nonatomic, assign) id transientEventMonitor;
+@property (nonatomic, weak) id transientEventMonitor;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) CGSize originalViewSize;
 

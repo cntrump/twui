@@ -589,8 +589,8 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 - (CGPoint)contentOffset
 {
 	CGPoint p = _unroundedContentOffset;
-	p.x = roundf(p.x + self.bounceOffset.x + self.pullOffset.x);
-	p.y = roundf(p.y + self.bounceOffset.y + self.pullOffset.y);
+	p.x = round(p.x + self.bounceOffset.x + self.pullOffset.x);
+	p.y = round(p.y + self.bounceOffset.y + self.pullOffset.y);
 	return p;
 }
 
@@ -739,7 +739,7 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 {
 	if(displayLink) {
 		if(_scrollViewFlags.animationMode == AnimationModeScrollTo) {
-			if(roundf(destinationOffset.y) == roundf([self topDestinationOffset]))
+			if(round(destinationOffset.y) == round([self topDestinationOffset]))
 				return YES;
 		}
 	}
@@ -967,14 +967,14 @@ static float clampBounce(float x) {
 - (void)pageDown:(id)sender
 {
 	CGPoint o = self.contentOffset;
-	o.y += roundf((self.visibleRect.size.height * 0.9));
+	o.y += round((self.visibleRect.size.height * 0.9));
 	[self setContentOffset:o animated:YES];
 }
 
 - (void)pageUp:(id)sender
 {
 	CGPoint o = self.contentOffset;
-	o.y -= roundf((self.visibleRect.size.height * 0.9));
+	o.y -= round((self.visibleRect.size.height * 0.9));
 	[self setContentOffset:o animated:YES];
 }
 
@@ -1102,7 +1102,7 @@ static float clampBounce(float x) {
 	
 	if(self.scrollEnabled)
 	{
-		int phase = ScrollPhaseNormal;
+		NSEventPhase phase = ScrollPhaseNormal;
 		
 		if(AtLeastLion) {
 			SEL s = @selector(momentumPhase);
@@ -1238,6 +1238,9 @@ static float clampBounce(float x) {
 				}
 				break;
 			}
+
+            default:
+                break;
 		}
 	}
 }

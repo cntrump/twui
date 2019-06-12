@@ -17,7 +17,7 @@
 
 @interface TUIView (Layout_Private)
 
-- (NSRect)valueForLayoutAttribute:(TUILayoutConstraintAttribute)attribute;
+- (NSRect)valueForLayoutAttribute:(TUILayoutConstraintAttribute)attribute inBounds:(BOOL)inBounds;
 - (void)setValue:(NSRect)newValue forLayoutAttribute:(TUILayoutConstraintAttribute)attribute;
 
 @end
@@ -48,8 +48,8 @@
 	[[TUILayoutManager sharedLayoutManager] removeLayoutConstraintsFromView:self];
 }
 
-- (CGRect)valueForLayoutAttribute:(TUILayoutConstraintAttribute)attribute {
-	CGRect frame = self.frame;
+- (CGRect)valueForLayoutAttribute:(TUILayoutConstraintAttribute)attribute inBounds:(BOOL)inBounds {
+    CGRect frame = inBounds ? self.bounds : self.frame;
 	CGRect bounds = self.bounds;
 	
 	switch(attribute) {

@@ -110,7 +110,7 @@
   
   CGRect visible = [self visibleRect];
   // dragged cell destination frame
-  CGRect dest = CGRectMake(0, roundf(MAX(visible.origin.y, MIN(visible.origin.y + visible.size.height - cell.frame.size.height, location.y + visible.origin.y - offset.y))), self.bounds.size.width, cell.frame.size.height);
+  CGRect dest = CGRectMake(0, round(MAX(visible.origin.y, MIN(visible.origin.y + visible.size.height - cell.frame.size.height, location.y + visible.origin.y - offset.y))), self.bounds.size.width, cell.frame.size.height);
   // bring to front
   [[cell superview] bringSubviewToFront:cell];
   // move the cell

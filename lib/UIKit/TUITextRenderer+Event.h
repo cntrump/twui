@@ -31,7 +31,7 @@
 
 @property (nonatomic, weak) id<TUITextRendererEventDelegate> eventDelegate;
 
-@property (nonatomic, assign, readonly) TUIView * eventDelegateContextView;
+@property (nonatomic, weak, readonly) TUIView * eventDelegateContextView;
 
 - (id<ABActiveTextRange>)activeRangeForLocation:(CGPoint)point;
 - (NSArray *)activeRanges;

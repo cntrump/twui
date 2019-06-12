@@ -175,8 +175,8 @@ TUI_EXTERN_C_END
 			CGRect b = superview.frame;
 			b.origin = CGPointZero;
 			CGRect r = ABRectCenteredInRect(v.frame, b);
-			r.origin.x = roundf(r.origin.x);
-			r.origin.y = roundf(r.origin.y);
+			r.origin.x = round(r.origin.x);
+			r.origin.y = round(r.origin.y);
 			return r;
 		} copy];
 	}
@@ -206,6 +206,10 @@ TUI_EXTERN_C_END
     }
 }
 
+- (instancetype)init {
+    return [self initWithFrame:CGRectZero];
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
 	if((self = [super init]))
@@ -215,6 +219,7 @@ TUI_EXTERN_C_END
 		toolTipDelay = 1.5;
 		self.isAccessibilityElement = YES;
 		accessibilityFrame = CGRectNull; // null rect means we'll just get the view's frame and use that
+        self.backgroundColor = TUIColor.clearColor;
 	}
 	return self;
 }

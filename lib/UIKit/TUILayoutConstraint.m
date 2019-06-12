@@ -4,7 +4,7 @@
 
 @interface TUIView (Layout_Private)
 
-- (NSRect)valueForLayoutAttribute:(TUILayoutConstraintAttribute)attribute;
+- (NSRect)valueForLayoutAttribute:(TUILayoutConstraintAttribute)attribute inBounds:(BOOL)inBounds;
 - (void)setValue:(NSRect)newValue forLayoutAttribute:(TUILayoutConstraintAttribute)attribute;
 
 @end
@@ -145,7 +145,7 @@
 	if(source == nil) return;
 	if([self sourceAttribute] == 0) return;
 	
-	NSRect sourceValue = [source valueForLayoutAttribute:self.sourceAttribute];
+	NSRect sourceValue = [source valueForLayoutAttribute:self.sourceAttribute inBounds:source == target.superview];
 	NSRect targetValue = sourceValue;
 	
 	if(self.attribute >= TUILayoutConstraintAttributeMinY && self.attribute <= TUILayoutConstraintAttributeMidX)

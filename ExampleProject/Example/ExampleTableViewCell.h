@@ -17,9 +17,6 @@
 @import TwUI;
 
 @interface ExampleTableViewCell : TUITableViewCell
-{
-	TUITextRenderer *textRenderer;
-}
 
 @property (nonatomic, copy) NSAttributedString *attributedString;
 @property (nonatomic, strong) TUIView *textFieldContainer;

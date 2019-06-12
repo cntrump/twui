@@ -31,6 +31,7 @@
 #import "TUITooltipWindow.h"
 #import "TUIViewControllerPreviewing.h"
 #import "TUIViewControllerPreviewingContext_Private.h"
+#import "TUILayoutManager.h"
 #import <CoreFoundation/CoreFoundation.h>
 
 // If enabled, NSViews contained within TUIViewNSViewContainers will be clipped
@@ -148,6 +149,10 @@ static NSComparisonResult compareNSViewOrdering (__kindof NSView *viewA, __kindo
 @synthesize maskLayer = _maskLayer;
 @synthesize tuiHostView = _tuiHostView;
 
+- (instancetype)init {
+    return [self initWithFrame:NSZeroRect];
+}
+
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
 	self = [super initWithCoder:coder];
@@ -241,6 +246,13 @@ static NSComparisonResult compareNSViewOrdering (__kindof NSView *viewA, __kindo
 	
 	if([[self window] respondsToSelector:@selector(ensureWindowRectIsOnScreen)])
 		[[self window] performSelector:@selector(ensureWindowRectIsOnScreen)];
+}
+
+- (void)resizeSubviewsWithOldSize:(NSSize)oldSize {
+    [super resizeSubviewsWithOldSize:oldSize];
+
+    CGSize s = [self frame].size;
+    self.rootView.frame = CGRectMake(0, 0, s.width, s.height);
 }
 
 - (void)setRootView:(TUIView *)v

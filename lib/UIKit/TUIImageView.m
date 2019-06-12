@@ -21,14 +21,22 @@
 
 - (instancetype)initWithImage:(TUIImage *)image
 {
-	if((self = [self initWithFrame:(image != nil) ? CGRectMake(0, 0, image.size.width, image.size.height) : CGRectZero]) != nil)
-	{
-		self.userInteractionEnabled = NO;
-		_image = image;
-	}
-	return self;
+    if (self = [self initWithFrame:image ? CGRectMake(0, 0, image.size.width, image.size.height) : CGRectZero]) {
+        _image = image;
+    }
+
+    return self;
 }
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    if (self = [super initWithFrame:frame]) {
+        self.userInteractionEnabled = NO;
+        _image = nil;
+    }
+
+    return self;
+}
 
 - (TUIImage *)image
 {

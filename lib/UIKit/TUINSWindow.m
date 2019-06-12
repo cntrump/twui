@@ -132,7 +132,8 @@ NSInteger makeFirstResponderCount = 0;
 
 + (NSInteger)windowMask
 {
-	return NSBorderlessWindowMask;
+    return NSWindowStyleMaskClosable | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable |
+            NSWindowStyleMaskTitled | NSWindowStyleMaskUnifiedTitleAndToolbar | NSFullSizeContentViewWindowMask;
 }
 
 - (CGFloat)toolbarHeight
@@ -147,36 +148,37 @@ NSInteger makeFirstResponderCount = 0;
 
 - (instancetype)initWithContentRect:(CGRect)rect
 {
-	if((self = [super initWithContentRect:rect styleMask:[[self class] windowMask] backing:NSBackingStoreBuffered defer:NO]))
-	{
-		[self setCollectionBehavior:NSWindowCollectionBehaviorParticipatesInCycle | NSWindowCollectionBehaviorManaged];
-		[self setAcceptsMouseMovedEvents:YES];
+	if (self = [super initWithContentRect:rect styleMask:self.class.windowMask backing:NSBackingStoreBuffered defer:YES]) {
+		self.collectionBehavior = NSWindowCollectionBehaviorParticipatesInCycle | NSWindowCollectionBehaviorManaged;
+		self.acceptsMouseMovedEvents = YES;
 
-		CGRect b = [[self contentView] frame];
+        self.titleVisibility = NSWindowTitleHidden;
+        self.titlebarAppearsTransparent = YES;
 
-		if([self useCustomContentView]) {
-			[self setOpaque:NO];
-			[self setBackgroundColor:[NSColor clearColor]];
-			[self setHasShadow:YES];
+		CGRect b = self.contentView.frame;
+
+		if (self.useCustomContentView) {
+			self.opaque = NO;
+			self.backgroundColor = NSColor.clearColor;
+			self.hasShadow = YES;
 			
 			TUINSWindowFrame *contentView = [[TUINSWindowFrame alloc] initWithFrame:b];
 			contentView->w = self;
-			[self setContentView:contentView];
+			self.contentView = contentView;
 		} else {
-			[self setOpaque:YES];
-            [self setHasShadow:YES];
+			self.opaque = YES;
+            self.hasShadow = YES;
 		}
 
-		b.size.height -= ([self toolbarHeight]-22);
+		b.size.height -= (self.toolbarHeight -22);
 		
 		nsView = [[TUINSView alloc] initWithFrame:b];
-		[nsView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+		nsView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
 		[[self contentView] addSubview:nsView];
 		
 		altUINSViews = [[NSMutableArray alloc] init];
-        
-        
 	}
+
 	return self;
 }
 

@@ -16,53 +16,54 @@
 
 #import "ExampleTableViewCell.h"
 
+@interface ExampleTableViewCell () {
+    TUILabel *_textLabel;
+}
+
+@end
+
 @implementation ExampleTableViewCell
 
 - (id)initWithStyle:(TUITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
 	if((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
-		textRenderer = [[TUITextRenderer alloc] init];
-		
-		/*
-		 Add the text renderer to the view so events get routed to it properly.
-		 Text selection, dictionary popup, etc should just work.
-		 You can add more than one.
-		 
-		 The text renderer encapsulates an attributed string and a frame.
-		 The attributed string in this case is set by setAttributedString:
-		 which is configured by the table view delegate.  The frame needs to be 
-		 set before it can be drawn, we do that in drawRect: below.
-		 */
-		self.textRenderers = [NSArray arrayWithObjects:textRenderer, nil];
+        self.supportsConstraints = YES;
+        _textLabel = [[TUILabel alloc] init];
+        _textLabel.font = [TUIFont systemFontOfSize:12];
+        _textLabel.textColor = [TUIColor colorWithRGB:0 alpha:0.85];
+        _textLabel.layoutName = @"textLabel";
+        [self addSubview:_textLabel];
+        [_textLabel addLayoutConstraint:[TUILayoutConstraint constraintWithAttribute:TUILayoutConstraintAttributeMinX relativeTo:@"superview" attribute:TUILayoutConstraintAttributeMinX offset:16]];
+        [_textLabel addLayoutConstraint:[TUILayoutConstraint constraintWithAttribute:TUILayoutConstraintAttributeMidY relativeTo:@"superview" attribute:TUILayoutConstraintAttributeMidY]];
 
-		NSTextField *textField = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 180, 91, 22)];
+		NSTextField *textField = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 91, 22)];
 		[textField.cell setUsesSingleLineMode:YES];
 		[textField.cell setScrollable:YES];
 
 		self.textFieldContainer = [[TUIViewNSViewContainer alloc] initWithNSView:textField];
 		self.textFieldContainer.backgroundColor = TUIColor.blueColor;
+        self.textFieldContainer.layoutName = @"textField";
 		[self addSubview:self.textFieldContainer];
+        [self.textFieldContainer addLayoutConstraint:[TUILayoutConstraint constraintWithAttribute:TUILayoutConstraintAttributeMaxX relativeTo:@"superview" attribute:TUILayoutConstraintAttributeMaxX offset:-16]];
+        [self.textFieldContainer addLayoutConstraint:[TUILayoutConstraint constraintWithAttribute:TUILayoutConstraintAttributeMidY relativeTo:@"superview" attribute:TUILayoutConstraintAttributeMidY]];
 	}
 	return self;
 }
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
-	
-	CGSize textFieldSize = self.textFieldContainer.bounds.size;
-	CGFloat textFieldLeft = CGRectGetWidth(self.bounds) - textFieldSize.width - 16;
-
-	self.textFieldContainer.frame = CGRectMake(textFieldLeft, 14, textFieldSize.width, textFieldSize.height);
 }
 
 - (NSAttributedString *)attributedString
 {
-	return textRenderer.attributedString;
+	return _textLabel.attributedString;
 }
 
 - (void)setAttributedString:(NSAttributedString *)attributedString
 {
-	textRenderer.attributedString = attributedString;
+	_textLabel.attributedString = attributedString;
+    [_textLabel sizeToFit];
+
 	[self setNeedsDisplay];
 }
 
@@ -86,12 +87,6 @@
 		CGContextSetRGBFillColor(ctx, 0, 0, 0, 0.08); // dark at the bottom
 		CGContextFillRect(ctx, CGRectMake(0, 0, b.size.width, 1));
 	}
-	
-	// text
-	CGRect textRect = CGRectOffset(b, 15, -15);
-	textRenderer.frame = textRect; // set the frame so it knows where to draw itself
-	[textRenderer draw];
-	
 }
 
 @end

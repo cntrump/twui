@@ -26,7 +26,7 @@
 	CGRect b = CGRectMake(0, 0, 500, 450);
 	
 	/** Table View */
-	tableViewWindow = [[NSWindow alloc] initWithContentRect:b styleMask:NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask backing:NSBackingStoreBuffered defer:NO];
+	tableViewWindow = [[TUINSWindow alloc] initWithContentRect:b];
 	[tableViewWindow setReleasedWhenClosed:FALSE];
 	[tableViewWindow setMinSize:NSMakeSize(300, 250)];
 	[tableViewWindow center];
@@ -39,7 +39,7 @@
 	tuiTableViewContainer.rootView = tableExample;
 	
 	/** Scroll View */
-	scrollViewWindow = [[NSWindow alloc] initWithContentRect:b styleMask:NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask backing:NSBackingStoreBuffered defer:YES];
+	scrollViewWindow = [[TUINSWindow alloc] initWithContentRect:b];
 	[scrollViewWindow setReleasedWhenClosed:FALSE];
 	[scrollViewWindow setMinSize:NSMakeSize(300, 250)];
 	[scrollViewWindow setFrameTopLeftPoint:[tableViewWindow cascadeTopLeftFromPoint:CGPointMake(tableViewWindow.frame.origin.x, tableViewWindow.frame.origin.y + tableViewWindow.frame.size.height)]];

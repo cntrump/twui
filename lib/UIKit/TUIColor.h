@@ -30,6 +30,9 @@
 + (TUIColor *)colorWithNSColor:(NSColor *)nsColor;
 + (TUIColor *)colorWithPatternImage:(TUIImage *)image;
 
++ (TUIColor *)colorWithRGB:(NSUInteger)rgb alpha:(CGFloat)alpha;
++ (TUIColor *)colorWithRGB:(NSUInteger)rgb;
+
 - (TUIColor *)initWithWhite:(CGFloat)white alpha:(CGFloat)alpha;
 - (TUIColor *)initWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
 - (TUIColor *)initWithCGColor:(CGColorRef)cgColor;

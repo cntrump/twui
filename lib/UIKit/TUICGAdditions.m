@@ -207,8 +207,8 @@ CGRect ABScaleToFit(CGSize s, CGRect r)
 
 CGRect ABRectRoundOrigin(CGRect f)
 {
-	f.origin.x = roundf(f.origin.x);
-	f.origin.y = roundf(f.origin.y);
+	f.origin.x = round(f.origin.x);
+	f.origin.y = round(f.origin.y);
 	return f;
 }
 

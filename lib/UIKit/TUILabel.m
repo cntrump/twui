@@ -49,8 +49,10 @@
 		renderer = [[TUITextRenderer alloc] init];
 		[self setTextRenderers:[NSArray arrayWithObjects:renderer, nil]];
 		
-		_lineBreakMode = TUILineBreakModeClip;
+		_lineBreakMode = TUILineBreakModeWordWrap;
 		_alignment = TUITextAlignmentLeft;
+        _verticalCenter = YES;
+        self.userInteractionEnabled = NO;
 	}
 	return self;
 }
@@ -97,6 +99,20 @@
     
 	renderer.frame = textFrame;
 	[renderer draw];	
+}
+
+- (CGSize)sizeThatFits:(CGSize)size {
+    if (self.attributedString.length == 0) {
+        return CGSizeZero;
+    }
+    
+    CGSize textSize = [renderer sizeConstrainedToWidth:size.width];
+    return textSize;
+}
+
+- (void)sizeToFit {
+    CGSize size = [self sizeThatFits:CGSizeMake(INFINITY, INFINITY)];
+    self.frame = CGRectMake(NSMinX(self.frame), NSMinY(self.frame), size.width, size.height);
 }
 
 - (void)_update

@@ -131,11 +131,10 @@
 - (instancetype)initWithNSView:(NSView *)view; {
     LOG_IF_NOT_MAINTHREAD(self);
 
-	self = [self initWithFrame:view.frame];
-	if (!self)
-		return nil;
+    if (self = [self initWithFrame:view.frame]) {
+        self.rootView = view;
+    }
 
-	self.rootView = view;
 	return self;
 }
 

@@ -80,11 +80,11 @@ typedef struct {
 	
 	TUIView *header;
 	if((header = self.headerView) != nil) {
-		sectionHeight += roundf(header.frame.size.height);
+		sectionHeight += round(header.frame.size.height);
 	}
   
 	for(int i = 0; i < numberOfRows; ++i) {
-		CGFloat h = roundf([_tableView.delegate tableView:_tableView heightForRowAtIndexPath:[TUIFastIndexPath indexPathForRow:i inSection:sectionIndex]]);
+		CGFloat h = round([_tableView.delegate tableView:_tableView heightForRowAtIndexPath:[TUIFastIndexPath indexPathForRow:i inSection:sectionIndex]]);
 		rowInfo[i].offset = sectionHeight;
 		rowInfo[i].height = h;
 		sectionHeight += h;
@@ -152,6 +152,7 @@ typedef struct {
 
 @interface TUITableView ()
 
+@property (nonatomic, strong) NSMutableDictionary *reusableCellClasses;
 @property (nonatomic, assign) NSInteger liveResizeLevels;
 @property (nonatomic, strong) TUITableViewFastLiveResizingContext * optimizedLiveResizeContext;
 
@@ -166,9 +167,10 @@ typedef struct {
 {
 	if((self = [super initWithFrame:frame])) {
 		_style = style;
-		_reusableTableCells = [[NSMutableDictionary alloc] init];
-		_visibleSectionHeaders = [[NSMutableIndexSet alloc] init];
-		_visibleItems = [[NSMutableDictionary alloc] init];
+        _reusableCellClasses = NSMutableDictionary.dictionary;
+		_reusableTableCells = NSMutableDictionary.dictionary;
+		_visibleSectionHeaders = NSMutableIndexSet.indexSet;
+		_visibleItems = NSMutableDictionary.dictionary;
 		_tableFlags.animateSelectionChanges = 1;
 	}
 	return self;
@@ -304,6 +306,14 @@ typedef struct {
 	
 }
 
+- (void)registerClass:(nullable Class)cellClass forCellReuseIdentifier:(NSString *)identifier {
+    if (!identifier) {
+        return;
+    }
+
+    _reusableCellClasses[identifier] = cellClass;
+}
+
 - (void)_enqueueReusableCell:(TUITableViewCell *)cell
 {
 	NSString *identifier = cell.reuseIdentifier;
@@ -319,7 +329,7 @@ typedef struct {
 	[array addObject:cell];
 }
 
-- (TUITableViewCell *)dequeueReusableCellWithIdentifier:(NSString *)identifier
+- (__kindof TUITableViewCell *)dequeueReusableCellWithIdentifier:(NSString *)identifier
 {
 	if(!identifier)
 		return nil;
@@ -333,6 +343,12 @@ typedef struct {
 			return c;
 		}
 	}
+
+    Class cellClass = _reusableCellClasses[identifier];
+    if ([cellClass isSubclassOfClass:TUITableViewCell.class]) {
+        return [[cellClass alloc] initWithStyle:TUITableViewCellStyleDefault reuseIdentifier:identifier];
+    }
+
 	return nil;
 }
 
@@ -352,7 +368,7 @@ typedef struct {
   }
 }
 
-- (TUITableViewCell *)cellForRowAtIndexPath:(TUIFastIndexPath *)indexPath // returns nil if cell is not visible or index path is out of range
+- (__kindof TUITableViewCell *)cellForRowAtIndexPath:(TUIFastIndexPath *)indexPath // returns nil if cell is not visible or index path is out of range
 {
 	return [_visibleItems objectForKey:indexPath];
 }

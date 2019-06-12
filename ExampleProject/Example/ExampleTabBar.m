@@ -57,7 +57,7 @@
 		[TUIView setAnimationCurve:TUIViewAnimationCurveEaseInOut];
 		
 		CGRect draggedRect = self.frame;
-		draggedRect.origin.x += roundf(currentPosition - self.originalPosition);
+		draggedRect.origin.x += round(currentPosition - self.originalPosition);
 		self.frame = draggedRect;
 	}];
 	
@@ -79,7 +79,7 @@
 	float originalPoint = self.tag * (self.tabBar.bounds.size.width / self.tabBar.tabViews.count);
 	[TUIView animateWithDuration:0.2 animations:^{
 		CGRect draggedRect = self.frame;
-		draggedRect.origin.x = roundf(originalPoint);
+		draggedRect.origin.x = round(originalPoint);
 		self.frame = draggedRect;
 	}];
 	
@@ -117,7 +117,7 @@
 				CGRect b = v.superview.bounds; // reference the passed-in 'v' rather than 't' to avoid a retain cycle
 				float width = (b.size.width / nTabs);
 				float x = i * width;
-				return CGRectMake(roundf(x), 0, roundf(width), b.size.height);
+				return CGRectMake(round(x), 0, round(width), b.size.height);
 			};
 			[self addSubview:t];
 			[_tabViews addObject:t];

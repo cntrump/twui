@@ -48,6 +48,18 @@
 	return [[self alloc] initWithCGColor:cgColor];
 }
 
++ (TUIColor *)colorWithRGB:(NSUInteger)rgb alpha:(CGFloat)alpha {
+    NSUInteger r = (rgb & 0xff0000) >> 16;
+    NSUInteger g = (rgb & 0xff00) >> 8;
+    NSUInteger b = rgb & 0xff;
+
+    return [self colorWithRed:r / 255.0 green:g / 255.0 blue:b / 255.0 alpha:MIN(MAX(0, alpha), 1)];
+}
+
++ (TUIColor *)colorWithRGB:(NSUInteger)rgb {
+    return [self colorWithRGB:rgb alpha:1];
+}
+
 - (TUIColor *)initWithWhite:(CGFloat)white alpha:(CGFloat)alpha
 {
 	CGColorRef c = CGColorCreateGenericGray(white, alpha);
@@ -66,6 +78,10 @@
 
 - (TUIColor *)initWithCGColor:(CGColorRef)cgColor
 {
+    if (!cgColor) {
+        return nil;
+    }
+    
 	if((self = [super init]))
 	{
 		_cgColor = cgColor;
