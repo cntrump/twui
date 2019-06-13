@@ -52,7 +52,6 @@ static NSString * TUIViewBlendingModeToString[TUIViewBlendingModeCount] = {
 NSString * const TUIViewWillMoveToWindowNotification = @"TUIViewWillMoveToWindowNotification";
 NSString * const TUIViewDidMoveToWindowNotification = @"TUIViewDidMoveToWindowNotification";
 NSString * const TUIViewWindow = @"TUIViewWindow";
-NSString * const TUIViewFrameDidChangeNotification = @"TUIViewFrameDidChangeNotification";
 
 CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 
@@ -729,7 +728,6 @@ void TUISetCurrentContextDisplayID(CGDirectDisplayID displayID)
 {
 	self.layer.frame = f;
 	[self.subviews makeObjectsPerformSelector:@selector(ancestorDidLayout)];
-    [[NSNotificationCenter defaultCenter] postNotificationName:TUIViewFrameDidChangeNotification object:self];
 }
 
 - (CGRect)bounds
@@ -1128,7 +1126,9 @@ void TUISetCurrentContextDisplayID(CGDirectDisplayID displayID)
 
 - (void)layoutSubviews
 {
-	// subclasses override
+    if (self.supportsConstraints) {
+        [TUILayoutManager.sharedLayoutManager beginProcessingView:self];
+    }
 }
 
 @end

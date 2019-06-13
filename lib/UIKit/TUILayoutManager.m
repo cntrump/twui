@@ -68,10 +68,6 @@
 
 - (instancetype)init {
 	if((self = [super init])) {
-		[[NSNotificationCenter defaultCenter] addObserver:self
-	                                             selector:@selector(frameChanged:)
-		                                             name:TUIViewFrameDidChangeNotification
-		                                           object:nil];
 		_processingChanges = NO;
 		
 		_constraints = [NSMapTable weakToStrongObjectsMapTable];
@@ -152,14 +148,6 @@
 		if([self.processedViews containsObject:view] == NO)
 			[self.viewsToProcess addObject:view];
 	}
-}
-
-- (void)frameChanged:(NSNotification *)notification {
-	TUIView *view = [notification object];
-    if (!view.supportsConstraints) {
-        return;
-    }
-	[self beginProcessingView:view];
 }
 
 - (void)addLayoutConstraint:(TUILayoutConstraint *)constraint toView:(TUIView *)view {
