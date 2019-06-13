@@ -166,10 +166,18 @@ TUI_EXTERN_C_END
 
 - (instancetype)initWithName:(NSString *)name cache:(BOOL)shouldCache
 {
-	if(self = [self init]) {
+    NSImage *nsImage = [NSImage imageNamed:name];
+    if (nsImage) {
+        self = [self initWithCGImage:[nsImage CGImageForProposedRect:NULL context:NULL hints:NULL]];
+    } else {
+        self = [self init];
+    }
+
+	if (self) {
 		_imageName = name;
 		_shouldCache = shouldCache;
 	}
+    
 	return self;
 }
 
