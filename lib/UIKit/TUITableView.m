@@ -618,7 +618,7 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
   for(NSInteger i = sectionLowerBound; i < [self numberOfSections] && i <= sectionUpperBound /* inclusive */; i++){
     NSInteger rowCount = [self numberOfRowsInSection:i];
     for(NSInteger j = irow; j < rowCount && j <= ((rowUpperBound < 0 || i < sectionUpperBound) ? rowCount - 1 : rowUpperBound) /* inclusive */; j++){
-      BOOL stop = FALSE;
+      BOOL stop = NO;
       block([TUIFastIndexPath indexPathForRow:j inSection:i], &stop);
       if(stop) return;
     }
@@ -777,7 +777,7 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 						pinnedHeader = section.headerView;
 						// if the header is a TUITableViewSectionHeader notify it of it's pinned state
 						if([section.headerView isKindOfClass:[TUITableViewSectionHeader class]]){
-							((TUITableViewSectionHeader *)section.headerView).pinnedToViewport = TRUE;
+							((TUITableViewSectionHeader *)section.headerView).pinnedToViewport = YES;
 						}
 					}else if((pinnedHeader != nil) && (CGRectGetMaxY(headerFrame) > pinnedHeader.frame.origin.y)) {
 						// this header is intersecting with the pinned header, so we push the pinned header upwards.
@@ -786,12 +786,12 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 						pinnedHeader.frame = pinnedHeaderFrame;
 						// if the header is a TUITableViewSectionHeader notify it of it's pinned state
 						if([section.headerView isKindOfClass:[TUITableViewSectionHeader class]]){
-							((TUITableViewSectionHeader *)section.headerView).pinnedToViewport = FALSE;
+							((TUITableViewSectionHeader *)section.headerView).pinnedToViewport = NO;
 						}
 					}else{
 						// if the header is a TUITableViewSectionHeader notify it of it's pinned state
 						if([section.headerView isKindOfClass:[TUITableViewSectionHeader class]]){
-							((TUITableViewSectionHeader *)section.headerView).pinnedToViewport = FALSE;
+							((TUITableViewSectionHeader *)section.headerView).pinnedToViewport = NO;
 						}
 					}
 				}

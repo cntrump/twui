@@ -11,7 +11,7 @@
 static void (*originalDrawRectIMP)(id, SEL, NSRect);
 
 static void fixedDrawRect (NSTextView *self, SEL _cmd, NSRect rect) {
-	CGContextRef context = (CGContextRef)NSGraphicsContext.currentContext.graphicsPort;
+	CGContextRef context = NSGraphicsContext.currentContext.CGContext;
 
 	CGContextSetAllowsAntialiasing(context, YES);
 	CGContextSetAllowsFontSmoothing(context, YES);

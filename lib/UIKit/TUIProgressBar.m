@@ -77,7 +77,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		
 		//Backing grad
 		[NSGraphicsContext saveGraphicsState];		
-		CGContextRef context = (CGContextRef)NSGraphicsContext.currentContext.graphicsPort;
+		CGContextRef context = NSGraphicsContext.currentContext.CGContext;
 		
 		CGContextAddRoundRect(context, trackRect, radius);
 		CGContextClip(context);
@@ -89,8 +89,8 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		
 		//Stroke
 		[NSGraphicsContext saveGraphicsState];
-		context = (CGContextRef)NSGraphicsContext.currentContext.graphicsPort;
-		CGContextSetBlendMode((CGContextRef)NSGraphicsContext.currentContext.graphicsPort, kCGBlendModeMultiply);
+		context = NSGraphicsContext.currentContext.CGContext;
+		CGContextSetBlendMode(NSGraphicsContext.currentContext.CGContext, kCGBlendModeMultiply);
 		[[NSColor colorWithCalibratedWhite:(66.0/255.0) alpha:1.0] set];
 		CGContextAddRoundRect(context, trackRect, radius);
 		CGContextStrokePath(context);
@@ -98,7 +98,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		
 		//Drop shadow
 		[NSGraphicsContext saveGraphicsState];
-		CGContextSetBlendMode((CGContextRef)NSGraphicsContext.currentContext.graphicsPort, kCGBlendModeScreen);
+		CGContextSetBlendMode(NSGraphicsContext.currentContext.CGContext, kCGBlendModeScreen);
 		[[NSColor colorWithCalibratedWhite:1.0 alpha:0.54] set];
 		CGFloat y = NSMinY(view.bounds);
 		[NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(view.bounds) + radius, y) toPoint:NSMakePoint((NSMaxX(view.bounds) - radius), y)];
@@ -118,7 +118,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		if (!progressBar.indeterminate && progressBar.progress == 0.0) //Eesh… I feel dirty comparing to 0 here
 			return;
 		
-		CGContextRef currentContext = (CGContextRef)NSGraphicsContext.currentContext.graphicsPort;
+		CGContextRef currentContext = NSGraphicsContext.currentContext.CGContext;
 		CGRect fillRect = [progressBar fillRect];
 		CGFloat radius = (NSHeight(fillRect) / 2.0);
 		
@@ -296,7 +296,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		CGRect patternBounds = CGRectMake(0.0, 0.0, GHUIProgressBarBarberPolePatternWidth, NSHeight(view.bounds));
 		
 		[NSGraphicsContext saveGraphicsState];
-		CGContextRef currentContext = (CGContextRef)NSGraphicsContext.currentContext.graphicsPort;
+		CGContextRef currentContext = NSGraphicsContext.currentContext.CGContext;
 		
 		CGColorSpaceRef patternColorSpace = CGColorSpaceCreatePattern(NULL);
 		CGContextSetFillColorSpace(currentContext, patternColorSpace);
@@ -343,7 +343,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context)
 {
 	[NSGraphicsContext saveGraphicsState];
 	CGRect bounds = [(__bridge NSValue *)info rectValue];
-	CGContextSetBlendMode((CGContextRef)NSGraphicsContext.currentContext.graphicsPort, kCGBlendModeOverlay);
+	CGContextSetBlendMode(NSGraphicsContext.currentContext.CGContext, kCGBlendModeOverlay);
 	[[NSColor colorWithCalibratedWhite:1.0 alpha:0.24] set];
 
 	// I have _no_ idea why the save/restore of graphics state is fucking this up… working around it with this crap for now

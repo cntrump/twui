@@ -15,7 +15,7 @@
 	if((self = [super initWithFrame:frame])) {
 		_labelRenderer = [[TUITextRenderer alloc] init];
 		self.textRenderers = [NSArray arrayWithObjects:_labelRenderer, nil];
-		self.opaque = TRUE;
+		self.opaque = YES;
 	}
 	return self;
 }
@@ -24,7 +24,7 @@
  * @brief The header will become pinned
  */
 -(void)headerWillBecomePinned {
-  self.opaque = FALSE;
+  self.opaque = NO;
   [super headerWillBecomePinned];
 }
 
@@ -32,7 +32,7 @@
  * @brief The header will become unpinned
  */
 -(void)headerWillBecomeUnpinned {
-  self.opaque = TRUE;
+  self.opaque = YES;
   [super headerWillBecomeUnpinned];
 }
 

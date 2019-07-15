@@ -246,12 +246,12 @@ void CGContextDrawLinearGradientBetweenPoints(CGContextRef context, CGPoint a, C
 
 CGContextRef TUIGraphicsGetCurrentContext(void)
 {
-	return (CGContextRef)NSGraphicsContext.currentContext.graphicsPort;
+	return NSGraphicsContext.currentContext.CGContext;
 }
 
 void TUIGraphicsPushContext(CGContextRef context)
 {
-	NSGraphicsContext *c = [NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO];
+	NSGraphicsContext *c = [NSGraphicsContext graphicsContextWithCGContext:context flipped:NO];
 	[NSGraphicsContext saveGraphicsState];
 	[NSGraphicsContext setCurrentContext:c];
 }

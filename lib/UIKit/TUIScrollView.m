@@ -77,8 +77,8 @@ enum {
 		decelerationRate = 0.88;
 		
 		_scrollViewFlags.bounceEnabled = (FORCE_ENABLE_BOUNCE || AtLeastLion || [[NSUserDefaults standardUserDefaults] boolForKey:@"ForceEnableScrollBouncing"]);
-		_scrollViewFlags.alwaysBounceVertical = FALSE;
-		_scrollViewFlags.alwaysBounceHorizontal = FALSE;
+		_scrollViewFlags.alwaysBounceVertical = NO;
+		_scrollViewFlags.alwaysBounceHorizontal = NO;
 		
 		_scrollViewFlags.verticalScrollIndicatorVisibility = TUIScrollViewIndicatorVisibleDefault;
 		_scrollViewFlags.horizontalScrollIndicatorVisibility = TUIScrollViewIndicatorVisibleDefault;
@@ -458,7 +458,7 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 		
 	switch(self.horizontalScrollIndicatorVisibility){
     case TUIScrollViewIndicatorVisibleNever:
-      hEffectiveVisible = FALSE;
+      hEffectiveVisible = NO;
       break;
     case TUIScrollViewIndicatorVisibleWhenScrolling:
       hEffectiveVisible = vVisible && (_scrollViewFlags.animationMode != AnimationModeNone || _horizontalScrollKnob.flashing);
@@ -806,7 +806,7 @@ static float clampBounce(float x) {
 - (void)_startBounce
 {
 	if(!_bounce.bouncing) {
-		_bounce.bouncing = TRUE;
+		_bounce.bouncing = YES;
 		_bounce.x = 0.0f;
 		_bounce.y = 0.0f;
 		_bounce.vx = clampBounce( _throw.vx);
@@ -1044,7 +1044,7 @@ static float clampBounce(float x) {
   }
 	
 	if(!_throw.throwing) {
-		_throw.throwing = TRUE;
+		_throw.throwing = YES;
 		
 		CFAbsoluteTime t = CFAbsoluteTimeGetCurrent();
 		CFTimeInterval dt = t - _lastScroll.t;
@@ -1173,8 +1173,8 @@ static float clampBounce(float x) {
                 if(!_pull.xPulling) o.x = o.x + dx;
                 if(!_pull.yPulling) o.y = o.y - dy;
                 
-                BOOL xPulling = FALSE;
-                BOOL yPulling = FALSE;
+                BOOL xPulling = NO;
+                BOOL yPulling = NO;
                 {
                     CGPoint pull = o;
                     pull.x += ((_pull.xPulling) ? _pull.x : 0);
@@ -1247,7 +1247,7 @@ static float clampBounce(float x) {
 
 -(void)mouseDown:(NSEvent *)event onSubview:(TUIView *)subview {
   if(subview == _verticalScrollKnob || subview == _horizontalScrollKnob){
-    _scrollViewFlags.mouseDownInScrollKnob = TRUE;
+    _scrollViewFlags.mouseDownInScrollKnob = YES;
     [self _updateScrollKnobsAnimated:TRUE];
   }
 	
@@ -1256,7 +1256,7 @@ static float clampBounce(float x) {
 
 -(void)mouseUp:(NSEvent *)event fromSubview:(TUIView *)subview {
   if(subview == _verticalScrollKnob || subview == _horizontalScrollKnob){
-    _scrollViewFlags.mouseDownInScrollKnob = FALSE;
+    _scrollViewFlags.mouseDownInScrollKnob = NO;
     [self _updateScrollKnobsAnimated:TRUE];
       if (_scrollViewFlags.delegateScrollViewDidEndScroll) {
           [_delegate scrollViewDidEndScroll:self];
@@ -1269,7 +1269,7 @@ static float clampBounce(float x) {
 -(void)mouseEntered:(NSEvent *)event onSubview:(TUIView *)subview {
   [super mouseEntered:event onSubview:subview];
   if(!_scrollViewFlags.mouseInside){
-    _scrollViewFlags.mouseInside = TRUE;
+    _scrollViewFlags.mouseInside = YES;
     [self _updateScrollKnobsAnimated:TRUE];
   }
 }
@@ -1279,7 +1279,7 @@ static float clampBounce(float x) {
   CGPoint location = [self localPointForEvent:event];
   CGRect visible = [self visibleRect];
   if(_scrollViewFlags.mouseInside && ![self pointInside:CGPointMake(location.x, location.y + visible.origin.y) withEvent:event]){
-    _scrollViewFlags.mouseInside = FALSE;
+    _scrollViewFlags.mouseInside = NO;
     [self _updateScrollKnobsAnimated:TRUE];
   }
 }

@@ -181,7 +181,7 @@
 		return;
 	}
 
-	CGContextRef context = [NSGraphicsContext currentContext].graphicsPort;
+	CGContextRef context = [NSGraphicsContext currentContext].CGContext;
 	CGContextSaveGState(context);
 	CGContextClearRect(context, self.bounds);
 

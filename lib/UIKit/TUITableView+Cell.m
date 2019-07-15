@@ -79,7 +79,7 @@
  * @brief Update cell dragging
  */
 -(void)__updateDraggingCell:(TUITableViewCell *)cell offset:(CGPoint)offset location:(CGPoint)location {
-  BOOL animate = TRUE;
+  BOOL animate = YES;
   
   // note the location in any event
   _currentDragToReorderLocation = location;
@@ -274,7 +274,7 @@
  * @brief Finish dragging a cell
  */
 -(void)__endDraggingCell:(TUITableViewCell *)cell offset:(CGPoint)offset location:(CGPoint)location {
-  BOOL animate = TRUE;
+  BOOL animate = YES;
   
   // cancel our continuous scroll
   [self endContinuousScrollAnimated:TRUE];

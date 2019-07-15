@@ -50,7 +50,7 @@
 
 - (CGImageRef)tui_CGImageForProposedRect:(CGRect *)rectPtr CGContext:(CGContextRef)context
 {
-	NSGraphicsContext *graphicsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO];
+	NSGraphicsContext *graphicsContext = [NSGraphicsContext graphicsContextWithCGContext:context flipped:NO];
 	return [self CGImageForProposedRect:rectPtr context:graphicsContext hints:nil];
 }
 

@@ -269,7 +269,7 @@ TUI_EXTERN_C_END
     if((context = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, width * bytesPerPixel, colorspace, info)) != NULL){
       
       // setup an NSGraphicsContext for our bitmap context and render our NSImage into it
-      [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:FALSE]];
+      [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:context flipped:FALSE]];
       [image drawAtPoint:CGPointMake(0, 0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
       
       // create an image from the context and use that to create our TUIImage

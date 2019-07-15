@@ -194,7 +194,7 @@
 -(BOOL)tableView:(TUITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
   // return TRUE to enable row reordering by dragging; don't implement this method or return
   // FALSE to disable
-  return TRUE;
+  return YES;
 }
 
 -(void)tableView:(TUITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {

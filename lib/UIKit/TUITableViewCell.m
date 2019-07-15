@@ -78,7 +78,7 @@
  * @brief Accept first responder by default
  */
 -(BOOL)acceptsFirstResponder {
-  return TRUE;
+  return YES;
 }
 
 - (void)mouseDown:(NSEvent *)event
