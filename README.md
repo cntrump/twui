@@ -1,4 +1,4 @@
-# TwUI [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+# TwUI [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Build Status](https://travis-ci.org/cntrump/twui.svg?branch=master)](https://travis-ci.org/cntrump/twui)
 
 TwUI is a hardware accelerated UI framework for Mac, inspired by UIKit.  It enables:
 
