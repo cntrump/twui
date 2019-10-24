@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		15263E0D23613D4300EC21FD /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 15263E0C23613D4300EC21FD /* AppDelegate.m */; };
+		15263E1023613D4300EC21FD /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15263E0F23613D4300EC21FD /* ViewController.m */; };
+		15263E1223613D4400EC21FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15263E1123613D4400EC21FD /* Assets.xcassets */; };
+		15263E1523613D4400EC21FD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15263E1323613D4400EC21FD /* Main.storyboard */; };
+		15263E1823613D4400EC21FD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 15263E1723613D4400EC21FD /* main.m */; };
+		15263E2323613D4400EC21FD /* TwUIHostingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 15263E2223613D4400EC21FD /* TwUIHostingTests.m */; };
+		15263E2E23613D7100EC21FD /* TwUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73305F8422A0D78B006325A0 /* TwUI.framework */; };
 		7330605022A0DE2D006325A0 /* TUIFont.m in Sources */ = {isa = PBXBuildFile; fileRef = 73305F9122A0DE2C006325A0 /* TUIFont.m */; };
 		7330605122A0DE2D006325A0 /* NSColor+TUIExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 73305F9222A0DE2C006325A0 /* NSColor+TUIExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7330605222A0DE2D006325A0 /* TUITextComposedSequence.m in Sources */ = {isa = PBXBuildFile; fileRef = 73305F9322A0DE2C006325A0 /* TUITextComposedSequence.m */; };
@@ -196,7 +203,37 @@
 		7330610D22A0DE2D006325A0 /* CAAnimation+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7330604F22A0DE2D006325A0 /* CAAnimation+TUIExtensions.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		15263E1F23613D4400EC21FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 73305F7B22A0D78B006325A0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 15263E0823613D4300EC21FD;
+			remoteInfo = TwUIHosting;
+		};
+		15263E2B23613D6800EC21FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 73305F7B22A0D78B006325A0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 73305F8322A0D78B006325A0;
+			remoteInfo = TwUI;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		15263E0923613D4300EC21FD /* TwUIHosting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TwUIHosting.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		15263E0B23613D4300EC21FD /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		15263E0C23613D4300EC21FD /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		15263E0E23613D4300EC21FD /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		15263E0F23613D4300EC21FD /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		15263E1123613D4400EC21FD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		15263E1423613D4400EC21FD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		15263E1623613D4400EC21FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		15263E1723613D4400EC21FD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		15263E1923613D4400EC21FD /* TwUIHosting.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TwUIHosting.entitlements; sourceTree = "<group>"; };
+		15263E1E23613D4400EC21FD /* TwUIHostingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TwUIHostingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		15263E2223613D4400EC21FD /* TwUIHostingTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwUIHostingTests.m; sourceTree = "<group>"; };
+		15263E2423613D4400EC21FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		73305F8422A0D78B006325A0 /* TwUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TwUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		73305F9122A0DE2C006325A0 /* TUIFont.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIFont.m; sourceTree = "<group>"; };
 		73305F9222A0DE2C006325A0 /* NSColor+TUIExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+TUIExtensions.h"; sourceTree = "<group>"; };
@@ -389,6 +426,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		15263E0623613D4300EC21FD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15263E2E23613D7100EC21FD /* TwUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		15263E1B23613D4400EC21FD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		73305F8122A0D78B006325A0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -399,12 +451,47 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		15263E0A23613D4300EC21FD /* TwUIHosting */ = {
+			isa = PBXGroup;
+			children = (
+				15263E0B23613D4300EC21FD /* AppDelegate.h */,
+				15263E0C23613D4300EC21FD /* AppDelegate.m */,
+				15263E0E23613D4300EC21FD /* ViewController.h */,
+				15263E0F23613D4300EC21FD /* ViewController.m */,
+				15263E1123613D4400EC21FD /* Assets.xcassets */,
+				15263E1323613D4400EC21FD /* Main.storyboard */,
+				15263E1623613D4400EC21FD /* Info.plist */,
+				15263E1723613D4400EC21FD /* main.m */,
+				15263E1923613D4400EC21FD /* TwUIHosting.entitlements */,
+			);
+			path = TwUIHosting;
+			sourceTree = "<group>";
+		};
+		15263E2123613D4400EC21FD /* TwUIHostingTests */ = {
+			isa = PBXGroup;
+			children = (
+				15263E2223613D4400EC21FD /* TwUIHostingTests.m */,
+				15263E2423613D4400EC21FD /* Info.plist */,
+			);
+			path = TwUIHostingTests;
+			sourceTree = "<group>";
+		};
+		15263E2D23613D7100EC21FD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		73305F7A22A0D78B006325A0 = {
 			isa = PBXGroup;
 			children = (
 				73305F8F22A0DE2C006325A0 /* lib */,
 				7330610E22A0DEEF006325A0 /* Resources */,
+				15263E0A23613D4300EC21FD /* TwUIHosting */,
+				15263E2123613D4400EC21FD /* TwUIHostingTests */,
 				73305F8522A0D78B006325A0 /* Products */,
+				15263E2D23613D7100EC21FD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -412,6 +499,8 @@
 			isa = PBXGroup;
 			children = (
 				73305F8422A0D78B006325A0 /* TwUI.framework */,
+				15263E0923613D4300EC21FD /* TwUIHosting.app */,
+				15263E1E23613D4400EC21FD /* TwUIHostingTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -745,6 +834,42 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		15263E0823613D4300EC21FD /* TwUIHosting */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 15263E2923613D4400EC21FD /* Build configuration list for PBXNativeTarget "TwUIHosting" */;
+			buildPhases = (
+				15263E0523613D4300EC21FD /* Sources */,
+				15263E0623613D4300EC21FD /* Frameworks */,
+				15263E0723613D4300EC21FD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				15263E2C23613D6800EC21FD /* PBXTargetDependency */,
+			);
+			name = TwUIHosting;
+			productName = TwUIHosting;
+			productReference = 15263E0923613D4300EC21FD /* TwUIHosting.app */;
+			productType = "com.apple.product-type.application";
+		};
+		15263E1D23613D4400EC21FD /* TwUIHostingTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 15263E2A23613D4400EC21FD /* Build configuration list for PBXNativeTarget "TwUIHostingTests" */;
+			buildPhases = (
+				15263E1A23613D4400EC21FD /* Sources */,
+				15263E1B23613D4400EC21FD /* Frameworks */,
+				15263E1C23613D4400EC21FD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				15263E2023613D4400EC21FD /* PBXTargetDependency */,
+			);
+			name = TwUIHostingTests;
+			productName = TwUIHostingTests;
+			productReference = 15263E1E23613D4400EC21FD /* TwUIHostingTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		73305F8322A0D78B006325A0 /* TwUI */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 73305F8C22A0D78B006325A0 /* Build configuration list for PBXNativeTarget "TwUI" */;
@@ -772,6 +897,13 @@
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = twitter;
 				TargetAttributes = {
+					15263E0823613D4300EC21FD = {
+						CreatedOnToolsVersion = 11.1;
+					};
+					15263E1D23613D4400EC21FD = {
+						CreatedOnToolsVersion = 11.1;
+						TestTargetID = 15263E0823613D4300EC21FD;
+					};
 					73305F8322A0D78B006325A0 = {
 						CreatedOnToolsVersion = 10.2.1;
 					};
@@ -783,6 +915,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 73305F7A22A0D78B006325A0;
 			productRefGroup = 73305F8522A0D78B006325A0 /* Products */;
@@ -790,11 +923,29 @@
 			projectRoot = "";
 			targets = (
 				73305F8322A0D78B006325A0 /* TwUI */,
+				15263E0823613D4300EC21FD /* TwUIHosting */,
+				15263E1D23613D4400EC21FD /* TwUIHostingTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		15263E0723613D4300EC21FD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15263E1223613D4400EC21FD /* Assets.xcassets in Resources */,
+				15263E1523613D4400EC21FD /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		15263E1C23613D4400EC21FD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		73305F8222A0D78B006325A0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -805,6 +956,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		15263E0523613D4300EC21FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15263E1023613D4300EC21FD /* ViewController.m in Sources */,
+				15263E1823613D4400EC21FD /* main.m in Sources */,
+				15263E0D23613D4300EC21FD /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		15263E1A23613D4400EC21FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15263E2323613D4400EC21FD /* TwUIHostingTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		73305F8022A0D78B006325A0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -903,7 +1072,107 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		15263E2023613D4400EC21FD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 15263E0823613D4300EC21FD /* TwUIHosting */;
+			targetProxy = 15263E1F23613D4400EC21FD /* PBXContainerItemProxy */;
+		};
+		15263E2C23613D6800EC21FD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 73305F8322A0D78B006325A0 /* TwUI */;
+			targetProxy = 15263E2B23613D6800EC21FD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		15263E1323613D4400EC21FD /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				15263E1423613D4400EC21FD /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		15263E2523613D4400EC21FD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = TwUIHosting/TwUIHosting.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = TwUIHosting/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = me.lvv.TwUIHosting;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		15263E2623613D4400EC21FD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = TwUIHosting/TwUIHosting.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = TwUIHosting/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = me.lvv.TwUIHosting;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		15263E2723613D4400EC21FD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = TwUIHostingTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = me.lvv.TwUIHostingTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TwUIHosting.app/Contents/MacOS/TwUIHosting";
+			};
+			name = Debug;
+		};
+		15263E2823613D4400EC21FD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = TwUIHostingTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = me.lvv.TwUIHostingTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TwUIHosting.app/Contents/MacOS/TwUIHosting";
+			};
+			name = Release;
+		};
 		73305F8A22A0D78B006325A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1076,6 +1345,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		15263E2923613D4400EC21FD /* Build configuration list for PBXNativeTarget "TwUIHosting" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15263E2523613D4400EC21FD /* Debug */,
+				15263E2623613D4400EC21FD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		15263E2A23613D4400EC21FD /* Build configuration list for PBXNativeTarget "TwUIHostingTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15263E2723613D4400EC21FD /* Debug */,
+				15263E2823613D4400EC21FD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		73305F7E22A0D78B006325A0 /* Build configuration list for PBXProject "TwUI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

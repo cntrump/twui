@@ -1,0 +1,5 @@
+osx_image: xcode11
+language: objective-c
+xcode_project: TwUI.xcodeproj
+xcode_scheme: TwUIHosting
+xcode_destination: platform=macOS
